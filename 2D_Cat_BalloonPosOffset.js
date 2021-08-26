@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc 显示相对于目标位置偏移后的气泡动画。v_1.0
+ * @plugindesc 显示相对于目标位置偏移后的气泡动画。v1.0
  * @author 2D_猫
  * @url https://space.bilibili.com/137028995
  *

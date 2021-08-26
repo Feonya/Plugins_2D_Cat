@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc 自定义动画光标指针。v_1.0
+ * @plugindesc 自定义动画光标指针。v1.0
  * @author 2D_猫
  * @url https://space.bilibili.com/137028995
  *
