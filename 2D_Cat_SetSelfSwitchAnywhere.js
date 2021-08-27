@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc 在任意事件中，设置任意事件的独立开关。v1.0
+ * @plugindesc 在任意地图的任意处更改事件独立开关。v1.0
  * @author 2D_猫
  * @url https://space.bilibili.com/137028995
  * 
