@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc 设置游戏启动影像。v1.0
+ * @plugindesc 设置游戏启动影像。v1.1
  * @author 2D_猫
  * @url https://space.bilibili.com/137028995
  *
@@ -10,6 +10,12 @@
  *
  * * 使用条款：免费用于任何商业或非商业目的；允许在保留原作者信息的前提下修改代
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
+ *
+ * * 更新日志：
+ * -- 20210827 v1.1
+ *     修正游戏启动时点击鼠标发生错误的bug。
+ * -- 20210823 v1.0
+ *     实现插件基本功能。
  *
  * @param movieName
  * @type fileName
@@ -52,6 +58,10 @@
 
     document.onmousedown = function() {
         if (isMoviePlayed || !touchSkip) {
+            return;
+        }
+        
+        if (!$dataSystem) {
             return;
         }
 
