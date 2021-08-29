@@ -1,8 +1,8 @@
 /*:
- * @target MZ
+ * @target     MZ
  * @plugindesc 自定义动画光标指针。v1.0
- * @author 2D_猫
- * @url https://space.bilibili.com/137028995
+ * @author     2D_猫
+ * @url        https://space.bilibili.com/137028995
  *
  * @help
  * * 使用方法：请将所有光标动画图片放在img/system目录下，并按照播放顺序将图片
@@ -15,24 +15,24 @@
  * -- 20210825 v1.0
  *     实现插件基本功能。
  * 
- * @param images
- * @text 光标动画图片（.png）
- * @type string[]
+ * @param   images
+ * @text    光标动画图片（.png）
+ * @type    string[]
  * @default ['Cursor1', 'Cursor2', 'Cursor3', 'Cursor4']
- * @desc 放在img/system目录下的每一帧光标动画图片文件名，不包括扩展名。
+ * @desc    放在img/system目录下的每一帧光标动画图片文件名，不包括扩展名。
  * 
- * @param interval
- * @text 播放帧间隔时间（毫秒）
- * @type number
+ * @param   interval
+ * @text    播放帧间隔时间（毫秒）
+ * @type    number
  * @default 100
  */
 
 (() => {
     var params = PluginManager.parameters('2D_Cat_CustomAnimCursor');
 
-    let images = JSON.parse(params.images);
+    let images      = JSON.parse(params.images);
     let maxImageNum = images.length;
-    let interval = Number(params.interval);
+    let interval    = Number(params.interval);
 
     if (maxImageNum == 1) {
         setCursor(images[0]);

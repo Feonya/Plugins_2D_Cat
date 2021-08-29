@@ -1,8 +1,8 @@
 /*:
- * @target MZ
+ * @target     MZ
  * @plugindesc 显示相对于目标位置偏移后的气泡动画。v1.0
- * @author 2D_猫
- * @url https://space.bilibili.com/137028995
+ * @author     2D_猫
+ * @url        https://space.bilibili.com/137028995
  *
  * @help
  * * 使用方法：请在“显示气泡图标”事件指令前调用本插件的“设置坐标偏移量”插件指令，
@@ -16,23 +16,23 @@
  *     实现插件基本功能。
  *
  * @command setPosOffset
- * @text 设置坐标偏移量
+ * @text    设置坐标偏移量
  *
- * @arg posXOffset
- * @type number
- * @min -99999
- * @max 99999
+ * @arg     posXOffset
+ * @type    number
+ * @min     -99999
+ * @max     99999
  * @default 0
- * @text X坐标偏移量
- * @desc 小于0向左偏移，大于0向右偏移。
+ * @text    X坐标偏移量
+ * @desc    小于0向左偏移，大于0向右偏移。
  *
- * @arg posYOffset
- * @type number
- * @min -99999
- * @max 99999
+ * @arg     posYOffset
+ * @type    number
+ * @min     -99999
+ * @max     99999
  * @default 0
- * @text Y坐标偏移量
- * @desc 小于0向上偏移，大于0向下偏移。
+ * @text    Y坐标偏移量
+ * @desc    小于0向上偏移，大于0向下偏移。
  */
 
 (() => {

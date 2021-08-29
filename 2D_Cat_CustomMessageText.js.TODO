@@ -1,0 +1,111 @@
+/*: TODO
+ * @command setMessageTextStyle
+ * @text    设置消息文字式样
+ *
+ * @arg     fontName
+ * @text    字体名称
+ * @type    string
+ * @default sans-serif
+ *
+ * @arg     fontSize
+ * @text    字体大小
+ * @type    number
+ * @default 26
+ * 
+ * @arg     fontBold
+ * @text    粗字体
+ * @type    boolean
+ * @default false
+ * 
+ * @arg     fontItalic
+ * @text    斜字体
+ * @type    boolean
+ * @default false
+ *
+ * @arg     fontColor
+ * @text    字体颜色
+ * @type    string
+ * @default #ffffff
+ *
+ * @arg     isEnableOutline
+ * @text    是否开启轮廓
+ * @type    boolean
+ * @default true
+ *
+ * @arg     outlineColor
+ * @text    轮廓颜色
+ * @type    string
+ * @default #000000
+ *
+ * @arg     outlineWidth
+ * @text    轮廓宽度
+ * @type    number
+ * @default 3
+ * @min     1
+ *
+ * @command resetMessageTextSytle
+ * @text    还原消息文字式样
+ */
+
+(() => {
+    var isOn = false;
+
+    var fnName, fnSize, fnBold, fnItalic, fnColor;
+    var isEnableOutline, outlineColor, outlineWidth;
+
+    PluginManager.registerCommand('2D_Cat_CustomMessageText', 'setMessageTextStyle', args => {
+        isOn = true;
+
+        fnName   = String(args.fontName);
+        fnSize   = String(args.fontSize);
+        fnBold   = String(args.fontBold)   === 'true' ? 'bold '   : '';
+        fnItalic = String(args.fontItalic) === 'true' ? 'italic ' : '';
+        fnColor  = String(args.fontColor);
+
+        isEnableOutline = String(args.isEnableOutline) === 'true';
+        outlineColor    = String(args.outlineColor);
+        outlineWidth    = Number(args.outlineWidth);
+    });
+
+    PluginManager.registerCommand('2D_Cat_CustomMessageText', 'resetMessageTextStyle', args => {
+        if (isOn) isOn = false;
+    });
+
+    // 绘制文字轮廓
+    var _Bitmap_prototype_drawTextOutline = Bitmap.prototype._drawTextOutline;
+    Bitmap.prototype._drawTextOutline = function(text, tx, ty, maxWidth) {
+        if (isOn && $gameMessage.isBusy()) {
+            if (!isEnableOutline) return;
+
+            const context       = this.context;
+            context.font        = fnItalic + fnSize + 'px ' + fnName;
+            context.strokeStyle = outlineColor;
+            context.lineWidth   = outlineWidth;
+            context.lineJoin    = 'round';
+            context.strokeText(text, tx, ty, maxWidth);
+        }
+        else {
+            _Bitmap_prototype_drawTextOutline.call(this, text, tx, ty, maxWidth);
+        }
+    };
+
+    // 绘制文字阴影
+    Bitmap.prototype._drawTextShadow = function(text, tx, ty, maxWidth) {
+
+    }
+
+    // 绘制文字
+    var _Bitmap_prototype_drawTextBody = Bitmap.prototype._drawTextBody;
+    Bitmap.prototype._drawTextBody = function(text, tx, ty, maxWidth) {
+        if (isOn && $gameMessage.isBusy()) {
+            const context     = this.context;
+            context.font      = fnItalic + fnBold + fnSize + 'px ' + fnName;
+            context.fillStyle = fnColor;
+            context.fillText(text, tx, ty, maxWidth);
+        }
+        else {
+            _Bitmap_prototype_drawTextBody.call(this, text, tx, ty, maxWidth);
+            console.log(this.context.font)
+        }
+    };
+})();

@@ -1,8 +1,8 @@
 /*:
- * @target MZ
+ * @target     MZ
  * @plugindesc 在游戏画面模拟弹幕效果。v1.0
- * @author 2D_猫
- * @url https://space.bilibili.com/137028995
+ * @author     2D_猫
+ * @url        https://space.bilibili.com/137028995
  *
  * @help
  * * 使用方法：在任意事件中调用本插件的“开启弹幕”指令，并依次设置好相关参数。
@@ -11,76 +11,76 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
- * -- 20210827 v1.0
+ * -- 20210828 v1.0
  *     实现插件基本功能。
  *
  * @command openDanmu
- * @text 开启弹幕
+ * @text    开启弹幕
  *
- * @arg danmuStrings
- * @text 弹幕文字
- * @type string[]
+ * @arg     danmuStrings
+ * @text    弹幕文字
+ * @type    string[]
  * @default ["666~~[5]", "跳的真好看！[4]", "老铁们，礼物刷起来啊~~！[3]", "哦耶~~[2]", "射射，已经谢了。。。[1]", "2333[5]"]
- * @desc 每行设置一条弹幕，中括号内表示该弹幕出现的权重（任意正数），越高出现概率越大，反之越小。中括号不能出现于其他地方。
+ * @desc    每行设置一条弹幕，中括号内表示该弹幕出现的权重（任意正数），越高出现概率越大，反之越小。中括号不能出现于其他地方。
  *
- * @arg maxFontSize
- * @text 弹幕最大字号
- * @type number
+ * @arg     maxFontSize
+ * @text    弹幕最大字号
+ * @type    number
  * @default 36
- * @min 0
+ * @min     0
  *
- * @arg minFontSize
- * @text 弹幕最小字号
- * @type number
+ * @arg     minFontSize
+ * @text    弹幕最小字号
+ * @type    number
  * @default 24
- * @min 0
+ * @min     0
  *
- * @arg maxMoveSpeed
- * @text 弹幕最大速度
- * @type number
+ * @arg     maxMoveSpeed
+ * @text    弹幕最大速度
+ * @type    number
  * @default 300
- * @min 1
+ * @min     1
  *
- * @arg minMoveSpeed
- * @text 弹幕最小速度
- * @type number
+ * @arg     minMoveSpeed
+ * @text    弹幕最小速度
+ * @type    number
  * @default 150
- * @min 1
+ * @min     1
  *
- * @arg totalGenerateDuration
- * @text 总弹幕生成持续时间（毫秒）
- * @type number
+ * @arg     totalGenerateDuration
+ * @text    总弹幕生成持续时间（毫秒）
+ * @type    number
  * @default 10000
- * @min 0
+ * @min     0
  *
- * @arg maxGenerateDuration
- * @text 每条弹幕生成最大间隔（毫秒）
- * @type number
+ * @arg     maxGenerateDuration
+ * @text    每条弹幕生成最大间隔（毫秒）
+ * @type    number
  * @default 100
- * @min 0
+ * @min     0
  *
- * @arg minGenerateDuration
- * @text 每条弹幕生成最小间隔（毫秒）
- * @type number
+ * @arg     minGenerateDuration
+ * @text    每条弹幕生成最小间隔（毫秒）
+ * @type    number
  * @default 0
- * @min 0
+ * @min     0
  *
- * @arg colors
- * @text 色彩设置（带“#”的16进制值）
- * @type string[]
+ * @arg     colors
+ * @text    色彩设置（带“#”的16进制值）
+ * @type    string[]
  * @default ["#ffffff[5]", "#ff0000[2]", "#ff00ff[2]", "#0000ff[2]", "#00ff00[2]", "#fff000[2]"]
- * @desc 每行设置一种色彩，中括号内表示该颜色出现的权重（任意正数），越高出现概率越大，反之越小。中括号不能出现于其他地方。
+ * @desc    每行设置一种色彩，中括号内表示该颜色出现的权重（任意正数），越高出现概率越大，反之越小。中括号不能出现于其他地方。
  *
- * @arg upPosY
- * @text 弹幕显示最高位置（px）
- * @type number
- * @min 0
+ * @arg     upPosY
+ * @text    弹幕显示最高位置（px）
+ * @type    number
+ * @min     0
  * @default 0
  *
- * @arg downPosY
- * @text 弹幕显示最低位置（px）
- * @type number
- * @min 0
+ * @arg     downPosY
+ * @text    弹幕显示最低位置（px）
+ * @type    number
+ * @min     0
  * @default 550
  */
 
@@ -186,8 +186,8 @@
     }
 
     function randSelAStrFromArr(oriArr) {
-        let strArr = [];
-        let weiArr = [];
+        let strArr   = [];
+        let weiArr   = [];
         let totalWei = 0;
 
         oriArr.forEach(e => {
