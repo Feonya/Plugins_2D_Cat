@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc 在游戏中实时更换字体。v1.0
+ * @plugindesc 在游戏中实时更换全局字体。v1.0
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -29,7 +29,7 @@
 
     var fnFileName;
 
-    PluginManager.registerCommand('2D_Cat_RealtimeFontChange', 'changeFont', args => {
+    PluginManager.registerCommand('2D_Cat_GlobalFontChange', 'changeFont', args => {
         fnFileName = String(args.fontFileName);
         startChangeMainFont(fnFileName);
         // startChangeNumberFont(fnFileName);
