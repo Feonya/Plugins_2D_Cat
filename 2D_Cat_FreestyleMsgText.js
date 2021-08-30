@@ -98,6 +98,7 @@
  * @type    number
  * @min     0
  * @default 5
+ * @desc    将本参数调高到10左右可模拟辉光效果。
  *
  * @command resetMessageTextStyle
  * @text    还原消息文字式样
