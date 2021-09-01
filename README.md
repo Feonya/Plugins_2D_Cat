@@ -13,7 +13,7 @@
 > * 2D_Cat_MsgTextPrintAnim v1.0 在打印对话框文字时，添加动画以及声音效果。
 
 #### 视频演示
-更多插件的使用演示，欢迎访问2D_猫的B站空间查看，地址：https://space.bilibili.com/137028995
+更多插件使用演示，欢迎访问2D_猫的B站空间查看：[👉点击这里](https://www.runoob.com)(https://space.bilibili.com/137028995/channel/seriesdetail?sid=248826&ctype=0)
 
 #### 使用条款
 免费用于任何商业或非商业目的；允许在保留原作者信息的前提下修改代码；请在你的项目中致谢“2D_猫”，谢谢！:)
