@@ -1,16 +1,16 @@
 /*:
  * @target     MZ
- * @plugindesc 在打印对话框文字时，添加动画以及声音效果。v1.0
+ * @plugindesc 在对话框文字打印时，添加动画以及声音效果。v1.0
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
  * @help
  * * 使用方法：
- * 1、在插件设置参数中，依次设置好动画编号、动画间隔字符数、发声间隔字符数，并
- *    确保默认禁用为关闭，之后所有对话框文字打印时，都会出现此处设置的动画效果。
- * 2、可以在任意事件种调用本插件的“更改（开启）动画”指令，以改变动画效果。若调
- *    用本指令时动画已禁用，则同时会激活动画。
- * 3、动画需要提前在编辑器数据库中的动画选项卡中设置好，包括声音。
+ * 1、在插件设置参数中，依次设置好动画编号、动画间隔字符数、声音间隔字符数，并
+ *    确保默认禁用为关闭，之后所有对话框文字打印时，都会出现此时设置的动画效果。
+ * 2、可以在任意事件中调用本插件的“更改（开启）动画”指令，以改变动画效果。若调
+ *    用本指令时已禁用动画，则会激活动画。
+ * 3、预调用动画需提前在编辑器数据库中设置好，包括声音在内。
  *
  * * 使用条款：免费用于任何商业或非商业目的；允许在保留原作者信息的前提下修改代
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
@@ -32,7 +32,7 @@
  * @min     1
  *
  * @param   soundInterval
- * @text    发声间隔字符数
+ * @text    声音间隔字符数
  * @type    number
  * @default 6
  * @min     1
@@ -115,7 +115,7 @@
         } else {
             const pos = new Point();
             if (this._animation.displayType === 2) {
-                pos.x = renderer.view.width / 2;
+                pos.x = renderer.view.width  / 2;
                 pos.y = renderer.view.height / 2;
             } else {
                 for (const target of this._targets) {
@@ -140,7 +140,7 @@
                 if (!this._started && this.canStart()) {
                     if (this._effect) {
                         if (this._effect.isLoaded) {
-                            this._handle = Graphics.effekseer.play(this._effect);
+                            this._handle  = Graphics.effekseer.play(this._effect);
                             this._started = true;
                         } else {
                             EffectManager.checkErrors();
@@ -176,12 +176,12 @@
             }
             if (text != '') {
                 currChCountForAnim++;
-                if (!readyToPlaySnd) currChCountForSnd ++;
+                if (!readyToPlaySnd) currChCountForSnd++;
             }
             if (currChCountForAnim >= animInterval) currChCountForAnim = 0;
             if (currChCountForSnd  >=  sndInterval) {
-                readyToPlaySnd     = true;
-                currChCountForSnd  = 0;
+                readyToPlaySnd    = true;
+                currChCountForSnd = 0;
             }
         }
     };
@@ -203,11 +203,11 @@
     };
 
     Spriteset_Base.prototype.createAnimationSprite = function(targets, animation, mirror, delay) {
-        const mv = this.isMVAnimation(animation);
-        const sprite = new (mv ? Sprite_AnimationMV : Sprite_Animation)();
+        const mv            = this.isMVAnimation(animation);
+        const sprite        = new (mv ? Sprite_AnimationMV : Sprite_Animation)();
         const targetSprites = this.makeTargetSprites(targets);
-        const baseDelay = this.animationBaseDelay();
-        const previous = delay > baseDelay ? this.lastAnimationSprite() : null;
+        const baseDelay     = this.animationBaseDelay();
+        const previous      = delay > baseDelay ? this.lastAnimationSprite() : null;
         if (this.animationShouldMirror(targets[0])) {
             mirror = !mirror;
         }
