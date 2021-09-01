@@ -135,8 +135,6 @@
     });
 
     PluginManager.registerCommand('2D_Cat_FreestyleMsgText', 'resetMessageTextStyle', () => {
-        console.log('!!!!!!!!')
-        console.log(isOn)
         if (isOn) isOn = false;
     });
 
@@ -193,13 +191,13 @@
         if (gradientDir === '垂直') {
             gradient = ctx.createLinearGradient(0, textPadding, 0, textPadding + ImageManager.faceHeight);
         } else {
-            let x1, x2;
+            let x1;
+            let x2 = Scene_Message.prototype.messageWindowRect().width - textPadding;
             if ($gameMessage.faceName() === '') {
                 x1 = textPadding;
             } else {
                 x1 = textPadding * 2 + ImageManager.faceWidth;
             }
-            x2 = Scene_Message.prototype.messageWindowRect().width - textPadding;
             gradient = ctx.createLinearGradient(x1, 0, x2, 0);
         }
 
