@@ -171,9 +171,9 @@
     var _Bitmap_prototype_drawTextBody = Bitmap.prototype._drawTextBody;
     Bitmap.prototype._drawTextBody = function(text, tx, ty, maxWidth) {
         if (isOn && $gameMessage.isBusy()) {
-            const context     = this.context;
+            const context = this.context;
             this._drawTextShadow(context);
-            context.font      = fnItalic + fnBold + this.fontSize + 'px rmmz-mainfont';
+            context.font  = fnItalic + fnBold + this.fontSize + 'px rmmz-mainfont';
             if (!isEnableGradient) {
                 context.fillStyle = fnColor;
             } else {

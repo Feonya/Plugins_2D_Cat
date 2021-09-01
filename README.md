@@ -10,6 +10,7 @@
 > * 2D_Cat_DanmuSimulation v1.0 在游戏画面模拟弹幕效果。
 > * 2D_Cat_GlobalFontChange v1.0 在游戏中实时更换全局字体。
 > * 2D_Cat_FreestyleMsgText v1.0 自由设定对话框文字式样，包括颜色、渐变色、加粗、倾斜、轮廓、阴影、辉光等效果。
+> * 2D_Cat_MsgTextPrintAnim v1.0 在打印对话框文字时，添加动画以及声音效果。
 
 #### 视频演示
 更多插件的使用演示，欢迎访问2D_猫的B站空间查看，地址：https://space.bilibili.com/137028995
