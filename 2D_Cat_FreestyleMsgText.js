@@ -163,7 +163,7 @@
             ctx.shadowColor   = shadowColor;
             ctx.shadowBlur    = shadowBlur;
         }
-    }
+    };
 
     // 绘制文字
     var _Bitmap_prototype_drawTextBody = Bitmap.prototype._drawTextBody;

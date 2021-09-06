@@ -164,11 +164,9 @@
     Bitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {
         _Bitmap_prototype_drawText.call(this, text, x, y, maxWidth, lineHeight, align);
 
-        if (isDisabled)      return;
-        if (text.length > 1) return;
+        if (isDisabled || text.length > 1) return;
 
         if ($gameMessage.isBusy()) {
-
             if (currChCountForAnim <= 0 && text != '') {
                 animPos.x = x + msgWinPos.x;
                 animPos.y = y + msgWinPos.y + lineHeight;

@@ -75,9 +75,9 @@
         frameElem.style.position  = 'absolute';
         frameElem.style.border    = 'none';
         frameElem.style.transform = 'translate(-50%, -50%)';
-        frameElem.style.left      = String(args.left) + '%';
-        frameElem.style.top       = String(args.top) + '%';
-        frameElem.style.width     = String(args.width) + 'px';
+        frameElem.style.left      = String(args.left)   + '%';
+        frameElem.style.top       = String(args.top)    + '%';
+        frameElem.style.width     = String(args.width)  + 'px';
         frameElem.style.height    = String(args.height) + 'px';
         frameElem.src             = String(args.url);
 
@@ -96,7 +96,7 @@
         closeBtnElem.onclick        = onCloseBtnClicked;
 
         document.body.appendChild(closeBtnElem);
-    }
+    };
 
     var onCloseBtnClicked = function() {
         document.body.removeChild(frameElem);
