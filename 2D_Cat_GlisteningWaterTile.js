@@ -24,6 +24,7 @@
  *
  * * 致谢说明：
  * 本插件的柏林噪音生成功能使用了shadertoy.com用户Sprocket的代码，这里表示感谢！
+ * 地址：https://www.shadertoy.com/view/7dcGRj
  *
  * * 更新日志：
  * -- 20210907 v1.0
