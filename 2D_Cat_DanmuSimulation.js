@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc 在游戏画面模拟弹幕效果。v1.0
+ * @plugindesc 在游戏画面模拟弹幕效果。v1.1
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
