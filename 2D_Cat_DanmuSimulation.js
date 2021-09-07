@@ -11,6 +11,9 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20210907 v1.1
+ *     修复了调出主菜单时崩溃的Bug，现在调出主菜单将会消除所有弹幕。
+ *     新增字体轮廓颜色和大小设置。
  * -- 20210828 v1.0
  *     实现插件基本功能。
  *
@@ -70,6 +73,16 @@
  * @type    string[]
  * @default ["#ffffff[5]", "#ff0000[2]", "#ff00ff[2]", "#0000ff[2]", "#00ff00[2]", "#fff000[2]"]
  * @desc    每行设置一种色彩，中括号内表示该颜色出现的权重（任意正数），越高出现概率越大，反之越小。中括号不能出现于其他地方。
+ * 
+ * @arg     outlineColor
+ * @text    轮廓颜色（带“#”的16进制值）
+ * @type    string
+ * @default #f5c0f3
+ * 
+ * @arg     outlineThickness
+ * @text    轮廓大小
+ * @type    number
+ * @default 4
  *
  * @arg     upPosY
  * @text    弹幕显示最高位置（px）
@@ -106,10 +119,12 @@
     var maxGenDura   = 0;
     var minGenDura   = 0;
     var colors       = []; // [['色彩1', '权重1'], ['色彩2', '权重2'], ...]
+    var outlineColor = '';
+    var outlineThk   = 0;
     var upPosY       = 0;
     var downPosY     = 0;
 
-    var isOn = false;
+    var isOn          = false;
     var nextGenDura   = 0;
     var currTime      = 0; // 生成下一条弹幕之前的积累时间
     var currTotalTime = 0; // 结束所有弹幕之前的积累时间
@@ -128,11 +143,20 @@
         maxGenDura   = Number(args.maxGenerateDuration);
         minGenDura   = Number(args.minGenerateDuration);
         colors       = parseStrArr(JSON.parse(args.colors));
+        outlineColor = String(args.outlineColor);
+        outlineThk   = Number(args.outlineThickness);
         upPosY       = Number(args.upPosY);
         downPosY     = Number(args.downPosY);
 
         Graphics.app.ticker.add(gameLoop);
     });
+
+    var _Scene_Map_prototype_callMenu = Scene_Map.prototype.callMenu;
+    Scene_Map.prototype.callMenu = function() {
+        destoryAllDanmus();
+        restoreDanmu();
+        _Scene_Map_prototype_callMenu.call(this);
+    };
 
     function gameLoop() {
         // 判断是否生成新的弹幕
@@ -147,14 +171,14 @@
 
         // 移动舞台上现有弹幕
         danmusOnStage.forEach(e => {
-           e.msg.x -= e.mvSpd * (Graphics.app.ticker.deltaMS * 0.001);
+            e.msg.x -= e.mvSpd * (Graphics.app.ticker.deltaMS * 0.001);
 
-           // 判断是否销毁弹幕
-           if (e.msg.x + e.msg.width < 0) {
-               let idx = danmusOnStage.indexOf(e);
-               let dm  = danmusOnStage.splice(idx, 1);
-               Graphics.app.stage.removeChild(dm);
-           }
+            // 判断是否销毁弹幕
+            if (e.msg.x + e.msg.width < 0) {
+                let idx = danmusOnStage.indexOf(e);
+                Graphics.app.stage.removeChild(danmusOnStage[idx].msg);
+                danmusOnStage.splice(idx, 1);
+            }
         });
 
         // 判断是否停止所有弹幕的生成
@@ -165,13 +189,26 @@
 
         // 判断是否可以结束本次弹幕
         if (waitForDone && danmusOnStage.length === 0) {
-            Graphics.app.ticker.remove(gameLoop);
-            isOn          = false;
-            nextGenDura   = 0;
-            currTime      = 0;
-            currTotalTime = 0;
-            waitForDone   = false;
+            restoreDanmu();
         }
+    }
+
+    function destoryAllDanmus(){
+        danmusOnStage.forEach(e => {
+            let idx = danmusOnStage.indexOf(e);
+            Graphics.app.stage.removeChild(danmusOnStage[idx].msg);
+            danmusOnStage.splice(idx, 1);
+        });
+    }
+
+    function restoreDanmu() {
+        Graphics.app.ticker.remove(gameLoop);
+        isOn          = false;
+        nextGenDura   = 0;
+        currTime      = 0;
+        currTotalTime = 0;
+        waitForDone   = false;
+        danmusOnStage = [];
     }
 
     function parseStrArr(oriArr) {
@@ -198,7 +235,6 @@
         });
 
         let randNum = Math.random() * totalWei;
-        console.log(randNum)
         let weiAccumulating = 0;
         for (let i = 0; i < weiArr.length; i++) {
             weiAccumulating += weiArr[i];
@@ -219,6 +255,9 @@
         );
 
         danmu.msg = new PIXI.Text(danmu.str, new PIXI.TextStyle({fontSize: danmu.fnSize, fill: danmu.color}));
+        danmu.msg.style.lineJoin        = 'round';
+        danmu.msg.style.stroke          = outlineColor;
+        danmu.msg.style.strokeThickness = outlineThk;
         danmu.msg.position.set(Graphics.app.stage.children[0].width, Math.random() * (downPosY - upPosY) + upPosY);
         Graphics.app.stage.addChild(danmu.msg);
 

@@ -7,7 +7,7 @@
 > * 2D_Cat_BalloonPosOffset v1.0 显示相对于目标位置偏移后的气泡动画。
 > * 2D_Cat_CustomAnimCursor v1.0 自定义动画光标指针。
 > * 2D_Cat_OpenWebInTheGame v1.0 在游戏内打开网站页面。
-> * 2D_Cat_DanmuSimulation v1.0 在游戏画面模拟弹幕效果。
+> * 2D_Cat_DanmuSimulation v1.1 在游戏画面模拟弹幕效果。
 > * 2D_Cat_GlobalFontChange v1.0 在游戏中实时更换全局字体。
 > * 2D_Cat_FreestyleMsgText v1.0 自由设定对话框文字式样，包括颜色、渐变色、加粗、倾斜、轮廓、阴影、辉光等效果。
 > * 2D_Cat_MsgTextPrintAnim v1.0 在对话框文字打印时，添加动画以及声音效果。
