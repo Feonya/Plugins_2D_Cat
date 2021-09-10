@@ -73,12 +73,12 @@
  * @type    string[]
  * @default ["#ffffff[5]", "#ff0000[2]", "#ff00ff[2]", "#0000ff[2]", "#00ff00[2]", "#fff000[2]"]
  * @desc    每行设置一种色彩，中括号内表示该颜色出现的权重（任意正数），越高出现概率越大，反之越小。中括号不能出现于其他地方。
- * 
+ *
  * @arg     outlineColor
  * @text    轮廓颜色（带“#”的16进制值）
  * @type    string
  * @default #f5c0f3
- * 
+ *
  * @arg     outlineThickness
  * @text    轮廓大小
  * @type    number

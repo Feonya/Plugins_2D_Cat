@@ -91,24 +91,24 @@
  * @type    string
  * @default 0.008
  * @desc    介于0.001~1之间的实数，越小尺寸越大，反之越小。
- * 
+ *
  * @command changeGlistening
  * @text    更改波光数据
- * 
+ *
  * @arg     newWaterImgPosX
  * @text    水在图块集图片中的x坐标位置（px）
  * @type    number
  * @default 0
  * @min     0
  * @desc    即目标图像左上角坐标的x值。
- * 
+ *
  * @arg     newWaterImgPosY
  * @text    水在图块集图片中的y坐标位置（px）
  * @type    number
  * @default 0
  * @min     0
  * @desc    即目标图像左上角坐标的y值。
- * 
+ *
  * @arg     newReferenceColor
  * @text    水的参考RGB颜色
  * @type    string
@@ -228,63 +228,63 @@ var P_2D_C = P_2D_C || {};
     };
 
     function fixGlistenData() {
-        if (P_2D_C.glisSpeed  === NaN || P_2D_C.glisSpeed  > 20 || P_2D_C.glisSpeed  < -20)      P_2D_C.glisSpeed  = 0.8;
-        if (P_2D_C.glisPower  === NaN || P_2D_C.glisPower  > 2  || P_2D_C.glisPower  <  0)       P_2D_C.glisPower  = 0.5;
-        if (P_2D_C.glisOffset === NaN || P_2D_C.glisOffset > 1  || P_2D_C.glisOffset < -1)       P_2D_C.glisOffset = 0;
-        if (P_2D_C.glisSize   === NaN || P_2D_C.glisSize   > 1  || P_2D_C.glisSize   < -0.001)   P_2D_C.glisPower  = 0.01;
+        if (String(P_2D_C.glisSpeed)  === 'NaN' || P_2D_C.glisSpeed  > 20 || P_2D_C.glisSpeed  < -20)      P_2D_C.glisSpeed  = 0.8;
+        if (String(P_2D_C.glisPower)  === 'NaN' || P_2D_C.glisPower  > 2  || P_2D_C.glisPower  <  0)       P_2D_C.glisPower  = 0.5;
+        if (String(P_2D_C.glisOffset) === 'NaN' || P_2D_C.glisOffset > 1  || P_2D_C.glisOffset < -1)       P_2D_C.glisOffset = 0;
+        if (String(P_2D_C.glisSize)   === 'NaN' || P_2D_C.glisSize   > 1  || P_2D_C.glisSize   < -0.001)   P_2D_C.glisPower  = 0.01;
     }
 
     Tilemap.Renderer.prototype._createShader = function() {
         const vertexSrc =
             "attribute float aTextureId;" +
-            "attribute vec4 aFrame;" +
-            "attribute vec2 aSource;" +
-            "attribute vec2 aDest;" +
-            "uniform mat3   uProjectionMatrix;" +
-            "uniform float  uTreeTime;" +
-            "uniform float  uTree1ImgPosX;" +
-            "uniform float  uTree1ImgPosY;" +
-            "uniform float  uTree1ImgPosXCellNum;" +
-            "uniform float  uTree1ImgPosYCellNum;" +
-            "uniform float  uIsEnableTree1Swaying;" +
-            "uniform float  uTree2ImgPosX;" +
-            "uniform float  uTree2ImgPosY;" +
-            "uniform float  uTree2ImgPosXCellNum;" +
-            "uniform float  uTree2ImgPosYCellNum;" +
-            "uniform float  uIsEnableTree2Swaying;" +
-            "uniform float  uTree3ImgPosX;" +
-            "uniform float  uTree3ImgPosY;" +
-            "uniform float  uTree3ImgPosXCellNum;" +
-            "uniform float  uTree3ImgPosYCellNum;" +
-            "uniform float  uIsEnableTree3Swaying;" +
-            "uniform float  uSwayingPower;" +
-            "uniform float  uWaterTime;" +
-            "uniform float  uWaterImgPosX;" +
-            "uniform float  uWaterImgPosY;" +
-            "uniform float  uReferenceColor;" +
-            "uniform float  uRefRed;" +
-            "uniform float  uRedOffset;" +
-            "uniform float  uRefGreen;" +
-            "uniform float  uGreenOffset;" +
-            "uniform float  uRefBlue;" +
-            "uniform float  uBlueOffset;" +
-            "uniform float  uGlisPower;" +
-            "uniform float  uGlisOffset;" +
-            "uniform float  uGlisSize;" +
-            "varying float  vIsWater;" +
-            "varying float  vWaterTime;" +
-            "varying float  vRefRed;" +
-            "varying float  vRedOffset;" +
-            "varying float  vRefGreen;" +
-            "varying float  vGreenOffset;" +
-            "varying float  vRefBlue;" +
-            "varying float  vBlueOffset;" +
-            "varying float  vGlisPower;" +
-            "varying float  vGlisOffset;" +
-            "varying float  vGlisSize;" +
-            "varying vec4   vFrame;" +
-            "varying vec2   vTextureCoord;" +
-            "varying float  vTextureId;" +
+            "attribute vec4  aFrame;" +
+            "attribute vec2  aSource;" +
+            "attribute vec2  aDest;" +
+            "uniform   mat3  uProjectionMatrix;" +
+            "uniform   float uTreeTime;" +
+            "uniform   float uTree1ImgPosX;" +
+            "uniform   float uTree1ImgPosY;" +
+            "uniform   float uTree1ImgPosXCellNum;" +
+            "uniform   float uTree1ImgPosYCellNum;" +
+            "uniform   float uIsEnableTree1Swaying;" +
+            "uniform   float uTree2ImgPosX;" +
+            "uniform   float uTree2ImgPosY;" +
+            "uniform   float uTree2ImgPosXCellNum;" +
+            "uniform   float uTree2ImgPosYCellNum;" +
+            "uniform   float uIsEnableTree2Swaying;" +
+            "uniform   float uTree3ImgPosX;" +
+            "uniform   float uTree3ImgPosY;" +
+            "uniform   float uTree3ImgPosXCellNum;" +
+            "uniform   float uTree3ImgPosYCellNum;" +
+            "uniform   float uIsEnableTree3Swaying;" +
+            "uniform   float uSwayingPower;" +
+            "uniform   float uWaterTime;" +
+            "uniform   float uWaterImgPosX;" +
+            "uniform   float uWaterImgPosY;" +
+            "uniform   float uReferenceColor;" +
+            "uniform   float uRefRed;" +
+            "uniform   float uRedOffset;" +
+            "uniform   float uRefGreen;" +
+            "uniform   float uGreenOffset;" +
+            "uniform   float uRefBlue;" +
+            "uniform   float uBlueOffset;" +
+            "uniform   float uGlisPower;" +
+            "uniform   float uGlisOffset;" +
+            "uniform   float uGlisSize;" +
+            "varying   float vIsWater;" +
+            "varying   float vWaterTime;" +
+            "varying   float vRefRed;" +
+            "varying   float vRedOffset;" +
+            "varying   float vRefGreen;" +
+            "varying   float vGreenOffset;" +
+            "varying   float vRefBlue;" +
+            "varying   float vBlueOffset;" +
+            "varying   float vGlisPower;" +
+            "varying   float vGlisOffset;" +
+            "varying   float vGlisSize;" +
+            "varying   vec4  vFrame;" +
+            "varying   vec2  vTextureCoord;" +
+            "varying   float vTextureId;" +
             "void main(void) {" +
             "  vec3 position = uProjectionMatrix * vec3(aDest, 1.0);" +
             "  if (aSource.x >= uTree1ImgPosX + 1024.0 && aSource.x <= uTree1ImgPosX + 48.0 * uTree1ImgPosXCellNum + 1024.0 &&" +
@@ -323,20 +323,20 @@ var P_2D_C = P_2D_C || {};
             "  vGlisSize     = uGlisSize;" +
             "}";
         const fragmentSrc =
-            "varying vec4  vFrame;" +
-            "varying vec2  vTextureCoord;" +
-            "varying float vTextureId;" +
-            "varying float vIsWater;" +
-            "varying float vWaterTime;" +
-            "varying float vRefRed;" +
-            "varying float vRedOffset;" +
-            "varying float vRefGreen;" +
-            "varying float vGreenOffset;" +
-            "varying float vRefBlue;" +
-            "varying float vBlueOffset;" +
-            "varying float vGlisPower;" +
-            "varying float vGlisOffset;" +
-            "varying float vGlisSize;" +
+            "varying vec4      vFrame;" +
+            "varying vec2      vTextureCoord;" +
+            "varying float     vTextureId;" +
+            "varying float     vIsWater;" +
+            "varying float     vWaterTime;" +
+            "varying float     vRefRed;" +
+            "varying float     vRedOffset;" +
+            "varying float     vRefGreen;" +
+            "varying float     vGreenOffset;" +
+            "varying float     vRefBlue;" +
+            "varying float     vBlueOffset;" +
+            "varying float     vGlisPower;" +
+            "varying float     vGlisOffset;" +
+            "varying float     vGlisSize;" +
             "uniform sampler2D uSampler0;" +
             "uniform sampler2D uSampler1;" +
             "uniform sampler2D uSampler2;" +
