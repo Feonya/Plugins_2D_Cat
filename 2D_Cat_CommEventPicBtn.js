@@ -119,8 +119,8 @@ var P_2D_C = P_2D_C || {};
             this.isDown       = false;
             this.isOver       = false;
             this.commEvId     = 0;
-            this.boundBox     = null;
-            this.pixels       = null;
+            // this.boundBox     = null;
+            // this.pixels       = null;
             // this.ignoreTransp = true;
         }
 
@@ -241,7 +241,7 @@ var P_2D_C = P_2D_C || {};
         }
 
         // button.pixels       = Graphics.app.renderer.plugins.extract.pixels(button.spr);
-        button.boundBox     = button.spr.getBounds();
+        // button.boundBox     = button.spr.getBounds();
         // button.ignoreTransp = P_2D_C.ignoreTransp;
 
         button.registerBtnEvents();
