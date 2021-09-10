@@ -21,20 +21,23 @@
  * * 致谢说明：
  * 本插件的忽略按钮图片透明像素功能，使用了Github用户ivanpopelyshev的代码，非常
  * 感谢！
+ * 
  *
  * @command showPictureButton
  * @text    调出图片按钮
+ * @desc 调出图片按钮
  *
  * @arg     buttonNormalPictureName
  * @text    正常按钮图片名称
- * @type    string
- * @default SF_Actor1_1
- * @desc    至少要设置一个正常按钮图片名称。
+ * @desc    至少要设置一个正常按钮图片。
+ * @type    file
+ * @dir     img
  *
  * @arg     buttonOverPictureName
- * @text    悬停按钮图片名称
- * @type    string
+ * @text    悬停按钮图片
  * @desc    可选，若留空，则悬停时不改变图片。
+ * @type    file
+ * @dir     img
  *
  * @arg     buttonOverPictureTint
  * @text    悬停按钮图片色调
@@ -49,9 +52,10 @@
  * @desc    可选，0~10之间的实数，0为纯黑，1为正常，10为最亮，若留空，则悬停时不改变图片亮度。
  *
  * @arg     buttonDownPictureName
- * @text    按下按钮图片名称
- * @type    string
+ * @text    按下按钮图片
  * @desc    可选，若留空，则按下时不改变图片。
+ * @type    file
+ * @dir     img
  *
  * @arg     buttonDownPictureTint
  * @text    按下按钮图片色调
@@ -206,11 +210,11 @@ var P_2D_C = P_2D_C || {};
 
         button.commEvId = P_2D_C.commEventId;
 
-        button.norTex = PIXI.Texture.from('img/pictures/' + P_2D_C.btnNorPicName + '.png');
+        button.norTex = PIXI.Texture.from('img/' + P_2D_C.btnNorPicName + '.png');
         if (P_2D_C.btnOverPicName !== 'undefined' && P_2D_C.btnOverPicName !== '')
-            button.overTex = PIXI.Texture.from('img/pictures/' + P_2D_C.btnOverPicName + '.png');
+            button.overTex = PIXI.Texture.from('img/' + P_2D_C.btnOverPicName + '.png');
         if (P_2D_C.btnDownPicName !== 'undefined' && P_2D_C.btnDownPicName !== '')
-            button.downTex = PIXI.Texture.from('img/pictures/' + P_2D_C.btnDownPicName + '.png');
+            button.downTex = PIXI.Texture.from('img/' + P_2D_C.btnDownPicName + '.png');
 
         button.spr = new PIXI.Sprite(button.norTex);
         button.spr.texture     = button.norTex;
