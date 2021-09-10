@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc 调出一个或多个自定义图片按钮，点击触发共通事件。v1.0
+ * @plugindesc 调出一个或多个自定义图片按钮，点击触发共通事件。v1.1
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -15,29 +15,31 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20210911 v1.1
+ *     将图片选择更改为可视化方式。
  * -- 20210910 v1.0
  *     实现插件基本功能。
  *
  * * 致谢说明：
- * 本插件的忽略按钮图片透明像素功能，使用了Github用户ivanpopelyshev的代码，非常
- * 感谢！
- * 
+ * 1、本插件的忽略按钮图片透明像素功能，使用了Github用户ivanpopelyshev的代码，
+ * 非常感谢！
+ * 2、感谢Gitee用户vip徐浩提供关于图片选择可视化的修改建议。
  *
  * @command showPictureButton
  * @text    调出图片按钮
- * @desc 调出图片按钮
+ * @desc    非等待情况下，多次调用本指令可同时调出多个按钮。
  *
  * @arg     buttonNormalPictureName
  * @text    正常按钮图片名称
  * @desc    至少要设置一个正常按钮图片。
  * @type    file
- * @dir     img
+ * @dir     img/pictures
  *
  * @arg     buttonOverPictureName
  * @text    悬停按钮图片
  * @desc    可选，若留空，则悬停时不改变图片。
  * @type    file
- * @dir     img
+ * @dir     img/pictures
  *
  * @arg     buttonOverPictureTint
  * @text    悬停按钮图片色调
@@ -55,7 +57,7 @@
  * @text    按下按钮图片
  * @desc    可选，若留空，则按下时不改变图片。
  * @type    file
- * @dir     img
+ * @dir     img/pictures
  *
  * @arg     buttonDownPictureTint
  * @text    按下按钮图片色调
@@ -210,11 +212,11 @@ var P_2D_C = P_2D_C || {};
 
         button.commEvId = P_2D_C.commEventId;
 
-        button.norTex = PIXI.Texture.from('img/' + P_2D_C.btnNorPicName + '.png');
+        button.norTex = PIXI.Texture.from('img/pictures/' + P_2D_C.btnNorPicName + '.png');
         if (P_2D_C.btnOverPicName !== 'undefined' && P_2D_C.btnOverPicName !== '')
-            button.overTex = PIXI.Texture.from('img/' + P_2D_C.btnOverPicName + '.png');
+            button.overTex = PIXI.Texture.from('img/pictures/' + P_2D_C.btnOverPicName + '.png');
         if (P_2D_C.btnDownPicName !== 'undefined' && P_2D_C.btnDownPicName !== '')
-            button.downTex = PIXI.Texture.from('img/' + P_2D_C.btnDownPicName + '.png');
+            button.downTex = PIXI.Texture.from('img/pictures/' + P_2D_C.btnDownPicName + '.png');
 
         button.spr = new PIXI.Sprite(button.norTex);
         button.spr.texture     = button.norTex;
