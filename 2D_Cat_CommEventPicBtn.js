@@ -30,10 +30,14 @@
  * @desc    非等待情况下，多次调用本指令可同时调出多个按钮。
  *
  * @arg     buttonNormalPictureName
- * @text    正常按钮图片名称
+ * @text    正常按钮图片
  * @desc    至少要设置一个正常按钮图片。
  * @type    file
  * @dir     img/pictures
+ *
+ * @arg     _cutLine1
+ * @text    ------------------------
+ * @default
  *
  * @arg     buttonOverPictureName
  * @text    悬停按钮图片
@@ -53,6 +57,10 @@
  * @default 1.5
  * @desc    可选，0~10之间的实数，0为纯黑，1为正常，10为最亮，若留空，则悬停时不改变图片亮度。
  *
+ * @arg     _cutLine2
+ * @text    ------------------------
+ * @default
+ *
  * @arg     buttonDownPictureName
  * @text    按下按钮图片
  * @desc    可选，若留空，则按下时不改变图片。
@@ -71,6 +79,10 @@
  * @default 0.5
  * @desc    可选，0~10之间的实数，0为纯黑，1为正常，10为最亮，若留空，则按下时不改变图片亮度。
  *
+ * @arg     _cutLine3
+ * @text    ------------------------
+ * @default
+ *
  * @arg     positionX
  * @text    位置x坐标值（px）
  * @type    number
@@ -83,12 +95,20 @@
  * @default 360
  * @desc    即图片按钮显示在游戏画面中的y坐标值，锚点为图片中心。
  *
+ * @arg     _cutLine4
+ * @text    ------------------------
+ * @default
+ *
  * @arg     commonEventId
  * @text    共通事件编号
  * @type    number
  * @default 0
  * @min     0
  * @desc    按下按钮后调用哪个共通事件，0表示不调用任何共通事件。
+ *
+ * @arg     _cutLine5
+ * @text    ------------------------
+ * @default
  *
  * @arg     canPlayerMove
  * @text    玩家是否可移动
@@ -97,7 +117,7 @@
  * @desc    图片按钮显示时玩家是否可移动。
  *
  * @arg     ignoreTransparence
- * @text    是否忽略透明
+ * @text    是否忽略透明像素
  * @type    boolean
  * @default true
  * @desc    点击图片按钮时是否忽略透明部分，注意本参数最后一次设定将会影响之前本参数的设定。
