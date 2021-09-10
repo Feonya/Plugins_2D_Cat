@@ -94,7 +94,7 @@
  * @text    是否忽略透明
  * @type    boolean
  * @default true
- * @desc    图片的透明区域是否可点击。
+ * @desc    点击图片按钮时是否忽略透明部分，注意本参数最后一次设定将会影响之前本参数的设定。
  */
 
 var P_2D_C = P_2D_C || {};
@@ -115,7 +115,7 @@ var P_2D_C = P_2D_C || {};
             this.commEvId     = 0;
             this.boundBox     = null;
             this.pixels       = null;
-            this.ignoreTransp = true;
+            // this.ignoreTransp = true;
         }
 
         registerBtnEvents() {
@@ -175,14 +175,15 @@ var P_2D_C = P_2D_C || {};
     var button    = null;
     var btnSprArr = [];
     var _Game_Player_prototype_canMove = Game_Player.prototype.canMove;
-    var _Scene_Map_prototype_callMenu  = Scene_Map.prototype.callMenu;
+    var _Scene_Map_prototype_callMenu  = Scene_Map  .prototype.callMenu;
+    var _PIXI_Sprite_prototype_containsPoint = PIXI.Sprite.prototype.containsPoint;
 
     PluginManager.registerCommand('2D_Cat_CommEventPicBtn', 'showPictureButton', args => {
         P_2D_C.btnNorPicName  = String(args.buttonNormalPictureName);
-        P_2D_C.btnOverPicName = String(args.buttonOverPicturename);
+        P_2D_C.btnOverPicName = String(args.buttonOverPictureName);
         P_2D_C.btnOverPicTint = String(args.buttonOverPictureTint);
         P_2D_C.btnOverPicBrit = Number(args.buttonOverPictureBrightness);
-        P_2D_C.btnDownPicName = String(args.buttonDownPicturename);
+        P_2D_C.btnDownPicName = String(args.buttonDownPictureName);
         P_2D_C.btnDownPicTint = String(args.buttonDownPictureTint);
         P_2D_C.btnDownPicBrit = Number(args.buttonDownPictureBrightness);
         P_2D_C.posX           = Number(args.positionX);
@@ -190,6 +191,12 @@ var P_2D_C = P_2D_C || {};
         P_2D_C.commEventId    = Number(args.commonEventId);
         P_2D_C.canPlayerMove  = String(args.canPlayerMove)      === 'true';
         P_2D_C.ignoreTransp   = String(args.ignoreTransparence) === 'true';
+
+        if (P_2D_C.ignoreTransp) {
+            PIXI.Sprite.prototype.containsPoint = PIXI_Sprite_prototype_containsPoint;
+        } else {
+            PIXI.Sprite.prototype.containsPoint = _PIXI_Sprite_prototype_containsPoint;
+        }
 
         setupButton();
     });
@@ -229,7 +236,7 @@ var P_2D_C = P_2D_C || {};
 
         // button.pixels       = Graphics.app.renderer.plugins.extract.pixels(button.spr);
         button.boundBox     = button.spr.getBounds();
-        button.ignoreTransp = P_2D_C.ignoreTransp;
+        // button.ignoreTransp = P_2D_C.ignoreTransp;
 
         button.registerBtnEvents();
         btnSprArr.push(button.spr);
@@ -282,11 +289,11 @@ var P_2D_C = P_2D_C || {};
     }
 
     /**
-     * 下方代码摘自https://github.com/pixijs/pixijs/wiki/v5-Hacks#pixel-perfect-interaction，
+     * 下方代码修改自https://github.com/pixijs/pixijs/wiki/v5-Hacks#pixel-perfect-interaction，
      * 它实现了将Sprite作为按钮时，忽略透明像素的功能。
      */
 
-    PIXI.Sprite.prototype.containsPoint = function (point) {
+    var PIXI_Sprite_prototype_containsPoint = function(point) {
         const tempPoint = {x: 0, y: 0 }
         //get mouse poisition relative to the bunny anchor point
         this.worldTransform.applyInverse(point, tempPoint);
@@ -327,7 +334,7 @@ var P_2D_C = P_2D_C || {};
 
         const hitmap = baseTex.hitmap;
 
-        console.log(hitmap)
+        // console.log(hitmap)
         // this does not account for rotation yet!!!
 
         //check mouse position if its over the sprite and visible
