@@ -289,7 +289,7 @@ var P_2D_C = P_2D_C || {};
     }
 
     /**
-     * 下方代码修改自https://github.com/pixijs/pixijs/wiki/v5-Hacks#pixel-perfect-interaction，
+     * 下方代码摘自https://github.com/pixijs/pixijs/wiki/v5-Hacks#pixel-perfect-interaction，
      * 它实现了将Sprite作为按钮时，忽略透明像素的功能。
      */
 
