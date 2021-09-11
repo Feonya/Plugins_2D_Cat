@@ -320,8 +320,7 @@ var P_2D_C = P_2D_C || {};
             "      aSource.y >= uWater1ImgPosY && aSource.y <= uWater1ImgPosY + 48.0 * 3.0 &&" +
             "      aTextureId == 0.0) {" +
             "    isWater = 1.0;" +
-            "  }" +
-            "  if (aSource.x >= uWater2ImgPosX && aSource.x <= uWater2ImgPosX + 48.0 * 6.0 &&" +
+            "  } else if (aSource.x >= uWater2ImgPosX && aSource.x <= uWater2ImgPosX + 48.0 * 6.0 &&" +
             "      aSource.y >= uWater2ImgPosY && aSource.y <= uWater2ImgPosY + 48.0 * 3.0 &&" +
             "      aTextureId == 0.0) {" +
             "    isWater = 2.0;" +
