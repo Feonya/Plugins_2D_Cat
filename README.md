@@ -12,7 +12,7 @@
 > * 2D_Cat_FreestyleMsgText v1.0 自由设定对话框文字式样，包括颜色、渐变色、加粗、倾斜、轮廓、阴影、辉光等效果。
 > * 2D_Cat_MsgTextPrintAnim v1.0 在对话框文字打印时，添加动画以及声音效果。
 > * 2D_Cat_SwayingTreeTile v1.0 为地图中的树（等）图块添加随风摆动效果。
-> * 2D_Cat_GlisteningWaterTile v1.0 为地图中的水（等）图块添加波光粼粼效果。
+> * 2D_Cat_GlisteningWaterTile v1.1 为地图中的水（等）图块添加波光粼粼效果。
 > * 2D_Cat_CommEventPicBtn v1.1 调出一个或多个自定义图片按钮，点击触发共通事件。
 
 #### 视频演示
