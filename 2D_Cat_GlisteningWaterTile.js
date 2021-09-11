@@ -343,9 +343,9 @@ var P_2D_C = P_2D_C || {};
             "  vWater2GreenOffset = uWater2GreenOffset;" +
             "  vWater2RefBlue     = uWater2RefBlue;" +
             "  vWater2BlueOffset  = uWater2BlueOffset;" +
-            "  vGlisPower    = uGlisPower;" +
-            "  vGlisOffset   = uGlisOffset;" +
-            "  vGlisSize     = uGlisSize;" +
+            "  vGlisPower  = uGlisPower;" +
+            "  vGlisOffset = uGlisOffset;" +
+            "  vGlisSize   = uGlisSize;" +
             "}";
         const fragmentSrc =
             "varying vec4  vFrame;" +
@@ -371,8 +371,8 @@ var P_2D_C = P_2D_C || {};
             "uniform sampler2D uSampler0;" +
             "uniform sampler2D uSampler1;" +
             "uniform sampler2D uSampler2;" +
-            "vec2 hash22(vec2 p);" +
-            "vec2 randomGradient(vec2 point);" +
+            "vec2  hash22(vec2 p);" +
+            "vec2  randomGradient(vec2 point);" +
             "float perlin_noise(vec2 position);" +
             "void main(void) {" +
             "  vec2 textureCoord = clamp(vTextureCoord, vFrame.xy, vFrame.zw);" +
@@ -412,7 +412,7 @@ var P_2D_C = P_2D_C || {};
             "  gl_FragColor = color;" +
             "}" +
             "vec2 hash22(vec2 p) {" +
-	        "  vec3 p3 = fract(vec3(p.xyx) * vec3(.1031, .1030, .0973));" +
+	        "  vec3 p3 = fract(vec3(p.xyx) * vec3(.1031, 0.1030, 0.0973));" +
             "  p3 += dot(p3, p3.yzx + 33.33);" +
             "  return fract((p3.xx + p3.yz) * p3.zy);" +
             "}" +

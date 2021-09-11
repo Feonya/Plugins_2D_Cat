@@ -238,27 +238,27 @@ var P_2D_C = P_2D_C || {};
             "attribute vec4 aFrame;" +
             "attribute vec2 aSource;" +
             "attribute vec2 aDest;" +
-            "uniform mat3   uProjectionMatrix;" +
-            "uniform float  uTreeTime;" +
-            "uniform float  uTree1ImgPosX;" +
-            "uniform float  uTree1ImgPosY;" +
-            "uniform float  uTree1ImgPosXCellNum;" +
-            "uniform float  uTree1ImgPosYCellNum;" +
-            "uniform float  uIsEnableTree1Swaying;" +
-            "uniform float  uTree2ImgPosX;" +
-            "uniform float  uTree2ImgPosY;" +
-            "uniform float  uTree2ImgPosXCellNum;" +
-            "uniform float  uTree2ImgPosYCellNum;" +
-            "uniform float  uIsEnableTree2Swaying;" +
-            "uniform float  uTree3ImgPosX;" +
-            "uniform float  uTree3ImgPosY;" +
-            "uniform float  uTree3ImgPosXCellNum;" +
-            "uniform float  uTree3ImgPosYCellNum;" +
-            "uniform float  uIsEnableTree3Swaying;" +
-            "uniform float  uSwayingPower;" +
-            "varying vec4   vFrame;" +
-            "varying vec2   vTextureCoord;" +
-            "varying float  vTextureId;" +
+            "uniform mat3  uProjectionMatrix;" +
+            "uniform float uTreeTime;" +
+            "uniform float uTree1ImgPosX;" +
+            "uniform float uTree1ImgPosY;" +
+            "uniform float uTree1ImgPosXCellNum;" +
+            "uniform float uTree1ImgPosYCellNum;" +
+            "uniform float uIsEnableTree1Swaying;" +
+            "uniform float uTree2ImgPosX;" +
+            "uniform float uTree2ImgPosY;" +
+            "uniform float uTree2ImgPosXCellNum;" +
+            "uniform float uTree2ImgPosYCellNum;" +
+            "uniform float uIsEnableTree2Swaying;" +
+            "uniform float uTree3ImgPosX;" +
+            "uniform float uTree3ImgPosY;" +
+            "uniform float uTree3ImgPosXCellNum;" +
+            "uniform float uTree3ImgPosYCellNum;" +
+            "uniform float uIsEnableTree3Swaying;" +
+            "uniform float uSwayingPower;" +
+            "varying vec4  vFrame;" +
+            "varying vec2  vTextureCoord;" +
+            "varying float vTextureId;" +
             "void main(void) {" +
             "  vec3 position = uProjectionMatrix * vec3(aDest, 1.0);" +
             "  if (aSource.x >= uTree1ImgPosX + 1024.0 && aSource.x <= uTree1ImgPosX + 48.0 * uTree1ImgPosXCellNum + 1024.0 &&" +
