@@ -177,7 +177,6 @@ var P_2D_C = P_2D_C || {};
     P_2D_C.oldFilmVignetting      = Number(params.oldFilmVignetting);
     P_2D_C.oldFilmVignettingAlpha = Number(params.oldFilmVignettingAlpha);
     P_2D_C.oldFilmVignettingBlur  = Number(params.oldFilmVignettingBlur);
-    P_2D_C.oldFilmSeed            = Number(params.oldFilmSeed);
 
     setupOldFilmFilter();
 
@@ -255,8 +254,6 @@ var P_2D_C = P_2D_C || {};
         if (String(P_2D_C.oldFilmVignettingBlur) === 'NaN') P_2D_C.oldFilmVignettingBlur = 0.3;
         else if   (P_2D_C.oldFilmVignettingBlur < 0)        P_2D_C.oldFilmVignettingBlur = 0;
         else if   (P_2D_C.oldFilmVignettingBlur > 1)        P_2D_C.oldFilmVignettingBlur = 1;
-
-        if (String(P_2D_C.oldFilmSeed) === 'NaN') P_2D_C.oldFilmSeed = 0;
     }
 
     function setupOldFilmFilter() {
@@ -271,7 +268,7 @@ var P_2D_C = P_2D_C || {};
             vignetting:     P_2D_C.oldFilmVignetting,
             vignettingAlpha:P_2D_C.oldFilmVignettingAlpha,
             vignettingBlur: P_2D_C.oldFilmVignettingBlur
-        }, P_2D_C.oldFilmSeed);
+        }, 0);
     }
 
     function startOldFilmFilter() {
