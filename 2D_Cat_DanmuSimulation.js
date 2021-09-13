@@ -1,22 +1,29 @@
 /*:
  * @target     MZ
- * @plugindesc 在游戏画面模拟弹幕效果。v1.1
+ * @plugindesc 在游戏画面模拟弹幕效果。v1.2
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
  * @help
- * * 使用方法：在任意事件中调用本插件的“开启弹幕”指令，并依次设置好相关参数。
+ * * 使用方法：
+ * 1、在任意事件中调用“开启弹幕”指令，并依次设置好相关参数即可。
+ * 2、弹幕弹出时，可在任意事件中调用“立即关闭弹幕”，以消除所有弹幕。
  *
  * * 使用条款：免费用于任何商业或非商业目的；允许在保留原作者信息的前提下修改代
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20210913 v1.2
+ *     增加了“立即关闭弹幕”指令。
  * -- 20210907 v1.1
  *     修复了调出主菜单时崩溃的Bug，现在调出主菜单将会消除所有弹幕。
  *     新增字体轮廓颜色和大小设置。
  * -- 20210828 v1.0
  *     实现插件基本功能。
  *
+ * * 致谢说明：
+ * 感谢B站用户 靓点迷人 提供的Bug反馈，以及对本插件关于“立即关闭弹幕”功能的建议！
+ * 
  * @command openDanmu
  * @text    开启弹幕
  *
@@ -95,6 +102,11 @@
  * @type    number
  * @min     0
  * @default 550
+ *
+ * ***********************************************************
+ *
+ * @command eliminateDanmu
+ * @text    立即关闭弹幕
  */
 
 (() => {
@@ -151,6 +163,12 @@
         Graphics.app.ticker.add(gameLoop);
     });
 
+    PluginManager.registerCommand('2D_Cat_DanmuSimulation', 'eliminateDanmu', () => {
+        waitForDone = true;
+        destoryAllDanmus();
+        restoreDanmu();
+    });
+
     var _Scene_Map_prototype_callMenu = Scene_Map.prototype.callMenu;
     Scene_Map.prototype.callMenu = function() {
         destoryAllDanmus();
@@ -163,7 +181,7 @@
         if (!waitForDone) {
             currTime += Graphics.app.ticker.deltaMS;
             if (currTime >= nextGenDura) {
-                danmusOnStage.push(GenADanmu());
+                GenADanmu();
                 currTime    = 0;
                 nextGenDura = Math.floor(Math.random() * (maxGenDura + 1 - minGenDura) + minGenDura);
             }
@@ -195,9 +213,7 @@
 
     function destoryAllDanmus(){
         danmusOnStage.forEach(e => {
-            let idx = danmusOnStage.indexOf(e);
-            Graphics.app.stage.removeChild(danmusOnStage[idx].msg);
-            danmusOnStage.splice(idx, 1);
+            Graphics.app.stage.removeChild(e.msg);
         });
     }
 
@@ -259,8 +275,7 @@
         danmu.msg.style.stroke          = outlineColor;
         danmu.msg.style.strokeThickness = outlineThk;
         danmu.msg.position.set(Graphics.app.stage.children[0].width, Math.random() * (downPosY - upPosY) + upPosY);
+        danmusOnStage.push(danmu);
         Graphics.app.stage.addChild(danmu.msg);
-
-        return danmu;
     }
 })();

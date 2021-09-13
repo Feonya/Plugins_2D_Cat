@@ -21,9 +21,9 @@
  *     实现插件基本功能。
  *
  * * 致谢说明：
- * 1、本插件的忽略按钮图片透明像素功能，使用了Github用户ivanpopelyshev的代码，
+ * 1、本插件的忽略按钮图片透明像素功能，使用了Github用户 ivanpopelyshev 的代码，
  * 非常感谢！
- * 2、感谢Gitee用户vip徐浩提供关于图片选择可视化的修改建议。
+ * 2、感谢Gitee用户 vip徐浩 提供关于图片选择可视化的修改建议！
  *
  * @command showPictureButton
  * @text    调出图片按钮
