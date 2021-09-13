@@ -1,21 +1,21 @@
 /*:
  * @target     MZ
- * @plugindesc v1.0 为游戏画面添加老电影式的滤镜效果。
+ * @plugindesc v1.0 为游戏画面添加几种怪异的滤镜效果，包括ASCII化、圆点化、交叉影线化和浮雕化。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
  * @help
  * * 使用说明：
- * 1、设置好插件参数，并确保激活老电影滤镜，进入游戏场景后自动生效。
- * 2、可在任意事件中调用“更改（激活）老电影滤镜”插件指令来更改滤镜数据，若滤镜效
- * 果已禁用，则激活。
- * 3、可在任意事件中调用“禁用老电影滤镜”，以禁用滤镜效果。
+ * 1、设置好插件参数，并确保激活需要使用的滤镜，进入游戏场景后自动生效。
+ * 2、可在任意事件中调用“激活（更改）XXX滤镜”插件指令来激活滤镜，若滤镜效果已激
+ * 活，则更新该滤镜数据。
+ * 3、可在任意事件中调用“禁用XXX滤镜”，以禁用相应滤镜效果。
  *
  * * 使用条款：免费用于任何商业或非商业目的；允许在保留原作者信息的前提下修改代
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
- * -- 20210912 v1.0
+ * -- 20210913 v1.0
  *     实现插件基本功能。
  *
  * * 致谢说明：
@@ -31,132 +31,125 @@
  *   / /  \ \    / /\ \
  *  /_/    \_\  /_/  \_\
  *
- * @param   isOldFilmEnabled
- * @text    是否激活老电影滤镜
+ * @param   isAsciiEnabled
+ * @text    是否激活ASCII滤镜
  * @type    boolean
  * @default true
+ * @desc    开启后以ascii字符渲染游戏画面。
  *
- * @param   oldFilmSepia
- * @text    老电影污渍饱和度
+ * @param   asciiSize
+ * @text    ascii字符尺寸
  * @type    string
- * @default 0.3
- * @desc    0~1之间的实数，越大效果越强，反之越弱。
+ * @default 8
+ * @desc    0~30之间的实数，越大字符越大，反之越小。
  *
- * @param   oldFilmNoise
- * @text    老电影噪点强度
+ * @command enableAsciiFilter
+ * @text    激活（更改）ASCII滤镜
+ *
+ * @arg     newAsciiSize
+ * @text    ascii字符尺寸
  * @type    string
- * @default 0.3
- * @desc    0~1之间的实数，越大效果越强，反之越弱。
+ * @default 8
+ * @desc    0~30之间的实数，越大字符越大，反之越小。
  *
- * @param   oldFilmNoiseSize
- * @text    老电影噪点尺寸
+ * @command disableAsciiFilter
+ * @text    禁用ASCII滤镜
+ *
+ *********************************************************************
+ *
+ * @param   _cutLine1
+ * @text    ------------------------
+ * @default
+ *
+ * @param   isDotEnabled
+ * @text    是否激活圆点滤镜
+ * @type    boolean
+ * @default false
+ * @desc    开启后以圆点渲染游戏画面。
+ *
+ * @param   dotScale
+ * @text    圆点数量比例
  * @type    string
- * @default 1
- * @desc    0~10的实数，越大尺寸越大，反之越小。
+ * @default 0.5
+ * @desc    0~1之间的实数，越大圆点越多，反之越少。
  *
- * @param   oldFilmScratch
- * @text    老电影刮痕出现频繁度
+ * @param   dotAngle
+ * @text    圆点排列角度
  * @type    string
- * @default 0.4
- * @desc    -1~1之间的实数，该数绝对值越大，出现越频繁，反之越不频繁；该数为负则刮痕为暗色，为正则刮痕为亮色。
+ * @default 5
+ * @desc    0~5之间的实数，影响圆点的排列角度。
  *
- * param    oldFilmScratchDensity
- * @text    老电影刮痕出现密集度
+ * @command enableDotFilter
+ * @text    激活（更改）圆点滤镜
+ *
+ * @arg     newDotScale
+ * @text    圆点数量比例
  * @type    string
- * @default 0.4
- * @desc    0~1之间的实数，越大出现越密集，反之越稀疏。
+ * @default 0.5
+ * @desc    0~1之间的实数，越大圆点越多，反之越少。
  *
- * @param   oldFilmScratchWidth
- * @text    老电影刮痕宽度
+ * @arg   newDotAngle
+ * @text    圆点排列角度
  * @type    string
- * @default 1
- * @desc    0~20之间的实数，越大越宽，反之越细。
+ * @default 5
+ * @desc    0~5之间的实数，影响圆点的排列角度。
  *
- * @param   oldFilmVignetting
- * @text    老电影光晕半径
+ * @command disableDotFilter
+ * @text    禁用圆点滤镜
+ *
+ *********************************************************************
+ *
+ * @param   _cutLine2
+ * @text    ------------------------
+ * @default
+ *
+ * @param   isCrossHatchEnabled
+ * @text    是否激活交叉影线滤镜
+ * @type    boolean
+ * @default false
+ * @desc    开启后以交叉影线渲染游戏画面。
+ *
+ * @command enableCrossHatchFilter
+ * @text    激活交叉影线滤镜
+ *
+ * @command disableCrossHatchFilter
+ * @text    禁用交叉影线滤镜
+ *
+ *********************************************************************
+ *
+ * @param   _cutLine3
+ * @text    ------------------------
+ * @default
+ *
+ * @param   isEmbossEnabled
+ * @text    是否激活浮雕滤镜
+ * @type    boolean
+ * @default false
+ * @desc    开启后以浮雕效果渲染游戏画面。
+ *
+ * @param   embossStrength
+ * @text    浮雕效果强度
  * @type    string
- * @default 0.4
- * @desc    0~1之间的的实数，越大光晕越大，反之越小。
+ * @default 5
+ * @desc    0~30之间的实数，越大浮雕效果越强，反之越弱。
  *
- * @param   oldFilmVignettingAlpha
- * @text    老电影光晕不透明度
+ * @command enableEmbossFilter
+ * @text    激活（更改）浮雕滤镜
+ *
+ * @arg     newEmbossStrength
+ * @text    浮雕效果强度
  * @type    string
- * @default 1
- * @desc    0~1之间的实数，越大光晕越不透明，反之越透明。
+ * @default 5
+ * @desc    0~30之间的实数，越大浮雕效果越强，反之越弱。
  *
- * @param   oldFilmVignettingBlur
- * @text    老电影光晕模糊度
- * @type    string
- * @default 0.3
- * @desc    0~1之间的实数，越大光晕越模糊，反之越清晰。
- *
- *****************************************************
- *
- * @command changeOldFilmFilter
- * @text    更改（激活）老电影滤镜
- *
- * @arg     newOldFilmSepia
- * @text    老电影污渍饱和度
- * @type    string
- * @default 0.3
- * @desc    0~1之间的实数，越大效果越强，反之越弱。
- *
- * @arg     newOldFilmNoise
- * @text    老电影噪点强度
- * @type    string
- * @default 0.3
- * @desc    0~1之间的实数，越大效果越强，反之越弱。
- *
- * @arg     newOldFilmNoiseSize
- * @text    老电影噪点尺寸
- * @type    string
- * @default 1
- * @desc    0~10的实数，越大尺寸越大，反之越小。
- *
- * @arg     newOldFilmScratch
- * @text    老电影刮痕出现频繁度
- * @type    string
- * @default 0.4
- * @desc    -1~1之间的实数，该数绝对值越大，出现越频繁，反之越不频繁；该数为负则刮痕为暗色，为正则刮痕为亮色。
- *
- * arg      newOldFilmScratchDensity
- * @text    老电影刮痕出现密集度
- * @type    string
- * @default 0.4
- * @desc    0~1之间的实数，越大出现越密集，反之越稀疏。
- *
- * @arg     newOldFilmScratchWidth
- * @text    老电影刮痕宽度
- * @type    string
- * @default 1
- * @desc    0~20之间的实数，越大越宽，反之越细。
- *
- * @arg     newOldFilmVignetting
- * @text    老电影光晕半径
- * @type    string
- * @default 0.4
- * @desc    0~1之间的的实数，越大光晕越大，反之越小。
- *
- * @arg     newOldFilmVignettingAlpha
- * @text    老电影光晕不透明度
- * @type    string
- * @default 1
- * @desc    0~1之间的实数，越大光晕越不透明，反之越透明。
- *
- * @arg     newOldFilmVignettingBlur
- * @text    老电影光晕模糊度
- * @type    string
- * @default 0.3
- * @desc    0~1之间的实数，越大光晕越模糊，反之越清晰。
- *
- * @command disableOldFilmFilter
- * @text    禁用老电影滤镜
+ * @command disableEmbossFilter
+ * @text    禁用浮雕滤镜
  */
 
 if (!__filters) {
-    /*********************************************************************
+    /***********************************************************************
      * 下方代码为FixiJS Filters库代码。https://github.com/pixijs/filters *
-     *********************************************************************/
+     ***********************************************************************/
 
     /*!
     * pixi-filters - v4.1.4
@@ -172,142 +165,248 @@ if (!__filters) {
 var P_2D_C = P_2D_C || {};
 
 (() => {
-    var params = PluginManager.parameters('2D_Cat_OldFilmFilter');
+    var params = PluginManager.parameters('2D_Cat_WeirdFilter');
 
-    P_2D_C.oldFilmFilter = null;
+    /*******************************************************************
+     * AsciiFilter
+     */
 
-    P_2D_C.isOldFilmEnabled       = String(params.isOldFilmEnabled) === 'true';
-    P_2D_C.oldFilmSepia           = Number(params.oldFilmSepia);
-    P_2D_C.oldFilmNoise           = Number(params.oldFilmNoise);
-    P_2D_C.oldFilmNoiseSize       = Number(params.oldFilmNoiseSize);
-    P_2D_C.oldFilmScratch         = Number(params.oldFilmScratch);
-    P_2D_C.oldFilmScratchDensity  = Number(params.oldFilmScratchDensity);
-    P_2D_C.oldFilmScratchWidth    = Number(params.oldFilmScratchWidth);
-    P_2D_C.oldFilmVignetting      = Number(params.oldFilmVignetting);
-    P_2D_C.oldFilmVignettingAlpha = Number(params.oldFilmVignettingAlpha);
-    P_2D_C.oldFilmVignettingBlur  = Number(params.oldFilmVignettingBlur);
+    P_2D_C.asciiFilter    = null;
+    P_2D_C.isAsciiEnabled = String(params.isAsciiEnabled) === 'true';
+    P_2D_C.asciiSize      = Number(params.asciiSize);
 
-    setupOldFilmFilter();
+    setupAsciiFilter();
 
-    PluginManager.registerCommand('2D_Cat_OldFilmFilter', 'changeOldFilmFilter', args => {
-        P_2D_C.oldFilmSepia           = Number(args.newOldFilmSepia);
-        P_2D_C.oldFilmNoise           = Number(args.newOldFilmNoise);
-        P_2D_C.oldFilmNoiseSize       = Number(args.newOldFilmNoiseSize);
-        P_2D_C.oldFilmScratch         = Number(args.newOldFilmScratch);
-        P_2D_C.oldFilmScratchDensity  = Number(args.newOldFilmScratchDensity);
-        P_2D_C.oldFilmScratchWidth    = Number(args.newOldFilmScratchWidth);
-        P_2D_C.oldFilmVignetting      = Number(args.newOldFilmVignetting);
-        P_2D_C.oldFilmVignettingAlpha = Number(args.newOldFilmVignettingAlpha);
-        P_2D_C.oldFilmVignettingBlur  = Number(args.newOldFilmVignettingBlur);
-
-        fixOldFilmData();
-
-        if (P_2D_C.oldFilmFilter) {
-            P_2D_C.oldFilmFilter.sepia           = P_2D_C.oldFilmSepia;
-            P_2D_C.oldFilmFilter.noise           = P_2D_C.oldFilmNoise;
-            P_2D_C.oldFilmFilter.noiseSize       = P_2D_C.oldFilmNoiseSize;
-            P_2D_C.oldFilmFilter.scratch         = P_2D_C.oldFilmScratch;
-            P_2D_C.oldFilmFilter.scratchDensity  = P_2D_C.oldFilmScratchDensity;
-            P_2D_C.oldFilmFilter.scratchWidth    = P_2D_C.oldFilmScratchWidth;
-            P_2D_C.oldFilmFilter.vignetting      = P_2D_C.oldFilmVignetting;
-            P_2D_C.oldFilmFilter.vignettingAlpha = P_2D_C.oldFilmVignettingAlpha;
-            P_2D_C.oldFilmFilter.vignettingBlur  = P_2D_C.oldFilmVignettingBlur;
-        }
-
-        if (!P_2D_C.isOldFilmEnabled) {
-            P_2D_C.isOldFilmEnabled = true;
-            startOldFilmFilter();
-        }
-    });
-
-    PluginManager.registerCommand('2D_Cat_OldFilmFilter', 'disableOldFilmFilter', () => {
-        if (P_2D_C.isOldFilmEnabled) {
-            P_2D_C.isOldFilmEnabled = false;
-            disableOldFilmFilter();
-        }
-    });
-
-    function fixOldFilmData() {
-        if (String(P_2D_C.oldFilmSepia) === 'NaN') P_2D_C.oldFilmSepia = 0.3;
-        else if   (P_2D_C.oldFilmSepia < 0)        P_2D_C.oldFilmSepia = 0;
-        else if   (P_2D_C.oldFilmSepia > 1)        P_2D_C.oldFilmSepia = 1;
-
-        if (String(P_2D_C.oldFilmNoise) === 'NaN') P_2D_C.oldFilmNoise = 0.3;
-        else if   (P_2D_C.oldFilmNoise < 0)        P_2D_C.oldFilmNoise = 0;
-        else if   (P_2D_C.oldFilmNoise > 1)        P_2D_C.oldFilmNoise = 1;
-
-        if (String(P_2D_C.oldFilmNoiseSize) === 'NaN') P_2D_C.oldFilmNoiseSize = 1;
-        else if   (P_2D_C.oldFilmNoiseSize < 0)        P_2D_C.oldFilmNoiseSize = 0;
-        else if   (P_2D_C.oldFilmNoiseSize > 10)       P_2D_C.oldFilmNoiseSize = 10;
-
-        if (String(P_2D_C.oldFilmScratch) === 'NaN') P_2D_C.oldFilmScratch = 0.5;
-        else if   (P_2D_C.oldFilmScratch < -1)       P_2D_C.oldFilmScratch = -1;
-        else if   (P_2D_C.oldFilmScratch > 1)        P_2D_C.oldFilmScratch = 1;
-
-        if (String(P_2D_C.oldFilmScratchDensity) === 'NaN') P_2D_C.oldFilmScratchDensity = 0.3;
-        else if   (P_2D_C.oldFilmScratchDensity < 0)        P_2D_C.oldFilmScratchDensity = 0;
-        else if   (P_2D_C.oldFilmScratchDensity > 1)        P_2D_C.oldFilmScratchDensity = 1;
-
-        if (String(P_2D_C.oldFilmScratchWidth) === 'NaN') P_2D_C.oldFilmScratchWidth = 1;
-        else if   (P_2D_C.oldFilmScratchWidth < 0)        P_2D_C.oldFilmScratchWidth = 0;
-        else if   (P_2D_C.oldFilmScratchWidth > 20)       P_2D_C.oldFilmScratchWidth = 20;
-
-        if (String(P_2D_C.oldFilmVignetting) === 'NaN') P_2D_C.oldFilmVignetting = 0.3;
-        else if   (P_2D_C.oldFilmVignetting < 0)        P_2D_C.oldFilmVignetting = 0;
-        else if   (P_2D_C.oldFilmVignetting > 1)        P_2D_C.oldFilmVignetting = 1;
-
-        if (String(P_2D_C.oldFilmVignettingAlpha) === 'NaN') P_2D_C.oldFilmVignettingAlpha = 1;
-        else if   (P_2D_C.oldFilmVignettingAlpha < 0)        P_2D_C.oldFilmVignettingAlpha = 0;
-        else if   (P_2D_C.oldFilmVignettingAlpha > 1)        P_2D_C.oldFilmVignettingAlpha = 1;
-
-        if (String(P_2D_C.oldFilmVignettingBlur) === 'NaN') P_2D_C.oldFilmVignettingBlur = 0.3;
-        else if   (P_2D_C.oldFilmVignettingBlur < 0)        P_2D_C.oldFilmVignettingBlur = 0;
-        else if   (P_2D_C.oldFilmVignettingBlur > 1)        P_2D_C.oldFilmVignettingBlur = 1;
+    function fixAsciiData() {
+        if (String(P_2D_C.asciiSize) === 'NaN') P_2D_C.asciiSize = 8;
+        else if   (P_2D_C.asciiSize < 0)        P_2D_C.asciiSize = 0;
+        else if   (P_2D_C.asciiSize > 30)       P_2D_C.asciiSize = 30;
     }
 
-    function setupOldFilmFilter() {
-        fixOldFilmData();
-        P_2D_C.oldFilmFilter = new PIXI.filters.OldFilmFilter({
-            sepia:          P_2D_C.oldFilmSepia,
-            noise:          P_2D_C.oldFilmNoise,
-            noiseSize:      P_2D_C.oldFilmNoiseSize,
-            scratch:        P_2D_C.oldFilmScratch,
-            scratchDensity: P_2D_C.oldFilmScratchDensity,
-            scratchWidth:   P_2D_C.oldFilmScratchWidth,
-            vignetting:     P_2D_C.oldFilmVignetting,
-            vignettingAlpha:P_2D_C.oldFilmVignettingAlpha,
-            vignettingBlur: P_2D_C.oldFilmVignettingBlur
-        }, 0);
+    function setupAsciiFilter() {
+        fixAsciiData();
+        P_2D_C.asciiFilter = new PIXI.filters.AsciiFilter(P_2D_C.asciiSize);
     }
 
-    function startOldFilmFilter() {
-        if (P_2D_C.isOldFilmEnabled) {
+    function startAsciiFilter() {
+        if (P_2D_C.isAsciiEnabled) {
             let hasThisFilter = false;
             SceneManager._scene.filters.forEach(e => {
-                if (e === P_2D_C.oldFilmFilter) hasThisFilter = true;
+                if (e === P_2D_C.asciiFilter) hasThisFilter = true;
             });
-            if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.oldFilmFilter);
+            if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.asciiFilter);
         }
     }
 
-    function updateOldFilmFilter() {
-        if (P_2D_C.isOldFilmEnabled) P_2D_C.oldFilmFilter.seed = Math.random();
-    }
+    // function updateAsciiFilter() {
+        // ...
+    // }
 
-    function disableOldFilmFilter() {
-        let idx = SceneManager._scene.filters.indexOf(P_2D_C.oldFilmFilter);
+    function disableAsciiFilter() {
+        let idx = SceneManager._scene.filters.indexOf(P_2D_C.asciiFilter);
         if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
     }
+
+    PluginManager.registerCommand('2D_Cat_WeridFilter', 'enableAsciiFilter', args => {
+        P_2D_C.asciiSize = Number(args.newAsciiSize);
+        fixAsciiData();
+        if (P_2D_C.asciiFilter) P_2D_C.asciiFilter.size = P_2D_C.asciiSize;
+        if (!P_2D_C.isAsciiEnabled) {
+            P_2D_C.isAsciiEnabled = true;
+            startAsciiFilter();
+        }
+    });
+
+    PluginManager.registerCommand('2D_Cat_WeridFilter', 'disableAsciiFilter', () => {
+        if (P_2D_C.isAsciiEnabled) {
+            P_2D_C.isAsciiEnabled = false;
+            disableAsciiFilter();
+        }
+    });
+
+    /*******************************************************************
+     * DotFilter
+     */
+
+    P_2D_C.dotFilter    = null;
+    P_2D_C.isDotEnabled = String(params.isDotEnabled) === 'true';
+    P_2D_C.dotScale     = Number(params.dotScale);
+    P_2D_C.dotAngle     = Number(params.dotAngle);
+
+    setupDotFilter();
+
+    function fixDotData() {
+        if (String(P_2D_C.dotScale) === 'NaN') P_2D_C.dotScale = 0.5;
+        else if   (P_2D_C.dotScale < 0)        P_2D_C.dotScale = 0;
+        else if   (P_2D_C.dotScale > 1)        P_2D_C.dotScale = 1;
+
+        if (String(P_2D_C.dotAngle) === 'NaN') P_2D_C.dotAngle = 5;
+        else if   (P_2D_C.dotAngle < 0)        P_2D_C.dotAngle = 0;
+        else if   (P_2D_C.dotAngle > 5)        P_2D_C.dotAngle = 5;
+    }
+
+    function setupDotFilter() {
+        fixDotData();
+        P_2D_C.dotFilter = new PIXI.filters.DotFilter(P_2D_C.dotScale, P_2D_C.dotAngle);
+    }
+
+    function startDotFilter() {
+        if (P_2D_C.isDotEnabled) {
+            let hasThisFilter = false;
+            SceneManager._scene.filters.forEach(e => {
+                if (e === P_2D_C.dotFilter) hasThisFilter = true;
+            });
+            if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.dotFilter);
+        }
+    }
+
+    // function updateDotFilter() {
+        // ...
+    // }
+
+    function disableDotFilter() {
+        let idx = SceneManager._scene.filters.indexOf(P_2D_C.dotFilter);
+        if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+    }
+
+    PluginManager.registerCommand('2D_Cat_WeridFilter', 'enableDotFilter', args => {
+        P_2D_C.dotScale = Number(args.newDotScale);
+        P_2D_C.dotAngle = Number(args.newDotAngle);
+        fixDotData();
+        if (P_2D_C.dotFilter) {
+            P_2D_C.dotFilter.scale = P_2D_C.dotScale;
+            P_2D_C.dotFilter.angle = P_2D_C.dotAngle;
+        }
+        if (!P_2D_C.isDotEnabled) {
+            P_2D_C.isDotEnabled = true;
+            startDotFilter();
+        }
+    });
+
+    PluginManager.registerCommand('2D_Cat_WeridFilter', 'disableDotFilter', () => {
+        if (P_2D_C.isDotEnabled) {
+            P_2D_C.isDotEnabled = false;
+            disableDotFilter();
+        }
+    });
+
+    /*******************************************************************
+     * CrossHatchFilter
+     */
+
+    P_2D_C.crossHatchFilter    = null;
+    P_2D_C.isCrossHatchEnabled = String(params.isCrossHatchEnabled) === 'true';
+
+    setupCrossHatchFilter();
+
+    function setupCrossHatchFilter() {
+        P_2D_C.crossHatchFilter = new PIXI.filters.CrossHatchFilter();
+    }
+
+    function startCrossHatchFilter() {
+        if (P_2D_C.isCrossHatchEnabled) {
+            let hasThisFilter = false;
+            SceneManager._scene.filters.forEach(e => {
+                if (e === P_2D_C.crossHatchFilter) hasThisFilter = true;
+            });
+            if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.crossHatchFilter);
+        }
+    }
+
+    function disableCrossHatchFilter() {
+        let idx = SceneManager._scene.filters.indexOf(P_2D_C.CrossHatchFilter);
+        if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+    }
+
+    PluginManager.registerCommand('2D_Cat_WeridFilter', 'enableCrossHatchFilter', () => {
+        if (!P_2D_C.isCrossHatchEnabled) {
+            P_2D_C.isCrossHatchEnabled = true;
+            startCrossHatchFilter();
+        }
+    });
+
+    PluginManager.registerCommand('2D_Cat_WeridFilter', 'disableCrossHatchFilter', () => {
+        if (P_2D_C.isCrossHatchEnabled) {
+            P_2D_C.isCrossHatchEnabled = false;
+            disableCrossHatchFilter();
+        }
+    });
+
+    /*******************************************************************
+     * EmbossFilter
+     */
+
+    P_2D_C.embossFilter    = null;
+    P_2D_C.isEmbossEnabled = String(params.isEmbossEnabled) === 'true';
+    P_2D_C.embossStrength  = Number(params.embossStrength);
+
+    setupEmbossFilter();
+
+    function fixEmbossData() {
+        if (String(P_2D_C.embossStrength) === 'NaN') P_2D_C.embossStrength = 5;
+        else if   (P_2D_C.embossStrength < 0)        P_2D_C.embossStrength = 0;
+        else if   (P_2D_C.embossStrength > 30)       P_2D_C.embossStrength = 30;
+    }
+
+    function setupEmbossFilter() {
+        fixEmbossData();
+        P_2D_C.embossFilter = new PIXI.filters.EmbossFilter(P_2D_C.embossStrength);
+    }
+
+    function startEmbossFilter() {
+        if (P_2D_C.isEmbossEnabled) {
+            let hasThisFilter = false;
+            SceneManager._scene.filters.forEach(e => {
+                if (e === P_2D_C.embossFilter) hasThisFilter = true;
+            });
+            if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.embossFilter);
+        }
+    }
+
+    // function updateEmbossFilter() {
+        // ...
+    // }
+
+    function disableEmbossFilter() {
+        let idx = SceneManager._scene.filters.indexOf(P_2D_C.embossFilter);
+        if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+    }
+
+    PluginManager.registerCommand('2D_Cat_WeridFilter', 'enableEmbossFilter', args => {
+        P_2D_C.embossStrength = Number(args.newEmbossStrength);
+        fixEmbossData();
+        if (P_2D_C.embossFilter) P_2D_C.embossFilter.strength = P_2D_C.embossStrength;
+        if (!P_2D_C.isEmbossEnabled) {
+            P_2D_C.isEmbossEnabled = true;
+            startEmbossFilter();
+        }
+    });
+
+    PluginManager.registerCommand('2D_Cat_WeridFilter', 'disableEmbossFilter', () => {
+        if (P_2D_C.isEmbossEnabled) {
+            P_2D_C.isEmbossEnabled = false;
+            disableEmbossFilter();
+        }
+    });
+
+    /*******************************************************************
+     * 重写
+     */
 
     var _Scene_Map_prototype_onMapLoaded = Scene_Map.prototype.onMapLoaded;
     Scene_Map.prototype.onMapLoaded = function() {
         _Scene_Map_prototype_onMapLoaded.call(this);
-        startOldFilmFilter();
+        startAsciiFilter();
+        startDotFilter();
+        startCrossHatchFilter();
+        startEmbossFilter();
     };
 
-    var _Scene_Map_prototype_update = Scene_Map.prototype.update;
-    Scene_Map.prototype.update = function() {
-        _Scene_Map_prototype_update.call(this);
-        updateOldFilmFilter();
-    };
+    // var _Scene_Map_prototype_update = Scene_Map.prototype.update;
+    // Scene_Map.prototype.update = function() {
+        // _Scene_Map_prototype_update.call(this);
+        // updateAsciiFilter();
+        // updateDotFilter();
+        // updateEmbossFilter();
+    // };
 })();

@@ -1,9 +1,9 @@
 /*:
  * @target     MZ
- * @plugindesc 在任意地图的任意处更改事件独立开关。v1.0
+ * @plugindesc v1.0 在任意地图的任意处更改事件独立开关。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
- * 
+ *
  * @help
  * * 使用方法：在任意事件中调用本插件的“设置独立开关”指令，并依次设置好相关参数。
  *
@@ -13,24 +13,34 @@
  * * 更新日志：
  * -- 20210823 v1.0
  *     实现插件基本功能。
- * 
+ *
+ * |\      /|          _
+ * |-\____/-|         //
+ * |        |        //
+ * |  O O   |_______//
+ *  \__^___/         \
+ *    |              |
+ *    / __  ______   \
+ *   / /  \ \    / /\ \
+ *  /_/    \_\  /_/  \_\
+ *
  * @command setSelfSwitch
  * @text    设置独立开关
- * 
+ *
  * @arg     mapId
  * @type    number
  * @min     0
  * @default 0
  * @text    地图编号
  * @desc    0表示本地图；大于0表示对应编号的地图。
- * 
+ *
  * @arg     eventId
  * @type    number
  * @min     1
  * @default 1
  * @text    事件编号
  * @desc    对应编号的事件。
- * 
+ *
  * @arg     selfSwitchName
  * @type    combo
  * @default A
@@ -43,7 +53,7 @@
  * @option  D
  * @value   'D'
  * @text    独立开关名称
- * 
+ *
  * @arg     selfSwitchVal
  * @type    boolean
  * @default true

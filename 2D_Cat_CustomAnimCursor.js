@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc 自定义动画光标指针。v1.0
+ * @plugindesc v1.0 自定义动画光标指针。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -14,13 +14,23 @@
  * * 更新日志：
  * -- 20210825 v1.0
  *     实现插件基本功能。
- * 
+ *
+ * |\      /|          _
+ * |-\____/-|         //
+ * |        |        //
+ * |  O O   |_______//
+ *  \__^___/         \
+ *    |              |
+ *    / __  ______   \
+ *   / /  \ \    / /\ \
+ *  /_/    \_\  /_/  \_\
+ *
  * @param   images
  * @text    光标动画图片（.png）
  * @type    string[]
  * @default ['Cursor1', 'Cursor2', 'Cursor3', 'Cursor4']
  * @desc    放在img/system目录下的每一帧光标动画图片文件名，不包括扩展名。
- * 
+ *
  * @param   interval
  * @text    播放帧间隔时间（毫秒）
  * @type    number

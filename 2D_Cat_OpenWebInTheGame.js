@@ -1,9 +1,9 @@
 /*:
  * @target     MZ
- * @plugindesc 在游戏内打开网站页面。v1.0
+ * @plugindesc v1.0 在游戏内打开网站页面。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
- * 
+ *
  * @help
  * * 使用方法：在任意事件中调用本插件的“打开网页”指令，并设置好网页地址等相关参
  * 数。
@@ -15,36 +15,46 @@
  * -- 20210827 v1.0
  *     实现插件基本功能。
  *
+ * |\      /|          _
+ * |-\____/-|         //
+ * |        |        //
+ * |  O O   |_______//
+ *  \__^___/         \
+ *    |              |
+ *    / __  ______   \
+ *   / /  \ \    / /\ \
+ *  /_/    \_\  /_/  \_\
+ *
  * @command openWeb
  * @text    打开网页
- * 
+ *
  * @arg     url
  * @text    网页地址
  * @type    string
  * @default https://space.bilibili.com/137028995
- * 
+ *
  * @arg     left
  * @text    水平位置（%）
  * @type    number
  * @default 50
  * @desc    以页面中心为原点，在游戏窗口宽度百分之几的位置处。
- * 
+ *
  * @arg     top
  * @text    垂直位置（%）
  * @type    number
  * @default 50
  * @desc    以页面中心为原点，在游戏窗口高度百分之几的位置处。
- * 
+ *
  * @arg     width
  * @text    页面宽度（px）
  * @type    number
  * @default 640
- * 
+ *
  * @arg     height
  * @text    页面高度（px）
  * @type    number
  * @default 480
- * 
+ *
  * @arg     bgOpacity
  * @text    游戏场景亮度
  * @type    number
