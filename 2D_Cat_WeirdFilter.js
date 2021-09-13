@@ -40,7 +40,7 @@
  * @param   asciiSize
  * @text    ascii字符尺寸
  * @type    string
- * @default 8
+ * @default 10
  * @desc    0~30之间的实数，越大字符越大，反之越小。
  *
  * @command enableAsciiFilter
@@ -49,13 +49,11 @@
  * @arg     newAsciiSize
  * @text    ascii字符尺寸
  * @type    string
- * @default 8
+ * @default 10
  * @desc    0~30之间的实数，越大字符越大，反之越小。
  *
  * @command disableAsciiFilter
  * @text    禁用ASCII滤镜
- *
- *********************************************************************
  *
  * @param   _cutLine1
  * @text    ------------------------
@@ -97,8 +95,6 @@
  * @command disableDotFilter
  * @text    禁用圆点滤镜
  *
- *********************************************************************
- *
  * @param   _cutLine2
  * @text    ------------------------
  * @default
@@ -114,8 +110,6 @@
  *
  * @command disableCrossHatchFilter
  * @text    禁用交叉影线滤镜
- *
- *********************************************************************
  *
  * @param   _cutLine3
  * @text    ------------------------
@@ -178,7 +172,7 @@ var P_2D_C = P_2D_C || {};
     setupAsciiFilter();
 
     function fixAsciiData() {
-        if (String(P_2D_C.asciiSize) === 'NaN') P_2D_C.asciiSize = 8;
+        if (String(P_2D_C.asciiSize) === 'NaN') P_2D_C.asciiSize = 10;
         else if   (P_2D_C.asciiSize < 0)        P_2D_C.asciiSize = 0;
         else if   (P_2D_C.asciiSize > 30)       P_2D_C.asciiSize = 30;
     }
@@ -207,7 +201,7 @@ var P_2D_C = P_2D_C || {};
         if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
     }
 
-    PluginManager.registerCommand('2D_Cat_WeridFilter', 'enableAsciiFilter', args => {
+    PluginManager.registerCommand('2D_Cat_WeirdFilter', 'enableAsciiFilter', args => {
         P_2D_C.asciiSize = Number(args.newAsciiSize);
         fixAsciiData();
         if (P_2D_C.asciiFilter) P_2D_C.asciiFilter.size = P_2D_C.asciiSize;
@@ -217,7 +211,7 @@ var P_2D_C = P_2D_C || {};
         }
     });
 
-    PluginManager.registerCommand('2D_Cat_WeridFilter', 'disableAsciiFilter', () => {
+    PluginManager.registerCommand('2D_Cat_WeirdFilter', 'disableAsciiFilter', () => {
         if (P_2D_C.isAsciiEnabled) {
             P_2D_C.isAsciiEnabled = false;
             disableAsciiFilter();
@@ -269,7 +263,7 @@ var P_2D_C = P_2D_C || {};
         if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
     }
 
-    PluginManager.registerCommand('2D_Cat_WeridFilter', 'enableDotFilter', args => {
+    PluginManager.registerCommand('2D_Cat_WeirdFilter', 'enableDotFilter', args => {
         P_2D_C.dotScale = Number(args.newDotScale);
         P_2D_C.dotAngle = Number(args.newDotAngle);
         fixDotData();
@@ -283,7 +277,7 @@ var P_2D_C = P_2D_C || {};
         }
     });
 
-    PluginManager.registerCommand('2D_Cat_WeridFilter', 'disableDotFilter', () => {
+    PluginManager.registerCommand('2D_Cat_WeirdFilter', 'disableDotFilter', () => {
         if (P_2D_C.isDotEnabled) {
             P_2D_C.isDotEnabled = false;
             disableDotFilter();
@@ -314,18 +308,18 @@ var P_2D_C = P_2D_C || {};
     }
 
     function disableCrossHatchFilter() {
-        let idx = SceneManager._scene.filters.indexOf(P_2D_C.CrossHatchFilter);
+        let idx = SceneManager._scene.filters.indexOf(P_2D_C.crossHatchFilter);
         if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
     }
 
-    PluginManager.registerCommand('2D_Cat_WeridFilter', 'enableCrossHatchFilter', () => {
+    PluginManager.registerCommand('2D_Cat_WeirdFilter', 'enableCrossHatchFilter', () => {
         if (!P_2D_C.isCrossHatchEnabled) {
             P_2D_C.isCrossHatchEnabled = true;
             startCrossHatchFilter();
         }
     });
 
-    PluginManager.registerCommand('2D_Cat_WeridFilter', 'disableCrossHatchFilter', () => {
+    PluginManager.registerCommand('2D_Cat_WeirdFilter', 'disableCrossHatchFilter', () => {
         if (P_2D_C.isCrossHatchEnabled) {
             P_2D_C.isCrossHatchEnabled = false;
             disableCrossHatchFilter();
@@ -372,7 +366,7 @@ var P_2D_C = P_2D_C || {};
         if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
     }
 
-    PluginManager.registerCommand('2D_Cat_WeridFilter', 'enableEmbossFilter', args => {
+    PluginManager.registerCommand('2D_Cat_WeirdFilter', 'enableEmbossFilter', args => {
         P_2D_C.embossStrength = Number(args.newEmbossStrength);
         fixEmbossData();
         if (P_2D_C.embossFilter) P_2D_C.embossFilter.strength = P_2D_C.embossStrength;
@@ -382,7 +376,7 @@ var P_2D_C = P_2D_C || {};
         }
     });
 
-    PluginManager.registerCommand('2D_Cat_WeridFilter', 'disableEmbossFilter', () => {
+    PluginManager.registerCommand('2D_Cat_WeirdFilter', 'disableEmbossFilter', () => {
         if (P_2D_C.isEmbossEnabled) {
             P_2D_C.isEmbossEnabled = false;
             disableEmbossFilter();
