@@ -1,21 +1,22 @@
 /*:
  * @target     MZ
- * @plugindesc v1.0 为游戏画面添加老电影式的滤镜效果。
+ * @plugindesc v1.0 为游戏画面添加老式阴极管监视器滤镜效果。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
  * @help
  * * 使用说明：
- * 1、设置好插件参数，并确保激活老电影滤镜，进入游戏场景后自动生效。
- * 2、可在任意事件中调用“更改（激活）老电影滤镜”插件指令来更改滤镜数据，若滤镜效
- * 果已禁用，则激活。
- * 3、可在任意事件中调用“禁用老电影滤镜”，以禁用滤镜效果。
+ * 1、设置好插件参数，并确保激活老式监视器滤镜，进入游戏场景后自动生效。
+ * 2、可在任意事件中调用“激活老式监视器滤镜”插件指令来开启滤镜效果。
+ * 3、可在任意事件中调用“禁用老式监视器滤镜”插件指令来关闭滤镜效果。
+ * 3、可在任意事件中调用“更改XXX数据”，以更改对应效果的数据，若当前老式显示器滤
+ * 镜处于激活状态，则立即生效，否则在下一次激活滤镜时生效。
  *
  * * 使用条款：免费用于任何商业或非商业目的；允许在保留原作者信息的前提下修改代
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
- * -- 20210912 v1.0
+ * -- 20210914 v1.0
  *     实现插件基本功能。
  *
  * * 致谢说明：
@@ -31,124 +32,335 @@
  *   / /  \ \    / /\ \
  *  /_/    \_\  /_/  \_\
  *
- * @param   isOldFilmEnabled
- * @text    是否激活老电影滤镜
+ * @param   retroDisplayerEnabled
+ * @text    老式监视器滤镜是否激活
  * @type    boolean
  * @default true
  *
- * @param   oldFilmSepia
- * @text    污渍饱和度
+ * @param   _cutLine1
+ * @text    ------------------------
+ * @default
+ *
+ * @param   retroDisplayerCrtCurvature
+ * @text    扫描线弯曲度
+ * @type    string
+ * @default 2.5
+ * @desc    0~20之间的实数，越大越弯曲，反之越平行。
+ *
+ * @param   retroDisplayerCrtLineWidth
+ * @text    扫描线宽度
+ * @type    string
+ * @default 5
+ * @desc    0~10之间的实数，越大越宽，反之越细。
+ *
+ * @param   retroDisplayerCrtLineContrast
+ * @text    扫描线对比度
  * @type    string
  * @default 0.3
- * @desc    0~1之间的实数，越大效果越强，反之越弱。
+ * @desc    0~1之间的实数，越大对比度越高，反之越低。
  *
- * @param   oldFilmNoise
+ * @param   retroDisplayerCrtLineSpeed
+ * @text    扫描线移动速度
+ * @type    string
+ * @default 1
+ * @desc    0~3之间的实数，越大速度越快，反之越慢。
+ *
+ * @param   _cutLine2
+ * @text    ------------------------
+ * @default
+ *
+ * @param   retroDisplayerCrtNoise
  * @text    噪点强度
  * @type    string
  * @default 0.3
- * @desc    0~1之间的实数，越大效果越强，反之越弱。
+ * @desc    0~1之间的实数，越大强度越高，反之越低。
  *
- * @param   oldFilmNoiseSize
+ * @param   retroDisplayerCrtNoiseSize
  * @text    噪点尺寸
  * @type    string
- * @default 1
- * @desc    0~10的实数，越大尺寸越大，反之越小。
+ * @default 2
+ * @desc    0~10之间的实数，越大尺寸越大，反之越小。
  *
- * @param   oldFilmScratch
- * @text    刮痕出现频繁度
- * @type    string
- * @default 0.4
- * @desc    -1~1之间的实数，该数绝对值越大，出现越频繁，反之越不频繁；该数为负则刮痕为暗色，为正则刮痕为亮色。
+ * @param   _cutLine3
+ * @text    ------------------------
+ * @default
  *
- * param    oldFilmScratchDensity
- * @text    刮痕出现密集度
- * @type    string
- * @default 0.4
- * @desc    0~1之间的实数，越大出现越密集，反之越稀疏。
- *
- * @param   oldFilmScratchWidth
- * @text    刮痕宽度
- * @type    string
- * @default 1
- * @desc    0~20之间的实数，越大越宽，反之越细。
- *
- * @param   oldFilmVignetting
+ * @param   retroDisplayerCrtVignetting
  * @text    暗角半径
  * @type    string
- * @default 0.4
- * @desc    0~1之间的的实数，越大遮罩越多，反之越少。
+ * @default 0.3
+ * @desc    0~1之间的实数，越大遮罩越多，反之越少。
  *
- * @param   oldFilmVignettingAlpha
+ * @param   retroDisplayerCrtVignettingAlpha
  * @text    暗角不透明度
  * @type    string
  * @default 1
  * @desc    0~1之间的实数，越大越不透明，反之越透明。
  *
- * @param   oldFilmVignettingBlur
+ * @param   retroDisplayerCrtVignettingBlur
  * @text    暗角模糊度
  * @type    string
  * @default 0.3
  * @desc    0~1之间的实数，越大越模糊，反之越清晰。
  *
- * @command changeOldFilmFilter
- * @text    更改（激活）老电影滤镜
+ * @param   _cutLine4
+ * @text    ------------------------
+ * @default
  *
- * @arg     newOldFilmSepia
- * @text    污渍饱和度
+ * @param   retroDisplayerBloomEnabled
+ * @text    辉光是否激活
+ * @type    boolean
+ * @default true
+ *
+ * @param   retroDisplayerBloomBlur
+ * @text    辉光模糊强度
+ * @type    string
+ * @default 8
+ * @desc    0~20之间的实数，越大越强度越高，反之越低。
+ *
+ * @param   _cutLine5
+ * @text    ------------------------
+ * @default
+ *
+ * @param   retroDisplayerGlitchEnabled
+ * @text    故障效果是否激活
+ * @type    boolean
+ * @default true
+ *
+ * @param   retroDisplayerGlitchSlices
+ * @text    故障效果切片数量
+ * @type    string
+ * @default 8
+ * @desc    0~30之间的实数，越大切片越多，反之越少。
+ *
+ * @param   retroDisplayerGlitchOffset
+ * @text    故障效果偏移量
+ * @type    string
+ * @default 100
+ * @desc    -400~400之间的实数，绝对值越大偏移越多，反之越少。
+ *
+ * @param   retroDisplayerGlitchMinInterval
+ * @text    故障效果最小间隔时间（毫秒）
+ * @type    number
+ * @min     0
+ * @default 300
+ *
+ * @param   retroDisplayerGlitchMaxInterval
+ * @text    故障效果最大间隔时间（毫秒）
+ * @type    number
+ * @min     0
+ * @default 5000
+ *
+ * @param   retroDisplayerGlitchMinDuration
+ * @text    故障效果最小持续时间（毫秒）
+ * @type    number
+ * @min     0
+ * @default 300
+ *
+ * @param   retroDisplayerGlitchMaxDuration
+ * @text    故障效果最大持续时间（毫秒）
+ * @type    number
+ * @min     0
+ * @default 1000
+ *
+ * @param   retroDisplayerGlitchRedX
+ * @text    故障效果x轴红移
+ * @type    string
+ * @default 2
+ * @desc    -50~50之间的实数，绝对值越大在x轴偏移越多，反之越少。
+ *
+ * @param   retroDisplayerGlitchRedY
+ * @text    故障效果y轴红移
+ * @type    string
+ * @default 2
+ * @desc    -50~50之间的实数，绝对值越大在y轴偏移越多，反之越少。
+ *
+ * @param   retroDisplayerGlitchBlueX
+ * @text    故障效果x轴蓝移
+ * @type    string
+ * @default 10
+ * @desc    -50~50之间的实数，绝对值越大在x轴偏移越多，反之越少。
+ *
+ * @param   retroDisplayerGlitchBlueY
+ * @text    故障效果y轴蓝移
+ * @type    string
+ * @default -4
+ * @desc    -50~50之间的实数，绝对值越大在y轴偏移越多，反之越少。
+ *
+ * @param   retroDisplayerGlitchGreenX
+ * @text    故障效果x轴绿移
+ * @type    string
+ * @default -10
+ * @desc    -50~50之间的实数，绝对值越大在x轴偏移越多，反之越少。
+ *
+ * @param   retroDisplayerGlitchGreenY
+ * @text    故障效果y轴绿移
+ * @type    string
+ * @default 4
+ * @desc    -50~50之间的实数，绝对值越大在y轴偏移越多，反之越少。
+ *
+ * @command enableRetroDisplayer
+ * @text    激活老式监视器滤镜
+ *
+ * @command changeCRTLine
+ * @text    更改扫描线数据
+ *
+ * @arg     newRetroDisplayerCrtCurvature
+ * @text    扫描线弯曲度
+ * @type    string
+ * @default 2.5
+ * @desc    0~20之间的实数，越大越弯曲，反之越平行。
+ *
+ * @arg     newRetroDisplayerCrtLineWidth
+ * @text    扫描线宽度
+ * @type    string
+ * @default 5
+ * @desc    0~10之间的实数，越大越宽，反之越细。
+ *
+ * @arg     newRetroDisplayerCrtLineContrast
+ * @text    扫描线对比度
  * @type    string
  * @default 0.3
- * @desc    0~1之间的实数，越大效果越强，反之越弱。
+ * @desc    0~1之间的实数，越大对比度越高，反之越低。
  *
- * @arg     newOldFilmNoise
+ * @arg     newRetroDisplayerCrtLineSpeed
+ * @text    扫描线移动速度
+ * @type    string
+ * @default 1
+ * @desc    0~3之间的实数，越大速度越快，反之越慢。
+ *
+ * @command changeNoise
+ * @text    更改噪点数据
+ *
+ * @arg     newRetroDisplayerCrtNoise
  * @text    噪点强度
  * @type    string
  * @default 0.3
- * @desc    0~1之间的实数，越大效果越强，反之越弱。
+ * @desc    0~1之间的实数，越大强度越高，反之越低。
  *
- * @arg     newOldFilmNoiseSize
+ * @arg     newRetroDisplayerCrtNoiseSize
  * @text    噪点尺寸
  * @type    string
- * @default 1
- * @desc    0~10的实数，越大尺寸越大，反之越小。
+ * @default 2
+ * @desc    0~10之间的实数，越大尺寸越大，反之越小。
  *
- * @arg     newOldFilmScratch
- * @text    刮痕出现频繁度
- * @type    string
- * @default 0.4
- * @desc    -1~1之间的实数，该数绝对值越大，出现越频繁，反之越不频繁；该数为负则刮痕为暗色，为正则刮痕为亮色。
+ * @command changeVignetting
+ * @text    更改暗角数据
  *
- * arg      newOldFilmScratchDensity
- * @text    刮痕出现密集度
- * @type    string
- * @default 0.4
- * @desc    0~1之间的实数，越大出现越密集，反之越稀疏。
- *
- * @arg     newOldFilmScratchWidth
- * @text    刮痕宽度
- * @type    string
- * @default 1
- * @desc    0~20之间的实数，越大越宽，反之越细。
- *
- * @arg     newOldFilmVignetting
+ * @arg     newRetroDisplayerCrtVignetting
  * @text    暗角半径
  * @type    string
- * @default 0.4
- * @desc    0~1之间的的实数，越大遮罩越多，反之越少。
+ * @default 0.3
+ * @desc    0~1之间的实数，越大遮罩越多，反之越少。
  *
- * @arg     newOldFilmVignettingAlpha
+ * @arg     newRetroDisplayerCrtVignettingAlpha
  * @text    暗角不透明度
  * @type    string
  * @default 1
  * @desc    0~1之间的实数，越大越不透明，反之越透明。
  *
- * @arg     newOldFilmVignettingBlur
+ * @arg     newRetroDisplayerCrtVignettingBlur
  * @text    暗角模糊度
  * @type    string
  * @default 0.3
  * @desc    0~1之间的实数，越大越模糊，反之越清晰。
  *
- * @command disableOldFilmFilter
- * @text    禁用老电影滤镜
+ * @command changeBloom
+ * @text    更改辉光数据
+ *
+ * @arg     newRetroDisplayerBloomEnabled
+ * @text    辉光是否激活
+ * @type    boolean
+ * @default true
+ *
+ * @arg     newRetroDisplayerBloomBlur
+ * @text    辉光模糊强度
+ * @type    string
+ * @default 8
+ * @desc    0~20之间的实数，越大越强度越高，反之越低。
+ *
+ * @command changeGlitch
+ * @text    更改故障效果数据
+ *
+ * @arg     newRetroDisplayerGlitchEnabled
+ * @text    故障效果是否激活
+ * @type    boolean
+ * @default true
+ *
+ * @arg     newRetroDisplayerGlitchSlices
+ * @text    故障效果切片数量
+ * @type    string
+ * @default 8
+ * @desc    0~30之间的实数，越大切片越多，反之越少。
+ *
+ * @arg     newRetroDisplayerGlitchOffset
+ * @text    故障效果偏移量
+ * @type    string
+ * @default 100
+ * @desc    -400~400之间的实数，绝对值越大偏移越多，反之越少。
+ *
+ * @arg     newRetroDisplayerGlitchMinInterval
+ * @text    故障效果最小间隔时间（毫秒）
+ * @type    number
+ * @min     0
+ * @default 300
+ *
+ * @arg     newRetroDisplayerGlitchMaxInterval
+ * @text    故障效果最大间隔时间（毫秒）
+ * @type    number
+ * @min     0
+ * @default 5000
+ *
+ * @arg     newRetroDisplayerGlitchMinDuration
+ * @text    故障效果最小持续时间（毫秒）
+ * @type    number
+ * @min     0
+ * @default 300
+ *
+ * @arg     newRetroDisplayerGlitchMaxDuration
+ * @text    故障效果最大持续时间（毫秒）
+ * @type    number
+ * @min     0
+ * @default 1000
+ *
+ * @arg     newRetroDisplayerGlitchRedX
+ * @text    故障效果x轴红移
+ * @type    string
+ * @default 2
+ * @desc    -50~50之间的实数，绝对值越大在x轴偏移越多，反之越少。
+ *
+ * @arg     newRetroDisplayerGlitchRedY
+ * @text    故障效果y轴红移
+ * @type    string
+ * @default 2
+ * @desc    -50~50之间的实数，绝对值越大在y轴偏移越多，反之越少。
+ *
+ * @arg     newRetroDisplayerGlitchBlueX
+ * @text    故障效果x轴蓝移
+ * @type    string
+ * @default 10
+ * @desc    -50~50之间的实数，绝对值越大在x轴偏移越多，反之越少。
+ *
+ * @arg     newRetroDisplayerGlitchBlueY
+ * @text    故障效果y轴蓝移
+ * @type    string
+ * @default -4
+ * @desc    -50~50之间的实数，绝对值越大在y轴偏移越多，反之越少。
+ *
+ * @arg     newRetroDisplayerGlitchGreenX
+ * @text    故障效果x轴绿移
+ * @type    string
+ * @default -10
+ * @desc    -50~50之间的实数，绝对值越大在x轴偏移越多，反之越少。
+ *
+ * @arg     newRetroDisplayerGlitchGreenY
+ * @text    故障效果y轴绿移
+ * @type    string
+ * @default 4
+ * @desc    -50~50之间的实数，绝对值越大在y轴偏移越多，反之越少。
+ *
+ * @command disableRetroDisplayer
+ * @text    禁用老式监视器滤镜
  */
 
 if (!__filters) {
@@ -170,142 +382,387 @@ if (!__filters) {
 var P_2D_C = P_2D_C || {};
 
 (() => {
-    var params = PluginManager.parameters('2D_Cat_OldFilmFilter');
 
-    P_2D_C.oldFilmFilter = null;
+    var params = PluginManager.parameters('2D_Cat_RetroDisplayerFilter');
 
-    P_2D_C.isOldFilmEnabled       = String(params.isOldFilmEnabled) === 'true';
-    P_2D_C.oldFilmSepia           = Number(params.oldFilmSepia);
-    P_2D_C.oldFilmNoise           = Number(params.oldFilmNoise);
-    P_2D_C.oldFilmNoiseSize       = Number(params.oldFilmNoiseSize);
-    P_2D_C.oldFilmScratch         = Number(params.oldFilmScratch);
-    P_2D_C.oldFilmScratchDensity  = Number(params.oldFilmScratchDensity);
-    P_2D_C.oldFilmScratchWidth    = Number(params.oldFilmScratchWidth);
-    P_2D_C.oldFilmVignetting      = Number(params.oldFilmVignetting);
-    P_2D_C.oldFilmVignettingAlpha = Number(params.oldFilmVignettingAlpha);
-    P_2D_C.oldFilmVignettingBlur  = Number(params.oldFilmVignettingBlur);
+    P_2D_C.retroDisplayerEnabled = String(params.retroDisplayerEnabled) === 'true';
 
-    setupOldFilmFilter();
 
-    PluginManager.registerCommand('2D_Cat_OldFilmFilter', 'changeOldFilmFilter', args => {
-        P_2D_C.oldFilmSepia           = Number(args.newOldFilmSepia);
-        P_2D_C.oldFilmNoise           = Number(args.newOldFilmNoise);
-        P_2D_C.oldFilmNoiseSize       = Number(args.newOldFilmNoiseSize);
-        P_2D_C.oldFilmScratch         = Number(args.newOldFilmScratch);
-        P_2D_C.oldFilmScratchDensity  = Number(args.newOldFilmScratchDensity);
-        P_2D_C.oldFilmScratchWidth    = Number(args.newOldFilmScratchWidth);
-        P_2D_C.oldFilmVignetting      = Number(args.newOldFilmVignetting);
-        P_2D_C.oldFilmVignettingAlpha = Number(args.newOldFilmVignettingAlpha);
-        P_2D_C.oldFilmVignettingBlur  = Number(args.newOldFilmVignettingBlur);
+    function setupRetroDisplayer() {
+        setupCrtFilter();
+        setupBloomFilter();
+        setupGlitchFilter();
+    }
 
-        fixOldFilmData();
-
-        if (P_2D_C.oldFilmFilter) {
-            P_2D_C.oldFilmFilter.sepia           = P_2D_C.oldFilmSepia;
-            P_2D_C.oldFilmFilter.noise           = P_2D_C.oldFilmNoise;
-            P_2D_C.oldFilmFilter.noiseSize       = P_2D_C.oldFilmNoiseSize;
-            P_2D_C.oldFilmFilter.scratch         = P_2D_C.oldFilmScratch;
-            P_2D_C.oldFilmFilter.scratchDensity  = P_2D_C.oldFilmScratchDensity;
-            P_2D_C.oldFilmFilter.scratchWidth    = P_2D_C.oldFilmScratchWidth;
-            P_2D_C.oldFilmFilter.vignetting      = P_2D_C.oldFilmVignetting;
-            P_2D_C.oldFilmFilter.vignettingAlpha = P_2D_C.oldFilmVignettingAlpha;
-            P_2D_C.oldFilmFilter.vignettingBlur  = P_2D_C.oldFilmVignettingBlur;
+    function startRetroDisplayer() {
+        if (P_2D_C.retroDisplayerEnabled) {
+            startCrtFilter();
+            if (P_2D_C.retroDisplayerBloomEnabled)  startBloomFilter();
+            if (P_2D_C.retroDisplayerGlitchEnabled) startGlitchFilter();
         }
+    }
 
-        if (!P_2D_C.isOldFilmEnabled) {
-            P_2D_C.isOldFilmEnabled = true;
-            startOldFilmFilter();
+    function updateRetroDisplayer() {
+        if (P_2D_C.retroDisplayerEnabled) {
+            updateCrtFilter();
+            if (P_2D_C.retroDisplayerGlitchEnabled) updateGlitchFilter();
+        }
+    }
+
+    function disableRetroDisplayer() {
+        diasbleCrtFilter();
+        disableBloomFilter();
+        disableGlitchFilter();
+    }
+
+    PluginManager.registerCommand('2D_Cat_RetroDisplayerFilter', 'enableRetroDisplayer', () => {
+        if (!P_2D_C.retroDisplayerEnabled) {
+            P_2D_C.retroDisplayerEnabled = true;
+            startRetroDisplayer();
         }
     });
 
-    PluginManager.registerCommand('2D_Cat_OldFilmFilter', 'disableOldFilmFilter', () => {
-        if (P_2D_C.isOldFilmEnabled) {
-            P_2D_C.isOldFilmEnabled = false;
-            disableOldFilmFilter();
+    PluginManager.registerCommand('2D_Cat_RetroDisplayerFilter', 'changeCRTLine', args => {
+        P_2D_C.retroDisplayerCrtCurvature    = Number(args.newRetroDisplayerCrtCurvature);
+        P_2D_C.retroDisplayerCrtLineWidth    = Number(args.newRetroDisplayerCrtLineWidth);
+        P_2D_C.retroDisplayerCrtLineContrast = Number(args.newRetroDisplayerCrtLineContrast);
+        P_2D_C.retroDisplayerCrtLineSpeed    = Number(args.newRetroDisplayerCrtLineSpeed);
+        fixCrtData();
+        P_2D_C.retroDisplayerCrtFilter.curvature    = P_2D_C.retroDisplayerCrtCurvature;
+        P_2D_C.retroDisplayerCrtFilter.lineWidth    = P_2D_C.retroDisplayerCrtLineWidth;
+        P_2D_C.retroDisplayerCrtFilter.lineContrast = P_2D_C.retroDisplayerCrtLineContrast;
+
+        if (P_2D_C.retroDisplayerEnabled) startCrtFilter();
+    });
+
+    PluginManager.registerCommand('2D_Cat_RetroDisplayerFilter', 'changeNoise', args => {
+        P_2D_C.retroDisplayerCrtNoise     = Number(args.newRetroDisplayerCrtNoise);
+        P_2D_C.retroDisplayerCrtNoiseSize = Number(args.newRetroDisplayerCrtNoiseSize);
+        fixCrtData();
+        P_2D_C.retroDisplayerCrtFilter.noise     = P_2D_C.retroDisplayerCrtNoise;
+        P_2D_C.retroDisplayerCrtFilter.noiseSize = P_2D_C.retroDisplayerCrtNoiseSize;
+
+        if (P_2D_C.retroDisplayerEnabled) startCrtFilter();
+    });
+
+    PluginManager.registerCommand('2D_Cat_RetroDisplayerFilter', 'changeVignetting', args => {
+        P_2D_C.retroDisplayerCrtVignetting      = Number(args.newRetroDisplayerCrtVignetting);
+        P_2D_C.retroDisplayerCrtVignettingAlpha = Number(args.newRetroDisplayerCrtVignettingAlpha);
+        P_2D_C.retroDisplayerCrtVignettingBlur  = Number(args.newRetroDisplayerCrtVignettingBlur);
+        fixCrtData();
+        P_2D_C.retroDisplayerCrtFilter.vignetting      = P_2D_C.retroDisplayerCrtVignetting;
+        P_2D_C.retroDisplayerCrtFilter.vignettingAlpha = P_2D_C.retroDisplayerCrtVignettingAlpha;
+        P_2D_C.retroDisplayerCrtFilter.vignettingBlur  = P_2D_C.retroDisplayerCrtVignettingBlur;
+
+        if (P_2D_C.retroDisplayerEnabled) startCrtFilter();
+    });
+
+    PluginManager.registerCommand('2D_Cat_RetroDisplayerFilter', 'changeBloom', args => {
+        P_2D_C.retroDisplayerBloomEnabled = String(args.newRetroDisplayerBloomEnabled) === 'true';
+        P_2D_C.retroDisplayerBloomBlur    = Number(args.newRetroDisplayerBloomBlur);
+        fixBloomData();
+        P_2D_C.retroDisplayerBloomFilter.blur  = P_2D_C.retroDisplayerBloomBlur;
+        P_2D_C.retroDisplayerBloomFilter.blurX = P_2D_C.retroDisplayerBloomBlur;
+        P_2D_C.retroDisplayerBloomFilter.blurY = P_2D_C.retroDisplayerBloomBlur;
+
+        if (P_2D_C.retroDisplayerEnabled) startBloomFilter();
+    });
+
+    PluginManager.registerCommand('2D_Cat_RetroDisplayerFilter', 'changeGlitch', args => {
+        P_2D_C.retroDisplayerGlitchEnabled     = String(args.newRetroDisplayerGlitchEnabled) === 'true';
+        P_2D_C.retroDisplayerGlitchSlices      = Number(args.newRetroDisplayerGlitchSlices);
+        P_2D_C.retroDisplayerGlitchOffset      = Number(args.newRetroDisplayerGlitchOffset);
+        P_2D_C.retroDisplayerGlitchMinInterval = Number(args.newRetroDisplayerGlitchMinInterval);
+        P_2D_C.retroDisplayerGlitchMaxInterval = Number(args.newRetroDisplayerGlitchMaxInterval);
+        P_2D_C.retroDisplayerGlitchMinDuration = Number(args.newRetroDisplayerGlitchMinDuration);
+        P_2D_C.retroDisplayerGlitchMaxDuration = Number(args.newRetroDisplayerGlitchMaxDuration);
+        P_2D_C.retroDisplayerGlitchRedX        = Number(args.newRetroDisplayerGlitchRedX);
+        P_2D_C.retroDisplayerGlitchRedY        = Number(args.newRetroDisplayerGlitchRedY);
+        P_2D_C.retroDisplayerGlitchBlueX       = Number(args.newRetroDisplayerGlitchBlueX);
+        P_2D_C.retroDisplayerGlitchBlueY       = Number(args.newRetroDisplayerGlitchBlueY);
+        P_2D_C.retroDisplayerGlitchGreenX      = Number(args.newRetroDisplayerGlitchGreenX);
+        P_2D_C.retroDisplayerGlitchGreenY      = Number(args.newRetroDisplayerGlitchGreenY);
+        fixGlitchData();
+        P_2D_C.retroDisplayerGlitchFilter.slices = P_2D_C.retroDisplayerGlitchSlices;
+        P_2D_C.retroDisplayerGlitchFilter.offset = P_2D_C.retroDisplayerGlitchOffset;
+        P_2D_C.retroDisplayerGlitchFilter.red    = [P_2D_C.retroDisplayerGlitchRedX,   P_2D_C.retroDisplayerGlitchRedY];
+        P_2D_C.retroDisplayerGlitchFilter.blue   = [P_2D_C.retroDisplayerGlitchBlueX,  P_2D_C.retroDisplayerGlitchBlueY];
+        P_2D_C.retroDisplayerGlitchFilter.green  = [P_2D_C.retroDisplayerGlitchGreenX, P_2D_C.retroDisplayerGlitchGreenY];
+
+        if (P_2D_C.retroDisplayerEnabled) startGlitchFilter();
+    });
+
+    PluginManager.registerCommand('2D_Cat_RetroDisplayerFilter', 'disableRetroDisplayer', () => {
+        if (P_2D_C.retroDisplayerEnabled) {
+            P_2D_C.retroDisplayerEnabled = false;
+            disableRetroDisplayer();
         }
     });
 
-    function fixOldFilmData() {
-        if (String(P_2D_C.oldFilmSepia) === 'NaN') P_2D_C.oldFilmSepia = 0.3;
-        else if   (P_2D_C.oldFilmSepia < 0)        P_2D_C.oldFilmSepia = 0;
-        else if   (P_2D_C.oldFilmSepia > 1)        P_2D_C.oldFilmSepia = 1;
+    /*******************************************************************
+     * CRTFilter
+     */
 
-        if (String(P_2D_C.oldFilmNoise) === 'NaN') P_2D_C.oldFilmNoise = 0.3;
-        else if   (P_2D_C.oldFilmNoise < 0)        P_2D_C.oldFilmNoise = 0;
-        else if   (P_2D_C.oldFilmNoise > 1)        P_2D_C.oldFilmNoise = 1;
+    P_2D_C.retroDisplayerCrtFilter = null;
 
-        if (String(P_2D_C.oldFilmNoiseSize) === 'NaN') P_2D_C.oldFilmNoiseSize = 1;
-        else if   (P_2D_C.oldFilmNoiseSize < 0)        P_2D_C.oldFilmNoiseSize = 0;
-        else if   (P_2D_C.oldFilmNoiseSize > 10)       P_2D_C.oldFilmNoiseSize = 10;
+    P_2D_C.retroDisplayerCrtCurvature       = Number(params.retroDisplayerCrtCurvature);
+    P_2D_C.retroDisplayerCrtLineWidth       = Number(params.retroDisplayerCrtLineWidth);
+    P_2D_C.retroDisplayerCrtLineContrast    = Number(params.retroDisplayerCrtLineContrast);
+    P_2D_C.retroDisplayerCrtLineSpeed       = Number(params.retroDisplayerCrtLineSpeed);
+    P_2D_C.retroDisplayerCrtNoise           = Number(params.retroDisplayerCrtNoise);
+    P_2D_C.retroDisplayerCrtNoiseSize       = Number(params.retroDisplayerCrtNoiseSize);
+    P_2D_C.retroDisplayerCrtVignetting      = Number(params.retroDisplayerCrtVignetting);
+    P_2D_C.retroDisplayerCrtVignettingAlpha = Number(params.retroDisplayerCrtVignettingAlpha);
+    P_2D_C.retroDisplayerCrtVignettingBlur  = Number(params.retroDisplayerCrtVignettingBlur);
 
-        if (String(P_2D_C.oldFilmScratch) === 'NaN') P_2D_C.oldFilmScratch = 0.5;
-        else if   (P_2D_C.oldFilmScratch < -1)       P_2D_C.oldFilmScratch = -1;
-        else if   (P_2D_C.oldFilmScratch > 1)        P_2D_C.oldFilmScratch = 1;
+    function fixCrtData() {
+        if (String(P_2D_C.retroDisplayerCrtCurvature) === 'NaN') P_2D_C.retroDisplayerCrtCurvature = 2.5;
+        else if   (P_2D_C.retroDisplayerCrtCurvature < 0)        P_2D_C.retroDisplayerCrtCurvature = 0;
+        else if   (P_2D_C.retroDisplayerCrtCurvature > 20)       P_2D_C.retroDisplayerCrtCurvature = 20;
 
-        if (String(P_2D_C.oldFilmScratchDensity) === 'NaN') P_2D_C.oldFilmScratchDensity = 0.3;
-        else if   (P_2D_C.oldFilmScratchDensity < 0)        P_2D_C.oldFilmScratchDensity = 0;
-        else if   (P_2D_C.oldFilmScratchDensity > 1)        P_2D_C.oldFilmScratchDensity = 1;
+        if (String(P_2D_C.retroDisplayerCrtLineWidth) === 'NaN') P_2D_C.retroDisplayerCrtLineWidth = 5;
+        else if   (P_2D_C.retroDisplayerCrtLineWidth < 0)        P_2D_C.retroDisplayerCrtLineWidth = 0;
+        else if   (P_2D_C.retroDisplayerCrtLineWidth > 10)       P_2D_C.retroDisplayerCrtLineWidth = 10;
 
-        if (String(P_2D_C.oldFilmScratchWidth) === 'NaN') P_2D_C.oldFilmScratchWidth = 1;
-        else if   (P_2D_C.oldFilmScratchWidth < 0)        P_2D_C.oldFilmScratchWidth = 0;
-        else if   (P_2D_C.oldFilmScratchWidth > 20)       P_2D_C.oldFilmScratchWidth = 20;
+        if (String(P_2D_C.retroDisplayerCrtLineContrast) === 'NaN') P_2D_C.retroDisplayerCrtLineContrast = 0.3;
+        else if   (P_2D_C.retroDisplayerCrtLineContrast < 0)        P_2D_C.retroDisplayerCrtLineContrast = 0;
+        else if   (P_2D_C.retroDisplayerCrtLineContrast > 1)        P_2D_C.retroDisplayerCrtLineContrast = 1;
 
-        if (String(P_2D_C.oldFilmVignetting) === 'NaN') P_2D_C.oldFilmVignetting = 0.3;
-        else if   (P_2D_C.oldFilmVignetting < 0)        P_2D_C.oldFilmVignetting = 0;
-        else if   (P_2D_C.oldFilmVignetting > 1)        P_2D_C.oldFilmVignetting = 1;
+        if (String(P_2D_C.retroDisplayerCrtLineSpeed) === 'NaN') P_2D_C.retroDisplayerCrtLineSpeed = 1;
+        else if   (P_2D_C.retroDisplayerCrtLineSpeed < 0)        P_2D_C.retroDisplayerCrtLineSpeed = 0;
+        else if   (P_2D_C.retroDisplayerCrtLineSpeed > 3)        P_2D_C.retroDisplayerCrtLineSpeed = 3;
 
-        if (String(P_2D_C.oldFilmVignettingAlpha) === 'NaN') P_2D_C.oldFilmVignettingAlpha = 1;
-        else if   (P_2D_C.oldFilmVignettingAlpha < 0)        P_2D_C.oldFilmVignettingAlpha = 0;
-        else if   (P_2D_C.oldFilmVignettingAlpha > 1)        P_2D_C.oldFilmVignettingAlpha = 1;
+        if (String(P_2D_C.retroDisplayerCrtNoise) === 'NaN') P_2D_C.retroDisplayerCrtNoise = 0.3;
+        else if   (P_2D_C.retroDisplayerCrtNoise < 0)        P_2D_C.retroDisplayerCrtNoise = 0;
+        else if   (P_2D_C.retroDisplayerCrtNoise > 1)        P_2D_C.retroDisplayerCrtNoise = 1;
 
-        if (String(P_2D_C.oldFilmVignettingBlur) === 'NaN') P_2D_C.oldFilmVignettingBlur = 0.3;
-        else if   (P_2D_C.oldFilmVignettingBlur < 0)        P_2D_C.oldFilmVignettingBlur = 0;
-        else if   (P_2D_C.oldFilmVignettingBlur > 1)        P_2D_C.oldFilmVignettingBlur = 1;
+        if (String(P_2D_C.retroDisplayerCrtVignetting) === 'NaN') P_2D_C.retroDisplayerCrtVignetting = 0.3;
+        else if   (P_2D_C.retroDisplayerCrtVignetting < 0)        P_2D_C.retroDisplayerCrtVignetting = 0;
+        else if   (P_2D_C.retroDisplayerCrtVignetting > 1)        P_2D_C.retroDisplayerCrtVignetting = 1;
+
+        if (String(P_2D_C.retroDisplayerCrtVignettingAlpha) === 'NaN') P_2D_C.retroDisplayerCrtVignettingAlpha = 1;
+        else if   (P_2D_C.retroDisplayerCrtVignettingAlpha < 0)        P_2D_C.retroDisplayerCrtVignettingAlpha = 0;
+        else if   (P_2D_C.retroDisplayerCrtVignettingAlpha > 1)        P_2D_C.retroDisplayerCrtVignettingAlpha = 1;
+
+        if (String(P_2D_C.retroDisplayerCrtVignettingBlur) === 'NaN') P_2D_C.retroDisplayerCrtVignettingBlur = 0.3;
+        else if   (P_2D_C.retroDisplayerCrtVignettingBlur < 0)        P_2D_C.retroDisplayerCrtVignettingBlur = 0;
+        else if   (P_2D_C.retroDisplayerCrtVignettingBlur > 1)        P_2D_C.retroDisplayerCrtVignettingBlur = 1;
     }
 
-    function setupOldFilmFilter() {
-        fixOldFilmData();
-        P_2D_C.oldFilmFilter = new PIXI.filters.OldFilmFilter({
-            sepia:          P_2D_C.oldFilmSepia,
-            noise:          P_2D_C.oldFilmNoise,
-            noiseSize:      P_2D_C.oldFilmNoiseSize,
-            scratch:        P_2D_C.oldFilmScratch,
-            scratchDensity: P_2D_C.oldFilmScratchDensity,
-            scratchWidth:   P_2D_C.oldFilmScratchWidth,
-            vignetting:     P_2D_C.oldFilmVignetting,
-            vignettingAlpha:P_2D_C.oldFilmVignettingAlpha,
-            vignettingBlur: P_2D_C.oldFilmVignettingBlur
-        }, 0);
+    function setupCrtFilter() {
+        fixCrtData();
+        P_2D_C.retroDisplayerCrtFilter = new PIXI.filters.CRTFilter({
+            curvature      : P_2D_C.retroDisplayerCrtCurvature,
+            lineWidth      : P_2D_C.retroDisplayerCrtLineWidth,
+            lineContrast   : P_2D_C.retroDisplayerCrtLineContrast,
+            verticalLine   : false,
+            noise          : P_2D_C.retroDisplayerCrtNoise,
+            noiseSize      : P_2D_C.retroDisplayerCrtNoiseSize,
+            seed           : 0,
+            vignetting     : P_2D_C.retroDisplayerCrtVignetting,
+            vignettingAlpha: P_2D_C.retroDisplayerCrtVignettingAlpha,
+            vignettingBlur : P_2D_C.retroDisplayerCrtVignettingBlur,
+            time           : 0
+        });
     }
 
-    function startOldFilmFilter() {
-        if (P_2D_C.isOldFilmEnabled) {
-            let hasThisFilter = false;
-            SceneManager._scene.filters.forEach(e => {
-                if (e === P_2D_C.oldFilmFilter) hasThisFilter = true;
-            });
-            if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.oldFilmFilter);
-        }
+    function startCrtFilter() {
+        let hasThisFilter = false;
+        SceneManager._scene.filters.forEach(e => {
+            if (e === P_2D_C.retroDisplayerCrtFilter) hasThisFilter = true;
+        });
+        if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.retroDisplayerCrtFilter);
     }
 
-    function updateOldFilmFilter() {
-        if (P_2D_C.isOldFilmEnabled) P_2D_C.oldFilmFilter.seed = Math.random();
+    function updateCrtFilter() {
+        P_2D_C.retroDisplayerCrtFilter.time += Graphics.app.ticker.deltaTime * P_2D_C.retroDisplayerCrtLineSpeed;
+        P_2D_C.retroDisplayerCrtFilter.seed  = Math.random();
     }
 
-    function disableOldFilmFilter() {
-        let idx = SceneManager._scene.filters.indexOf(P_2D_C.oldFilmFilter);
+    function diasbleCrtFilter() {
+        let idx = SceneManager._scene.filters.indexOf(P_2D_C.retroDisplayerCrtFilter);
         if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
     }
+
+    /*******************************************************************
+     * BloomFilter
+     */
+
+    P_2D_C.retroDisplayerBloomFilter = null;
+
+    P_2D_C.retroDisplayerBloomEnabled = String(params.retroDisplayerBloomEnabled) === 'true';
+    P_2D_C.retroDisplayerBloomBlur    = Number(params.retroDisplayerBloomBlur);
+
+    function fixBloomData() {
+        if (String(P_2D_C.retroDisplayerBloomBlur) === 'NaN') P_2D_C.retroDisplayerBloomBlur = 10;
+        else if   (P_2D_C.retroDisplayerBloomBlur < 0)        P_2D_C.retroDisplayerBloomBlur = 0;
+        else if   (P_2D_C.retroDisplayerBloomBlur > 20)       P_2D_C.retroDisplayerBloomBlur = 20;
+    }
+
+    function setupBloomFilter() {
+        fixBloomData();
+        P_2D_C.retroDisplayerBloomFilter = new PIXI.filters.BloomFilter();
+        P_2D_C.retroDisplayerBloomFilter.blur  = P_2D_C.retroDisplayerBloomBlur;
+        P_2D_C.retroDisplayerBloomFilter.blurX = P_2D_C.retroDisplayerBloomBlur;
+        P_2D_C.retroDisplayerBloomFilter.blurY = P_2D_C.retroDisplayerBloomBlur;
+    }
+
+    function startBloomFilter() {
+        let hasThisFilter = false;
+        SceneManager._scene.filters.forEach(e => {
+            if (e === P_2D_C.retroDisplayerBloomFilter) hasThisFilter = true;
+        });
+        if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.retroDisplayerBloomFilter);
+    }
+
+    function disableBloomFilter() {
+        let idx = SceneManager._scene.filters.indexOf(P_2D_C.retroDisplayerBloomFilter);
+        if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+    }
+
+    /*******************************************************************
+     * GlitchFilter
+     */
+
+    var retroDisplayerGlitchIsProcessing  = false;
+
+    P_2D_C.retroDisplayerGlitchFilter = null;
+
+    P_2D_C.retroDisplayerGlitchEnabled     = String(params.retroDisplayerGlitchEnabled) === 'true';
+    P_2D_C.retroDisplayerGlitchSlices      = Number(params.retroDisplayerGlitchSlices);
+    P_2D_C.retroDisplayerGlitchOffset      = Number(params.retroDisplayerGlitchOffset);
+    P_2D_C.retroDisplayerGlitchMinInterval = Number(params.retroDisplayerGlitchMinInterval);
+    P_2D_C.retroDisplayerGlitchMaxInterval = Number(params.retroDisplayerGlitchMaxInterval);
+    P_2D_C.retroDisplayerGlitchMinDuration = Number(params.retroDisplayerGlitchMinDuration);
+    P_2D_C.retroDisplayerGlitchMaxDuration = Number(params.retroDisplayerGlitchMaxDuration);
+    P_2D_C.retroDisplayerGlitchRedX        = Number(params.retroDisplayerGlitchRedX);
+    P_2D_C.retroDisplayerGlitchRedY        = Number(params.retroDisplayerGlitchRedY);
+    P_2D_C.retroDisplayerGlitchBlueX       = Number(params.retroDisplayerGlitchBlueX);
+    P_2D_C.retroDisplayerGlitchBlueY       = Number(params.retroDisplayerGlitchBlueY);
+    P_2D_C.retroDisplayerGlitchGreenX      = Number(params.retroDisplayerGlitchGreenX);
+    P_2D_C.retroDisplayerGlitchGreenY      = Number(params.retroDisplayerGlitchGreenY);
+
+    function fixGlitchData() {
+        if (String(P_2D_C.retroDisplayerGlitchSlices) === 'NaN') P_2D_C.retroDisplayerGlitchSlices = 8;
+        else if   (P_2D_C.retroDisplayerGlitchSlices < 0)        P_2D_C.retroDisplayerGlitchSlices = 0;
+        else if   (P_2D_C.retroDisplayerGlitchSlices > 30)       P_2D_C.retroDisplayerGlitchSlices = 30;
+
+        if (String(P_2D_C.retroDisplayerGlitchOffset) === 'NaN') P_2D_C.retroDisplayerGlitchOffset = 100;
+        else if   (P_2D_C.retroDisplayerGlitchOffset < 0)        P_2D_C.retroDisplayerGlitchOffset = -400;
+        else if   (P_2D_C.retroDisplayerGlitchOffset > 30)       P_2D_C.retroDisplayerGlitchOffset = 400;
+
+        if (String(P_2D_C.retroDisplayerGlitchMinInterval) === 'NaN') P_2D_C.retroDisplayerGlitchMinInterval = 300;
+        else if   (P_2D_C.retroDisplayerGlitchMinInterval < 0)        P_2D_C.retroDisplayerGlitchMinInterval = 0;
+
+        if (String(P_2D_C.retroDisplayerGlitchMaxInterval) === 'NaN') P_2D_C.retroDisplayerGlitchMaxInterval = 5000;
+        else if   (P_2D_C.retroDisplayerGlitchMaxInterval < 0)        P_2D_C.retroDisplayerGlitchMaxInterval = 0;
+
+        if (String(P_2D_C.retroDisplayerGlitchMinDuration) === 'NaN') P_2D_C.retroDisplayerGlitchMinDuration = 300;
+        else if   (P_2D_C.retroDisplayerGlitchMinDuration < 0)        P_2D_C.retroDisplayerGlitchMinDuration = 0;
+
+        if (String(P_2D_C.retroDisplayerGlitchMaxDuration) === 'NaN') P_2D_C.retroDisplayerGlitchMaxDuration = 1000;
+        else if   (P_2D_C.retroDisplayerGlitchMaxDuration < 0)        P_2D_C.retroDisplayerGlitchMaxDuration = 0;
+
+        if (String(P_2D_C.retroDisplayerGlitchRedX) === 'NaN') P_2D_C.retroDisplayerGlitchRedX = 2;
+        else if   (P_2D_C.retroDisplayerGlitchRedX < -50)      P_2D_C.retroDisplayerGlitchRedX = -50;
+        else if   (P_2D_C.retroDisplayerGlitchRedX > 50)       P_2D_C.retroDisplayerGlitchRedX = 50;
+
+        if (String(P_2D_C.retroDisplayerGlitchRedY) === 'NaN') P_2D_C.retroDisplayerGlitchRedY = 2;
+        else if   (P_2D_C.retroDisplayerGlitchRedY < -50)      P_2D_C.retroDisplayerGlitchRedY = -50;
+        else if   (P_2D_C.retroDisplayerGlitchRedY > 50)       P_2D_C.retroDisplayerGlitchRedY = 50;
+
+        if (String(P_2D_C.retroDisplayerGlitchBlueX) === 'NaN') P_2D_C.retroDisplayerGlitchBlueX = 10;
+        else if   (P_2D_C.retroDisplayerGlitchBlueX < -50)      P_2D_C.retroDisplayerGlitchBlueX = -50;
+        else if   (P_2D_C.retroDisplayerGlitchBlueX > 50)       P_2D_C.retroDisplayerGlitchBlueX = 50;
+
+        if (String(P_2D_C.retroDisplayerGlitchBlueY) === 'NaN') P_2D_C.retroDisplayerGlitchBlueY = -4;
+        else if   (P_2D_C.retroDisplayerGlitchBlueY < -50)      P_2D_C.retroDisplayerGlitchBlueY = -50;
+        else if   (P_2D_C.retroDisplayerGlitchBlueY > 50)       P_2D_C.retroDisplayerGlitchBlueY = 50;
+
+        if (String(P_2D_C.retroDisplayerGlitchGreenX) === 'NaN') P_2D_C.retroDisplayerGlitchGreenX = -10;
+        else if   (P_2D_C.retroDisplayerGlitchGreenX < -50)      P_2D_C.retroDisplayerGlitchGreenX = -50;
+        else if   (P_2D_C.retroDisplayerGlitchGreenX > 50)       P_2D_C.retroDisplayerGlitchGreenX = 50;
+
+        if (String(P_2D_C.retroDisplayerGlitchGreenY) === 'NaN') P_2D_C.retroDisplayerGlitchGreenY = 4;
+        else if   (P_2D_C.retroDisplayerGlitchGreenY < -50)      P_2D_C.retroDisplayerGlitchGreenY = -50;
+        else if   (P_2D_C.retroDisplayerGlitchGreenY > 50)       P_2D_C.retroDisplayerGlitchGreenY = 50;
+    }
+
+    function setupGlitchFilter() {
+        fixGlitchData();
+        P_2D_C.retroDisplayerGlitchFilter = new PIXI.filters.GlitchFilter({
+            slices     : P_2D_C.retroDisplayerGlitchSlices,
+            offset     : P_2D_C.retroDisplayerGlitchOffset,
+            direction  : 0,
+            fillMode   : 1,
+            seed       : 0,
+            average    : false,
+            minSize    : 8,
+            sampleSize : 512,
+            red        : [P_2D_C.retroDisplayerGlitchRedX,   P_2D_C.retroDisplayerGlitchRedY],
+            green      : [P_2D_C.retroDisplayerGlitchGreenX, P_2D_C.retroDisplayerGlitchGreenY],
+            blue       : [P_2D_C.retroDisplayerGlitchBlueX,  P_2D_C.retroDisplayerGlitchBlueY]
+        });
+    }
+
+    function startGlitchFilter() {
+        let hasThisFilter = false;
+        SceneManager._scene.filters.forEach(e => {
+            if (e === P_2D_C.retroDisplayerGlitchFilter) hasThisFilter = true;
+        });
+        if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.retroDisplayerGlitchFilter);
+        // startGlitchProcessing();
+        stopGlitchProcessing();
+    }
+
+    function updateGlitchFilter() {
+        if (retroDisplayerGlitchIsProcessing) {
+            P_2D_C.retroDisplayerGlitchFilter.refresh();
+        }
+    }
+
+    function disableGlitchFilter() {
+        let idx = SceneManager._scene.filters.indexOf(P_2D_C.retroDisplayerGlitchFilter);
+        if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+    }
+
+    function startGlitchProcessing() {
+        P_2D_C.retroDisplayerGlitchFilter.offset = P_2D_C.retroDisplayerGlitchOffset;
+        retroDisplayerGlitchIsProcessing = true;
+        let time = Math.random()
+                 * (P_2D_C.retroDisplayerGlitchMaxDuration - P_2D_C.retroDisplayerGlitchMinDuration)
+                 + P_2D_C.retroDisplayerGlitchMinDuration;
+        setTimeout(() => {
+            stopGlitchProcessing();
+        }, time);
+    }
+
+    function stopGlitchProcessing() {
+        P_2D_C.retroDisplayerGlitchFilter.offset = 0;
+        retroDisplayerGlitchIsProcessing = false;
+        let time = Math.random()
+                 * (P_2D_C.retroDisplayerGlitchMaxInterval - P_2D_C.retroDisplayerGlitchMinInterval)
+                 + P_2D_C.retroDisplayerGlitchMinInterval;
+        setTimeout(() => {
+            startGlitchProcessing();
+        }, time);
+    }
+
+    /*******************************************************************
+     * 重写
+     */
+
+    setupRetroDisplayer();
 
     var _Scene_Map_prototype_onMapLoaded = Scene_Map.prototype.onMapLoaded;
     Scene_Map.prototype.onMapLoaded = function() {
         _Scene_Map_prototype_onMapLoaded.call(this);
-        startOldFilmFilter();
+        startRetroDisplayer();
     };
 
     var _Scene_Map_prototype_update = Scene_Map.prototype.update;
     Scene_Map.prototype.update = function() {
         _Scene_Map_prototype_update.call(this);
-        updateOldFilmFilter();
+        updateRetroDisplayer();
     };
 })();
