@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.0 使游戏场景像素化，并为游戏角色添加轮廓线。
+ * @plugindesc v1.0 为游戏添加像素化滤镜，并为游戏角色添加轮廓线。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
