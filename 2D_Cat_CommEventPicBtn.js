@@ -280,7 +280,8 @@ var P_2D_C = P_2D_C || {};
         fixPlayerMove();
         disableCallMenu();
 
-        Graphics.app.stage.addChild(button.spr);
+        //Graphics.app.stage.addChild(button.spr);
+        SceneManager._scene.addChild(button.spr);
     }
 
     function letHtmlTagsNotToBlockBtn() {
@@ -309,7 +310,8 @@ var P_2D_C = P_2D_C || {};
 
     function destoryAllBtnSpr() {
         btnSprArr.forEach(e => {
-            Graphics.app.stage.removeChild(e);
+            //Graphics.app.stage.removeChild(e);
+            SceneManager._scene.removeChild(e);
         });
         restoreHtmlTags();
         restorePlayerMove();
