@@ -122,15 +122,12 @@ var P_2D_C = P_2D_C || {};
     P_2D_C.pixelGameOutlineThickness     = Number(params.outlineThickness);
     P_2D_C.pixelGameOutlinePlayerEnabled = String(params.outlinePlayerEnabled) === 'true';
 
-    setupFilters();
-
     PluginManager.registerCommand('2D_Cat_PixelGameFilter', 'changePixelGameFilter', args => {
         P_2D_C.pixelGamePixelateSize         = Number(args.newPixelateSize);
         P_2D_C.pixelGameOutlineColor         = getColorValue(String(args.newOutlineColor));
         P_2D_C.pixelGameOutlineThickness     = Number(args.newOutlineThickness);
         P_2D_C.pixelGameOutlinePlayerEnabled = String(args.newOutlinePlayerEnabled) === 'true';
         fixData();
-        console.log(P_2D_C.pixelGamePixelateSize);
         P_2D_C.pixelateFilter.size     = P_2D_C.pixelGamePixelateSize;
         P_2D_C.outlineFilter.color     = P_2D_C.pixelGameOutlineColor;
         P_2D_C.outlineFilter.thickness = P_2D_C.pixelGameOutlineThickness;
@@ -244,6 +241,8 @@ var P_2D_C = P_2D_C || {};
             }
         });
     }
+
+    setupFilters();
 
     var _Scene_Map_prototype_onMapLoaded = Scene_Map.prototype.onMapLoaded;
     Scene_Map.prototype.onMapLoaded = function() {

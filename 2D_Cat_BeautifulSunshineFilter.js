@@ -1,21 +1,21 @@
 /*:
  * @target     MZ
- * @plugindesc v1.0 为游戏画面添加老电影式的滤镜效果。
+ * @plugindesc v1.0 为游戏添加绮丽的日光效果滤镜。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
  * @help
  * * 使用说明：
- * 1、设置好插件参数，并确保激活老电影滤镜，进入游戏场景后自动生效。
- * 2、可在任意事件中调用“更改（激活）老电影滤镜”插件指令来更改滤镜数据，若滤镜效
- * 果已禁用，则激活。
- * 3、可在任意事件中调用“禁用老电影滤镜”，以禁用滤镜效果。
+ * 1、设置好插件参数，并确保激活绮丽日光滤镜，进入游戏场景后自动生效。
+ * 2、可在任意事件中调用“更改（激活）绮丽日光滤镜”插件指令来更改滤镜数据，若滤镜
+ * 效果已禁用，则激活。
+ * 3、可在任意事件中调用“禁用绮丽日光滤镜”，以禁用滤镜效果。
  *
  * * 使用条款：免费用于任何商业或非商业目的；允许在保留原作者信息的前提下修改代
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
- * -- 20210912 v1.0
+ * -- 20210916 v1.0
  *     实现插件基本功能。
  *
  * * 致谢说明：
@@ -31,124 +31,136 @@
  *   / /  \ \    / /\ \
  *  /_/    \_\  /_/  \_\
  *
- * @param   isOldFilmEnabled
- * @text    是否激活老电影滤镜
+ * @param   beautifulSunshineEnabled
+ * @text    是否激活绮丽日光滤镜
  * @type    boolean
  * @default true
  *
- * @param   oldFilmSepia
- * @text    污渍饱和度
+ * @param   godrayGain
+ * @text    光线强度
  * @type    string
- * @default 0.3
- * @desc    0~1之间的实数，越大效果越强，反之越弱。
+ * @default 0.7
+ * @desc    0~1之间的实数，越大强度越高，反之越低。
  *
- * @param   oldFilmNoise
- * @text    噪点强度
+ * @param   godrayLacunarity
+ * @text    光线密度
  * @type    string
- * @default 0.3
- * @desc    0~1之间的实数，越大效果越强，反之越弱。
+ * @default 2.5
+ * @desc    0~5之间的实数，越大密度越高，反之越低。
  *
- * @param   oldFilmNoiseSize
- * @text    噪点尺寸
- * @type    string
- * @default 1
- * @desc    0~10的实数，越大尺寸越大，反之越小。
- *
- * @param   oldFilmScratch
- * @text    刮痕出现频繁度
- * @type    string
- * @default 0.4
- * @desc    -1~1之间的实数，该数绝对值越大，出现越频繁，反之越不频繁；该数为负则刮痕为暗色，为正则刮痕为亮色。
- *
- * param    oldFilmScratchDensity
- * @text    刮痕出现密集度
- * @type    string
- * @default 0.4
- * @desc    0~1之间的实数，越大出现越密集，反之越稀疏。
- *
- * @param   oldFilmScratchWidth
- * @text    刮痕宽度
- * @type    string
- * @default 1
- * @desc    0~20之间的实数，越大越宽，反之越细。
- *
- * @param   oldFilmVignetting
- * @text    暗角半径
- * @type    string
- * @default 0.4
- * @desc    0~1之间的的实数，越大遮罩越多，反之越少。
- *
- * @param   oldFilmVignettingAlpha
- * @text    暗角不透明度
+ * @param   godrayAlpha
+ * @text    光线不透明度
  * @type    string
  * @default 1
  * @desc    0~1之间的实数，越大越不透明，反之越透明。
  *
- * @param   oldFilmVignettingBlur
- * @text    暗角模糊度
+ * @param   godrayAngle
+ * @text    光线角度
  * @type    string
- * @default 0.3
- * @desc    0~1之间的实数，越大越模糊，反之越清晰。
+ * @default 30
+ * @desc    -80~80之间的实数，影响光线照射角度。
  *
- * @command changeOldFilmFilter
- * @text    更改（激活）老电影滤镜
- *
- * @arg     newOldFilmSepia
- * @text    污渍饱和度
+ * @param   godragSpeed
+ * @text    光线变化速度
  * @type    string
- * @default 0.3
- * @desc    0~1之间的实数，越大效果越强，反之越弱。
+ * @default 5
+ * @desc    0~100之间的实数，越大变化越快，反之越慢。
  *
- * @arg     newOldFilmNoise
- * @text    噪点强度
+ * @param   advancedBloomBrightness
+ * @text    场景整体亮度
  * @type    string
- * @default 0.3
- * @desc    0~1之间的实数，越大效果越强，反之越弱。
+ * @default 0.6
+ * @desc    0~2之间的实数，越大越亮，反之越暗。
  *
- * @arg     newOldFilmNoiseSize
- * @text    噪点尺寸
+ * @param   advancedBloomThreshold
+ * @text    辉光阈值
  * @type    string
- * @default 1
- * @desc    0~10的实数，越大尺寸越大，反之越小。
+ * @default 0.5
+ * @desc    0~1之间的实数，决定当每种色彩的亮度为多少时，将会在该色彩上产生辉光，越大产生辉光所需亮度越高，反之越低。
  *
- * @arg     newOldFilmScratch
- * @text    刮痕出现频繁度
+ * @param   advancedBloomBloomScale
+ * @text    辉光亮度
  * @type    string
- * @default 0.4
- * @desc    -1~1之间的实数，该数绝对值越大，出现越频繁，反之越不频繁；该数为负则刮痕为暗色，为正则刮痕为亮色。
+ * @default 0.6
+ * @desc    0~1之间的实数，越大越强烈，反之越微弱。
  *
- * arg      newOldFilmScratchDensity
- * @text    刮痕出现密集度
+ * @param   advancedBloomBlur
+ * @text    辉光模糊度
  * @type    string
- * @default 0.4
- * @desc    0~1之间的实数，越大出现越密集，反之越稀疏。
+ * @default 8
+ * @desc    0~20之间的实数，越大越模糊，反之越清晰。
  *
- * @arg     newOldFilmScratchWidth
- * @text    刮痕宽度
+ * @param   advancedBloomQuality
+ * @text    辉光质量
  * @type    string
- * @default 1
- * @desc    0~20之间的实数，越大越宽，反之越细。
+ * @default 8
+ * @desc    0~20之间的实数，越大质量越高，反之越低。
  *
- * @arg     newOldFilmVignetting
- * @text    暗角半径
+ * @command changeBeautifulSunshineFilter
+ * @text    更改（激活）绮丽日光滤镜
+ *
+ * @arg     newGodrayGain
+ * @text    光线强度
  * @type    string
- * @default 0.4
- * @desc    0~1之间的的实数，越大遮罩越多，反之越少。
+ * @default 0.7
+ * @desc    0~1之间的实数，越大强度越高，反之越低。
  *
- * @arg     newOldFilmVignettingAlpha
- * @text    暗角不透明度
+ * @arg     newGodrayLacunarity
+ * @text    光线密度
+ * @type    string
+ * @default 2.5
+ * @desc    0~5之间的实数，越大密度越高，反之越低。
+ *
+ * @arg     newGodrayAlpha
+ * @text    光线不透明度
  * @type    string
  * @default 1
  * @desc    0~1之间的实数，越大越不透明，反之越透明。
  *
- * @arg     newOldFilmVignettingBlur
- * @text    暗角模糊度
+ * @arg     newGodrayAngle
+ * @text    光线角度
  * @type    string
- * @default 0.3
- * @desc    0~1之间的实数，越大越模糊，反之越清晰。
+ * @default 30
+ * @desc    -80~80之间的实数，影响光线照射角度。
  *
- * @command disableOldFilmFilter
- * @text    禁用老电影滤镜
+ * @arg     newGodragSpeed
+ * @text    光线变化速度
+ * @type    string
+ * @default 5
+ * @desc    0~100之间的实数，越大变化越快，反之越慢。
+ *
+ * @arg     newAdvancedBloomBrightness
+ * @text    场景整体亮度
+ * @type    string
+ * @default 0.6
+ * @desc    0~2之间的实数，越大越亮，反之越暗。
+ *
+ * @arg     newAdvancedBloomThreshold
+ * @text    辉光阈值
+ * @type    string
+ * @default 0.5
+ * @desc    0~1之间的实数，决定当每种色彩的亮度为多少时，将会在该色彩上产生辉光，越大产生辉光所需亮度越高，反之越低。
+ *
+ * @arg     newAdvancedBloomBloomScale
+ * @text    辉光亮度
+ * @type    string
+ * @default 0.6
+ * @desc    0~1之间的实数，越大越强烈，反之越微弱。
+ *
+ * @arg     newAdvancedBloomBlur
+ * @text    辉光模糊度
+ * @type    string
+ * @default 8
+ * @desc    0~20之间的实数，越大越模糊，反之越清晰。
+ *
+ * @arg     newAdvancedBloomQuality
+ * @text    辉光质量
+ * @type    string
+ * @default 8
+ * @desc    0~20之间的实数，越大质量越高，反之越低。
+ *
+ * @command disableBeautifulSunshineFilter
+ * @text    禁用绮丽日光滤镜
  */
 
 if (!__filters) {
@@ -170,142 +182,156 @@ if (!__filters) {
 var P_2D_C = P_2D_C || {};
 
 (() => {
-    var params = PluginManager.parameters('2D_Cat_OldFilmFilter');
+    var params = PluginManager.parameters('2D_Cat_BeautifulSunshineFilter');
 
-    P_2D_C.oldFilmFilter = null;
+    P_2D_C.godrayFilter        = null;
+    P_2D_C.advancedBloomFilter = null;
 
-    P_2D_C.isOldFilmEnabled       = String(params.isOldFilmEnabled) === 'true';
-    P_2D_C.oldFilmSepia           = Number(params.oldFilmSepia);
-    P_2D_C.oldFilmNoise           = Number(params.oldFilmNoise);
-    P_2D_C.oldFilmNoiseSize       = Number(params.oldFilmNoiseSize);
-    P_2D_C.oldFilmScratch         = Number(params.oldFilmScratch);
-    P_2D_C.oldFilmScratchDensity  = Number(params.oldFilmScratchDensity);
-    P_2D_C.oldFilmScratchWidth    = Number(params.oldFilmScratchWidth);
-    P_2D_C.oldFilmVignetting      = Number(params.oldFilmVignetting);
-    P_2D_C.oldFilmVignettingAlpha = Number(params.oldFilmVignettingAlpha);
-    P_2D_C.oldFilmVignettingBlur  = Number(params.oldFilmVignettingBlur);
+    P_2D_C.beautifulSunshineEnabled                 = String(params.beautifulSunshineEnabled) === 'true';
+    P_2D_C.beautifulSunshineGodrayGain              = Number(params.godrayGain);
+    P_2D_C.beautifulSunshineGodrayLacunarity        = Number(params.godrayLacunarity);
+    P_2D_C.beautifulSunshineGodrayAlpha             = Number(params.godrayAlpha);
+    P_2D_C.beautifulSunshineGodrayAngle             = Number(params.godrayAngle);
+    P_2D_C.beautifulSunshineGodraySpeed             = Number(params.godraySpeed);
+    P_2D_C.beautifulSunshineAdvancedBloomThreshold  = Number(params.advancedBloomThreshold);
+    P_2D_C.beautifulSunshineAdvancedBloomBloomScale = Number(params.advancedBloomBloomScale);
+    P_2D_C.beautifulSunshineAdvancedBloomBrightness = Number(params.advancedBloomBrightness);
+    P_2D_C.beautifulSunshineAdvancedBloomBlur       = Number(params.advancedBloomBlur);
+    P_2D_C.beautifulSunshineAdvancedBloomQuality    = Number(params.advancedBloomQuality);
 
-    PluginManager.registerCommand('2D_Cat_OldFilmFilter', 'changeOldFilmFilter', args => {
-        P_2D_C.oldFilmSepia           = Number(args.newOldFilmSepia);
-        P_2D_C.oldFilmNoise           = Number(args.newOldFilmNoise);
-        P_2D_C.oldFilmNoiseSize       = Number(args.newOldFilmNoiseSize);
-        P_2D_C.oldFilmScratch         = Number(args.newOldFilmScratch);
-        P_2D_C.oldFilmScratchDensity  = Number(args.newOldFilmScratchDensity);
-        P_2D_C.oldFilmScratchWidth    = Number(args.newOldFilmScratchWidth);
-        P_2D_C.oldFilmVignetting      = Number(args.newOldFilmVignetting);
-        P_2D_C.oldFilmVignettingAlpha = Number(args.newOldFilmVignettingAlpha);
-        P_2D_C.oldFilmVignettingBlur  = Number(args.newOldFilmVignettingBlur);
-
-        fixOldFilmData();
-
-        if (P_2D_C.oldFilmFilter) {
-            P_2D_C.oldFilmFilter.sepia           = P_2D_C.oldFilmSepia;
-            P_2D_C.oldFilmFilter.noise           = P_2D_C.oldFilmNoise;
-            P_2D_C.oldFilmFilter.noiseSize       = P_2D_C.oldFilmNoiseSize;
-            P_2D_C.oldFilmFilter.scratch         = P_2D_C.oldFilmScratch;
-            P_2D_C.oldFilmFilter.scratchDensity  = P_2D_C.oldFilmScratchDensity;
-            P_2D_C.oldFilmFilter.scratchWidth    = P_2D_C.oldFilmScratchWidth;
-            P_2D_C.oldFilmFilter.vignetting      = P_2D_C.oldFilmVignetting;
-            P_2D_C.oldFilmFilter.vignettingAlpha = P_2D_C.oldFilmVignettingAlpha;
-            P_2D_C.oldFilmFilter.vignettingBlur  = P_2D_C.oldFilmVignettingBlur;
-        }
-
-        if (!P_2D_C.isOldFilmEnabled) {
-            P_2D_C.isOldFilmEnabled = true;
-            startOldFilmFilter();
+    PluginManager.registerCommand('2D_Cat_BeautifulSunshineFilter', 'changeBeautifulSunshineFilter', args => {
+        P_2D_C.beautifulSunshineGodrayGain              = Number(args.newGodrayGain);
+        P_2D_C.beautifulSunshineGodrayLacunarity        = Number(args.newGodrayLacunarity);
+        P_2D_C.beautifulSunshineGodrayAlpha             = Number(args.newGodrayAlpha);
+        P_2D_C.beautifulSunshineGodrayAngle             = Number(args.newGodrayAngle);
+        P_2D_C.beautifulSunshineGodraySpeed             = Number(args.newGodraySpeed);
+        P_2D_C.beautifulSunshineAdvancedBloomThreshold  = Number(args.newAdvancedBloomThreshold);
+        P_2D_C.beautifulSunshineAdvancedBloomBloomScale = Number(args.newAdvancedBloomBloomScale);
+        P_2D_C.beautifulSunshineAdvancedBloomBrightness = Number(args.newAdvancedBloomBrightness);
+        P_2D_C.beautifulSunshineAdvancedBloomBlur       = Number(args.newAdvancedBloomBlur);
+        P_2D_C.beautifulSunshineAdvancedBloomQuality    = Number(args.newAdvancedBloomQuality);
+        fixData();
+        P_2D_C.godrayFilter.gain              = P_2D_C.beautifulSunshineGodrayGain;
+        P_2D_C.godrayFilter.lacunarity        = P_2D_C.beautifulSunshineGodrayLacunarity;
+        P_2D_C.godrayFilter.alpha             = P_2D_C.beautifulSunshineGodrayAlpha;
+        P_2D_C.godrayFilter.angle             = P_2D_C.beautifulSunshineGodrayAngle;
+        P_2D_C.advancedBloomFilter.threshold  = P_2D_C.beautifulSunshineAdvancedBloomThreshold;
+        P_2D_C.advancedBloomFilter.bloomScale = P_2D_C.beautifulSunshineAdvancedBloomBloomScale;
+        P_2D_C.advancedBloomFilter.brightness = P_2D_C.beautifulSunshineAdvancedBloomBrightness;
+        P_2D_C.advancedBloomFilter.blur       = P_2D_C.beautifulSunshineAdvancedBloomBlur;
+        P_2D_C.advancedBloomFilter.quality    = P_2D_C.beautifulSunshineAdvancedBloomQuality;
+        if (!P_2D_C.beautifulSunshineEnabled) {
+            P_2D_C.beautifulSunshineEnabled = true;
+            startFilters();
         }
     });
 
-    PluginManager.registerCommand('2D_Cat_OldFilmFilter', 'disableOldFilmFilter', () => {
-        if (P_2D_C.isOldFilmEnabled) {
-            P_2D_C.isOldFilmEnabled = false;
-            disableOldFilmFilter();
+    PluginManager.registerCommand('2D_Cat_BeautifulSunshineFilter', 'disableBeautifulSunshineFilter', () => {
+        if (P_2D_C.beautifulSunshineEnabled) {
+            P_2D_C.beautifulSunshineEnabled = false;
+            disableFilters();
         }
     });
 
-    function fixOldFilmData() {
-        if (String(P_2D_C.oldFilmSepia) === 'NaN') P_2D_C.oldFilmSepia = 0.3;
-        else if   (P_2D_C.oldFilmSepia < 0)        P_2D_C.oldFilmSepia = 0;
-        else if   (P_2D_C.oldFilmSepia > 1)        P_2D_C.oldFilmSepia = 1;
+    function fixData() {
+        if (String(P_2D_C.beautifulSunshineGodrayGain) === 'NaN') P_2D_C.beautifulSunshineGodrayGain = 0.7;
+        else if   (P_2D_C.beautifulSunshineGodrayGain < 0)        P_2D_C.beautifulSunshineGodrayGain = 0;
+        else if   (P_2D_C.beautifulSunshineGodrayGain > 1)        P_2D_C.beautifulSunshineGodrayGain = 1;
 
-        if (String(P_2D_C.oldFilmNoise) === 'NaN') P_2D_C.oldFilmNoise = 0.3;
-        else if   (P_2D_C.oldFilmNoise < 0)        P_2D_C.oldFilmNoise = 0;
-        else if   (P_2D_C.oldFilmNoise > 1)        P_2D_C.oldFilmNoise = 1;
+        if (String(P_2D_C.beautifulSunshineGodrayLacunarity) === 'NaN') P_2D_C.beautifulSunshineGodrayLacunarity = 2.5;
+        else if   (P_2D_C.beautifulSunshineGodrayLacunarity < 0)        P_2D_C.beautifulSunshineGodrayLacunarity = 0;
+        else if   (P_2D_C.beautifulSunshineGodrayLacunarity > 5)        P_2D_C.beautifulSunshineGodrayLacunarity = 5;
 
-        if (String(P_2D_C.oldFilmNoiseSize) === 'NaN') P_2D_C.oldFilmNoiseSize = 1;
-        else if   (P_2D_C.oldFilmNoiseSize < 0)        P_2D_C.oldFilmNoiseSize = 0;
-        else if   (P_2D_C.oldFilmNoiseSize > 10)       P_2D_C.oldFilmNoiseSize = 10;
+        if (String(P_2D_C.beautifulSunshineGodrayAlpha) === 'NaN') P_2D_C.beautifulSunshineGodrayAlpha = 1;
+        else if   (P_2D_C.beautifulSunshineGodrayAlpha < 0)        P_2D_C.beautifulSunshineGodrayAlpha = 0;
+        else if   (P_2D_C.beautifulSunshineGodrayAlpha > 1)        P_2D_C.beautifulSunshineGodrayAlpha = 1;
 
-        if (String(P_2D_C.oldFilmScratch) === 'NaN') P_2D_C.oldFilmScratch = 0.5;
-        else if   (P_2D_C.oldFilmScratch < -1)       P_2D_C.oldFilmScratch = -1;
-        else if   (P_2D_C.oldFilmScratch > 1)        P_2D_C.oldFilmScratch = 1;
+        if (String(P_2D_C.beautifulSunshineGodrayAngle) === 'NaN') P_2D_C.beautifulSunshineGodrayAngle = 30;
+        else if   (P_2D_C.beautifulSunshineGodrayAngle < -80)      P_2D_C.beautifulSunshineGodrayAngle = -80;
+        else if   (P_2D_C.beautifulSunshineGodrayAngle > 80)       P_2D_C.beautifulSunshineGodrayAngle = 80;
 
-        if (String(P_2D_C.oldFilmScratchDensity) === 'NaN') P_2D_C.oldFilmScratchDensity = 0.3;
-        else if   (P_2D_C.oldFilmScratchDensity < 0)        P_2D_C.oldFilmScratchDensity = 0;
-        else if   (P_2D_C.oldFilmScratchDensity > 1)        P_2D_C.oldFilmScratchDensity = 1;
+        if (String(P_2D_C.beautifulSunshineGodraySpeed) === 'NaN') P_2D_C.beautifulSunshineGodraySpeed = 5;
+        else if   (P_2D_C.beautifulSunshineGodraySpeed < 0)        P_2D_C.beautifulSunshineGodraySpeed = 0;
+        else if   (P_2D_C.beautifulSunshineGodraySpeed > 100)      P_2D_C.beautifulSunshineGodraySpeed = 100;
 
-        if (String(P_2D_C.oldFilmScratchWidth) === 'NaN') P_2D_C.oldFilmScratchWidth = 1;
-        else if   (P_2D_C.oldFilmScratchWidth < 0)        P_2D_C.oldFilmScratchWidth = 0;
-        else if   (P_2D_C.oldFilmScratchWidth > 20)       P_2D_C.oldFilmScratchWidth = 20;
+        if (String(P_2D_C.beautifulSunshineAdvancedBloomThreshold) === 'NaN') P_2D_C.beautifulSunshineAdvancedBloomThreshold = 0.5;
+        else if   (P_2D_C.beautifulSunshineAdvancedBloomThreshold < 0)        P_2D_C.beautifulSunshineAdvancedBloomThreshold = 0;
+        else if   (P_2D_C.beautifulSunshineAdvancedBloomThreshold > 1)        P_2D_C.beautifulSunshineAdvancedBloomThreshold = 1;
 
-        if (String(P_2D_C.oldFilmVignetting) === 'NaN') P_2D_C.oldFilmVignetting = 0.3;
-        else if   (P_2D_C.oldFilmVignetting < 0)        P_2D_C.oldFilmVignetting = 0;
-        else if   (P_2D_C.oldFilmVignetting > 1)        P_2D_C.oldFilmVignetting = 1;
+        if (String(P_2D_C.beautifulSunshineAdvancedBloomBloomScale) === 'NaN') P_2D_C.beautifulSunshineAdvancedBloomBloomScale = 0.6;
+        else if   (P_2D_C.beautifulSunshineAdvancedBloomBloomScale < 0)        P_2D_C.beautifulSunshineAdvancedBloomBloomScale = 0;
+        else if   (P_2D_C.beautifulSunshineAdvancedBloomBloomScale > 1)        P_2D_C.beautifulSunshineAdvancedBloomBloomScale = 1;
 
-        if (String(P_2D_C.oldFilmVignettingAlpha) === 'NaN') P_2D_C.oldFilmVignettingAlpha = 1;
-        else if   (P_2D_C.oldFilmVignettingAlpha < 0)        P_2D_C.oldFilmVignettingAlpha = 0;
-        else if   (P_2D_C.oldFilmVignettingAlpha > 1)        P_2D_C.oldFilmVignettingAlpha = 1;
+        if (String(P_2D_C.beautifulSunshineAdvancedBloomBrightness) === 'NaN') P_2D_C.beautifulSunshineAdvancedBloomBrightness = 0.6;
+        else if   (P_2D_C.beautifulSunshineAdvancedBloomBrightness < 0)        P_2D_C.beautifulSunshineAdvancedBloomBrightness = 0;
+        else if   (P_2D_C.beautifulSunshineAdvancedBloomBrightness > 2)        P_2D_C.beautifulSunshineAdvancedBloomBrightness = 2;
 
-        if (String(P_2D_C.oldFilmVignettingBlur) === 'NaN') P_2D_C.oldFilmVignettingBlur = 0.3;
-        else if   (P_2D_C.oldFilmVignettingBlur < 0)        P_2D_C.oldFilmVignettingBlur = 0;
-        else if   (P_2D_C.oldFilmVignettingBlur > 1)        P_2D_C.oldFilmVignettingBlur = 1;
+        if (String(P_2D_C.beautifulSunshineAdvancedBloomBlur) === 'NaN') P_2D_C.beautifulSunshineAdvancedBloomBlur = 8;
+        else if   (P_2D_C.beautifulSunshineAdvancedBloomBlur < 0)        P_2D_C.beautifulSunshineAdvancedBloomBlur = 0;
+        else if   (P_2D_C.beautifulSunshineAdvancedBloomBlur > 20)       P_2D_C.beautifulSunshineAdvancedBloomBlur = 20;
+
+        if (String(P_2D_C.beautifulSunshineAdvancedBloomQuality) === 'NaN') P_2D_C.beautifulSunshineAdvancedBloomQuality = 8;
+        else if   (P_2D_C.beautifulSunshineAdvancedBloomQuality < 0)        P_2D_C.beautifulSunshineAdvancedBloomQuality = 0;
+        else if   (P_2D_C.beautifulSunshineAdvancedBloomQuality > 20)       P_2D_C.beautifulSunshineAdvancedBloomQuality = 20;
     }
 
-    function setupOldFilmFilter() {
-        fixOldFilmData();
-        P_2D_C.oldFilmFilter = new PIXI.filters.OldFilmFilter({
-            sepia:          P_2D_C.oldFilmSepia,
-            noise:          P_2D_C.oldFilmNoise,
-            noiseSize:      P_2D_C.oldFilmNoiseSize,
-            scratch:        P_2D_C.oldFilmScratch,
-            scratchDensity: P_2D_C.oldFilmScratchDensity,
-            scratchWidth:   P_2D_C.oldFilmScratchWidth,
-            vignetting:     P_2D_C.oldFilmVignetting,
-            vignettingAlpha:P_2D_C.oldFilmVignettingAlpha,
-            vignettingBlur: P_2D_C.oldFilmVignettingBlur
-        }, 0);
+    function setupFilters() {
+        fixData();
+        P_2D_C.godrayFilter = new PIXI.filters.GodrayFilter({
+            angle     : P_2D_C.beautifulSunshineGodrayAngle,
+            gain      : P_2D_C.beautifulSunshineGodrayGain,
+            lacunarity: P_2D_C.beautifulSunshineGodrayLacunarity,
+            parallel  : true,
+            time      : 0,
+            center    : [0, 0],
+            alpha     : P_2D_C.beautifulSunshineGodrayAlpha
+        });
+        P_2D_C.advancedBloomFilter = new PIXI.filters.AdvancedBloomFilter({
+            threshold : P_2D_C.beautifulSunshineAdvancedBloomThreshold,
+            bloomScale: P_2D_C.beautifulSunshineAdvancedBloomBloomScale,
+            brightness: P_2D_C.beautifulSunshineAdvancedBloomBrightness,
+            blur      : P_2D_C.beautifulSunshineAdvancedBloomBlur,
+            quality   : P_2D_C.beautifulSunshineAdvancedBloomQuality
+        });
     }
 
-    function startOldFilmFilter() {
-        if (P_2D_C.isOldFilmEnabled) {
-            let hasThisFilter = false;
-            SceneManager._scene.filters.forEach(e => {
-                if (e === P_2D_C.oldFilmFilter) hasThisFilter = true;
-            });
-            if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.oldFilmFilter);
-        }
+    function startFilters() {
+        if (!P_2D_C.beautifulSunshineEnabled) return;
+
+        let hasGodrayFilter        = false;
+        let hasAdvancedBloomFilter = false;
+        SceneManager._scene.filters.forEach(e => {
+            if (e === P_2D_C.godrayFilter)        hasGodrayFilter        = true;
+            if (e === P_2D_C.advancedBloomFilter) hasAdvancedBloomFilter = true;
+        });
+        if (!hasGodrayFilter)        SceneManager._scene.filters.push(P_2D_C.godrayFilter);
+        if (!hasAdvancedBloomFilter) SceneManager._scene.filters.push(P_2D_C.advancedBloomFilter);
     }
 
-    function updateOldFilmFilter() {
-        if (P_2D_C.isOldFilmEnabled) P_2D_C.oldFilmFilter.seed = Math.random();
+    function updateFilters() {
+        if (!P_2D_C.beautifulSunshineEnabled) return;
+
+        P_2D_C.godrayFilter.time += Graphics.app.ticker.deltaTime * P_2D_C.beautifulSunshineGodraySpeed * 0.001;
     }
 
-    function disableOldFilmFilter() {
-        let idx = SceneManager._scene.filters.indexOf(P_2D_C.oldFilmFilter);
-        if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+    function disableFilters() {
+        let godrayFilterIdx = SceneManager._scene.filters.indexOf(P_2D_C.godrayFilter);
+        if (godrayFilterIdx >=0) SceneManager._scene.filters.splice(godrayFilterIdx, 1);
+        let advancedBloomFilterIdx = SceneManager._scene.filters.indexOf(P_2D_C.advancedBloomFilter);
+        if (advancedBloomFilterIdx >=0) SceneManager._scene.filters.splice(advancedBloomFilterIdx, 1);
     }
 
-    setupOldFilmFilter();
+    setupFilters();
 
     var _Scene_Map_prototype_onMapLoaded = Scene_Map.prototype.onMapLoaded;
     Scene_Map.prototype.onMapLoaded = function() {
         _Scene_Map_prototype_onMapLoaded.call(this);
-        startOldFilmFilter();
+        startFilters();
     };
 
     var _Scene_Map_prototype_update = Scene_Map.prototype.update;
     Scene_Map.prototype.update = function() {
         _Scene_Map_prototype_update.call(this);
-        updateOldFilmFilter();
+        updateFilters();
     };
 })();
