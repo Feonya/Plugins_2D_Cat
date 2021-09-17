@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.2 调出一个或多个自定义图片按钮，点击触发共通事件。
+ * @plugindesc v1.3 调出一个或多个自定义图片按钮，点击触发共通事件。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -15,6 +15,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20210917 v1.3
+ *     增加了设置图片锚点位置的指令；图片按钮坐标值现在可以设为负值。
  * -- 20210915 v1.2
  *     修复了在并行事件中调出图片按钮可能报错的Bug。
  * -- 20210911 v1.1
@@ -28,6 +30,7 @@
  * 2、感谢Gitee用户 vip徐浩 提供关于图片选择可视化的修改建议！
  * 3、感谢B站用户 靓点迷人 提供关于并行事件中调出图片按钮可能报错的Bug反馈，以
  * 及配合进行该Bug修复的测试！
+ * 4、感谢B站用户 靓点迷人 提供关于图片按钮坐标值不能设为负值的问题反馈。
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -97,19 +100,39 @@
  * @text    ------------------------
  * @default
  *
+ * @arg     anchorPosX
+ * @text    锚点位置x值
+ * @type    string
+ * @default 0.5
+ * @desc    0~1之间的实数，越大锚点越靠图片右边，反之越靠左边，0.5为图片x轴中心点。
+ *
+ * @arg     anchorPosY
+ * @text    锚点位置y值
+ * @type    string
+ * @default 0.5
+ * @desc    0~1之间的实数，越大锚点越靠图片下边，反之越靠上边，0.5为图片y轴中心点。
+ *
+ * @arg     _cutLine4
+ * @text    ------------------------
+ * @default
+ *
  * @arg     positionX
  * @text    位置x坐标值（px）
  * @type    number
  * @default 320
- * @desc    即图片按钮显示在游戏画面中的x坐标值，锚点为图片中心。
+ * @min     -50000
+ * @max     50000
+ * @desc    即图片按钮显示在游戏画面中的x坐标值。
  *
  * @arg     positionY
  * @text    位置y坐标值（px）
  * @type    number
  * @default 360
- * @desc    即图片按钮显示在游戏画面中的y坐标值，锚点为图片中心。
+ * @min     -50000
+ * @max     50000
+ * @desc    即图片按钮显示在游戏画面中的y坐标值。
  *
- * @arg     _cutLine4
+ * @arg     _cutLine5
  * @text    ------------------------
  * @default
  *
@@ -120,7 +143,7 @@
  * @min     0
  * @desc    按下按钮后调用哪个共通事件，0表示不调用任何共通事件。
  *
- * @arg     _cutLine5
+ * @arg     _cutLine6
  * @text    ------------------------
  * @default
  *
@@ -153,9 +176,6 @@ var P_2D_C = P_2D_C || {};
             this.isDown   = false;
             this.isOver   = false;
             this.commEvId = 0;
-            // this.boundBox     = null;
-            // this.pixels       = null;
-            // this.ignoreTransp = true;
         }
 
         registerBtnEvents() {
@@ -221,11 +241,15 @@ var P_2D_C = P_2D_C || {};
     PluginManager.registerCommand('2D_Cat_CommEventPicBtn', 'showPictureButton', args => {
         P_2D_C.btnNorPicName  = String(args.buttonNormalPictureName);
         P_2D_C.btnOverPicName = String(args.buttonOverPictureName);
-        P_2D_C.btnOverPicTint = String(args.buttonOverPictureTint);
+        // P_2D_C.btnOverPicTint = String(args.buttonOverPictureTint);
+        P_2D_C.btnOverPicTint = Number('0x' + args.buttonOverPictureTint.slice(1));
         P_2D_C.btnOverPicBrit = Number(args.buttonOverPictureBrightness);
         P_2D_C.btnDownPicName = String(args.buttonDownPictureName);
-        P_2D_C.btnDownPicTint = String(args.buttonDownPictureTint);
+        // P_2D_C.btnDownPicTint = String(args.buttonDownPictureTint);
+        P_2D_C.btnDownPicTint = Number('0x' + args.buttonDownPictureTint.slice(1));
         P_2D_C.btnDownPicBrit = Number(args.buttonDownPictureBrightness);
+        P_2D_C.anchorX        = Number(args.anchorX);
+        P_2D_C.anchorY        = Number(args.anchorY);
         P_2D_C.posX           = Number(args.positionX);
         P_2D_C.posY           = Number(args.positionY);
         P_2D_C.commEventId    = Number(args.commonEventId);
@@ -241,7 +265,35 @@ var P_2D_C = P_2D_C || {};
         setupButton();
     });
 
+    function fixData() {
+        if (String(P_2D_C.anchorX) === 'NaN') P_2D_C.anchorX = 0.5;
+        else if   (P_2D_C.anchorX < 0)        P_2D_C.anchorX = 0;
+        else if   (P_2D_C.anchorX > 1)        P_2D_C.anchorX = 1;
+
+        if (String(P_2D_C.anchorY) === 'NaN') P_2D_C.anchorY = 0.5;
+        else if   (P_2D_C.anchorY < 0)        P_2D_C.anchorY = 0;
+        else if   (P_2D_C.anchorY > 1)        P_2D_C.anchorY = 1;
+
+        if (String(P_2D_C.btnOverPicTint) === 'NaN') P_2D_C.btnOverPicTint = 0x96e3ff;
+        else if   (P_2D_C.btnOverPicTint < 0x000000) P_2D_C.btnOverPicTint = 0x000000;
+        else if   (P_2D_C.btnOverPicTint > 0xffffff) P_2D_C.btnOverPicTint = 0xffffff;
+
+        if (String(P_2D_C.btnDownPicTint) === 'NaN') P_2D_C.btnDownPicTint = 0xff8a8a;
+        else if   (P_2D_C.btnDownPicTint < 0x000000) P_2D_C.btnDownPicTint = 0x000000;
+        else if   (P_2D_C.btnDownPicTint > 0xffffff) P_2D_C.btnDownPicTint = 0xffffff;
+
+        if (String(P_2D_C.btnOverPicBrit) === 'NaN') P_2D_C.btnOverPicBrit = 1.5;
+        else if   (P_2D_C.btnOverPicBrit < 0)        P_2D_C.btnOverPicBrit = 0;
+        else if   (P_2D_C.btnOverPicBrit > 10)       P_2D_C.btnOverPicBrit = 10;
+
+        if (String(P_2D_C.btnDownPicBrit) === 'NaN') P_2D_C.btnDownPicBrit = 0.5;
+        else if   (P_2D_C.btnDownPicBrit < 0)        P_2D_C.btnDownPicBrit = 0;
+        else if   (P_2D_C.btnDownPicBrit > 10)       P_2D_C.btnDownPicBrit = 10;
+    }
+
     function setupButton() {
+        fixData();
+
         button = new CommEventPicBtn();
 
         button.commEvId = P_2D_C.commEventId;
@@ -254,29 +306,18 @@ var P_2D_C = P_2D_C || {};
 
         button.spr = new PIXI.Sprite(button.norTex);
         button.spr.texture     = button.norTex;
-        button.spr.anchor.set(0.5);
+        button.spr.anchor.set(P_2D_C.anchorX, P_2D_C.anchorY);
         button.spr.x           = P_2D_C.posX;
         button.spr.y           = P_2D_C.posY;
         button.spr.interactive = true;
-        //button.spr.buttonMode  = true;
 
-        if (P_2D_C.btnOverPicTint !== 'undefined' && P_2D_C.btnOverPicTint !== '')
-            button.overTint = Number('0x' + P_2D_C.btnOverPicTint.slice(1));
-        if (P_2D_C.btnDownPicTint !== 'undefined' && P_2D_C.btnDownPicTint !== '')
-            button.downTint = Number('0x' + P_2D_C.btnDownPicTint.slice(1));
+        button.overTint = P_2D_C.btnOverPicTint;
+        button.downTint = P_2D_C.btnDownPicTint;
 
-        if (P_2D_C.btnOverPicBrit !== 'NaN' && P_2D_C.btnOverPicBrit >= 0 && P_2D_C.btnOverPicBrit <= 10) {
-            button.overBrit = new PIXI.filters.ColorMatrixFilter();
-            button.overBrit.brightness(P_2D_C.btnOverPicBrit, true);
-        }
-        if (P_2D_C.btnDownPicBrit !== 'NaN' && P_2D_C.btnDownPicBrit >= 0 && P_2D_C.btnDownPicBrit <= 10) {
-            button.downBrit = new PIXI.filters.ColorMatrixFilter();
-            button.downBrit.brightness(P_2D_C.btnDownPicBrit, true);
-        }
-
-        // button.pixels       = Graphics.app.renderer.plugins.extract.pixels(button.spr);
-        // button.boundBox     = button.spr.getBounds();
-        // button.ignoreTransp = P_2D_C.ignoreTransp;
+        button.overBrit = new PIXI.filters.ColorMatrixFilter();
+        button.overBrit.brightness(P_2D_C.btnOverPicBrit, true);
+        button.downBrit = new PIXI.filters.ColorMatrixFilter();
+        button.downBrit.brightness(P_2D_C.btnDownPicBrit, true);
 
         button.registerBtnEvents();
         btnSprArr.push(button.spr);
@@ -284,7 +325,6 @@ var P_2D_C = P_2D_C || {};
         fixPlayerMove();
         disableCallMenu();
 
-        //Graphics.app.stage.addChild(button.spr);
         SceneManager._scene.addChild(button.spr);
     }
 
@@ -314,7 +354,6 @@ var P_2D_C = P_2D_C || {};
 
     function destoryAllBtnSpr() {
         btnSprArr.forEach(e => {
-            //Graphics.app.stage.removeChild(e);
             SceneManager._scene.removeChild(e);
         });
         restoreHtmlTags();
