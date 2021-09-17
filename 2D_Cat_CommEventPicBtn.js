@@ -100,13 +100,13 @@
  * @text    ------------------------
  * @default
  *
- * @arg     anchorPosX
+ * @arg     anchorX
  * @text    锚点位置x值
  * @type    string
  * @default 0.5
  * @desc    0~1之间的实数，越大锚点越靠图片右边，反之越靠左边，0.5为图片x轴中心点。
  *
- * @arg     anchorPosY
+ * @arg     anchorY
  * @text    锚点位置y值
  * @type    string
  * @default 0.5
@@ -306,6 +306,8 @@ var P_2D_C = P_2D_C || {};
 
         button.spr = new PIXI.Sprite(button.norTex);
         button.spr.texture     = button.norTex;
+        console.log(P_2D_C.anchorX)
+        console.log(P_2D_C.anchorY)
         button.spr.anchor.set(P_2D_C.anchorX, P_2D_C.anchorY);
         button.spr.x           = P_2D_C.posX;
         button.spr.y           = P_2D_C.posY;
