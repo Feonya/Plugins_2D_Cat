@@ -113,16 +113,7 @@ var P_2D_C = P_2D_C || {};
 
     var _Game_CharacterBase_prototype_updateJump = Game_CharacterBase.prototype.updateJump;
     Game_CharacterBase.prototype.updateJump = function() {
-        this._jumpCount--;
-        this._realX =
-            (this._realX * this._jumpCount + this._x) / (this._jumpCount + 1.0);
-        this._realY =
-            (this._realY * this._jumpCount + this._y) / (this._jumpCount + 1.0);
-        this.refreshBushDepth();
-        if (this._jumpCount === 0) {
-            this._realX = this._x = $gameMap.roundX(this._x);
-            this._realY = this._y = $gameMap.roundY(this._y);
-        }
+        _Game_CharacterBase_prototype_updateJump.call(this);
 
         if (isPreCalled && this.sprite) {
             this.fixRollingAnchor(this.sprite);
