@@ -30,8 +30,8 @@
  *
  * @arg     posXOffset
  * @type    number
- * @min     -99999
- * @max     99999
+ * @min     -50000
+ * @max     50000
  * @default 0
  * @text    X坐标偏移量
  * @desc    小于0向左偏移，大于0向右偏移。

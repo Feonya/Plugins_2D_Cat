@@ -45,13 +45,9 @@
  * @type    combo
  * @default A
  * @option  A
- * @value   'A'
  * @option  B
- * @value   'B'
  * @option  C
- * @value   'C'
  * @option  D
- * @value   'D'
  * @text    独立开关名称
  *
  * @arg     selfSwitchVal

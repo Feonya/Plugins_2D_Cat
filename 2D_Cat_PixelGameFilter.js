@@ -178,6 +178,7 @@ var P_2D_C = P_2D_C || {};
         let result   = false;
         let settings = getCommentSettings(eventId);
         if (settings.length === 0) return;
+        // TODO: 将forEach改为一般for循环，及时使用return跳出循环
         settings.forEach(e => {
             if (e.trim().toLowerCase() === 'ignoreoutline') {
                 result = true;
