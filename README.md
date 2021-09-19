@@ -3,7 +3,7 @@
 #### 插件介绍
 2D_猫系列插件，适用于RPG Maker MZ。
 > * 2D_Cat_SetSelfSwitchAnywhere v1.0 在任意地图的任意处更改事件独立开关。
-> * 2D_Cat_GameStartMovie v1.1 设置游戏启动影像。
+> * 2D_Cat_GameStartMovie v1.2 设置游戏启动影像。
 > * 2D_Cat_BalloonPosOffset v1.0 显示相对于目标位置偏移后的气泡动画。
 > * 2D_Cat_CustomAnimCursor v1.0 自定义动画光标指针。
 > * 2D_Cat_OpenWebInTheGame v1.0 在游戏内打开网站页面。

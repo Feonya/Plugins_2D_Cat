@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.1 设置游戏启动影像。
+ * @plugindesc v1.2 设置游戏启动影像。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -12,8 +12,10 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20210919 v1.2
+ *     修正了游戏启动时点击鼠标可能黑屏的Bug。
  * -- 20210827 v1.1
- *     修正游戏启动时点击鼠标发生错误的bug。
+ *     修正了游戏启动时点击鼠标可能发生错误的Bug。
  * -- 20210823 v1.0
  *     实现插件基本功能。
  *
@@ -48,17 +50,18 @@
 (() => {
     var params = PluginManager.parameters('2D_Cat_GameStartMovie');
 
-    let isMoviePlayed = false;
-    let playDuration  = params.moviePlayDuration;
-    let touchSkip     = params.touchSkip === 'true';
+    let isMovieFinished = false;
+    let playDuration    = params.moviePlayDuration;
+    let touchSkip       = params.touchSkip === 'true';
 
     var _Scene_Boot_prototype_startNormalGame = Scene_Boot.prototype.startNormalGame;
     Scene_Boot.prototype.startNormalGame = function() {
         Video.play('movies/' + params.movieName + '.webm');
+        document.onmousedown = touchSkipPlaying;
 
         setTimeout(() => {
-            if (!isMoviePlayed) {
-                isMoviePlayed        = true;
+            if (!isMovieFinished) {
+                isMovieFinished      = true;
                 document.onmousedown = function() {};
 
                 _Scene_Boot_prototype_startNormalGame.call(this);
@@ -66,16 +69,16 @@
         }, playDuration);
     }
 
-    document.onmousedown = function() {
-        if (isMoviePlayed || !touchSkip) return;
-        if (!$dataSystem)                return;
+    var touchSkipPlaying = function() {
+        if (isMovieFinished || !touchSkip)               return;
+        if (!$dataSystem    || !DataManager._globalInfo) return;
 
-        isMoviePlayed        = true;
+        isMovieFinished      = true;
         document.onmousedown = function() {};
 
         let video         = document.getElementById('gameVideo');
         video.currentTime = playDuration;
 
         _Scene_Boot_prototype_startNormalGame.call(Scene_Boot.prototype);
-    }
+    };
 })();
