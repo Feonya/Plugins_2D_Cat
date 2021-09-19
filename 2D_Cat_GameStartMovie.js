@@ -14,6 +14,7 @@
  * * 更新日志：
  * -- 20210919 v1.2
  *     修正了游戏启动时点击鼠标可能黑屏的Bug。
+ *     与2D_Cat_SkipMovieInTheGame插件做了兼容性修改。
  * -- 20210827 v1.1
  *     修正了游戏启动时点击鼠标可能发生错误的Bug。
  * -- 20210823 v1.0
@@ -47,12 +48,16 @@
  * @text    是否点击屏幕跳过
  */
 
+var P_2D_C = P_2D_C || {};
+
 (() => {
     var params = PluginManager.parameters('2D_Cat_GameStartMovie');
 
-    let isMovieFinished = false;
-    let playDuration    = params.moviePlayDuration;
-    let touchSkip       = params.touchSkip === 'true';
+    P_2D_C.isGameStartMoviePluginLoaded = true;  // 仅用于在其他与视频有关的插件中进行检测
+    P_2D_C.isGameStartMovieFinished     = false;
+
+    let playDuration = Number(params.moviePlayDuration);
+    let touchSkip    = String(params.touchSkip) === 'true';
 
     var _Scene_Boot_prototype_startNormalGame = Scene_Boot.prototype.startNormalGame;
     Scene_Boot.prototype.startNormalGame = function() {
@@ -60,20 +65,20 @@
         document.onmousedown = touchSkipPlaying;
 
         setTimeout(() => {
-            if (!isMovieFinished) {
-                isMovieFinished      = true;
+            if (!P_2D_C.isGameStartMovieFinished) {
+                P_2D_C.isGameStartMovieFinished = true;
                 document.onmousedown = function() {};
 
                 _Scene_Boot_prototype_startNormalGame.call(this);
             }
         }, playDuration);
-    }
+    };
 
     var touchSkipPlaying = function() {
-        if (isMovieFinished || !touchSkip)               return;
-        if (!$dataSystem    || !DataManager._globalInfo) return;
+        if (!touchSkip   || P_2D_C.isGameStartMovieFinished) return;
+        if (!$dataSystem || !DataManager._globalInfo)        return;
 
-        isMovieFinished      = true;
+        P_2D_C.isGameStartMovieFinished = true;
         document.onmousedown = function() {};
 
         let video         = document.getElementById('gameVideo');
