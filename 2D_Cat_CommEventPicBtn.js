@@ -423,9 +423,9 @@ var P_2D_C = P_2D_C || {};
         restorePlayerMove();
     }
 
-    var _Scene_map_prototype_callMenu = Scene_Map.prototype.callMenu;
+    var _Scene_Map_prototype_callMenu = Scene_Map.prototype.callMenu;
     Scene_Map.prototype.callMenu = function() {
-        _Scene_map_prototype_callMenu.call(this);
+        _Scene_Map_prototype_callMenu.call(this);
 
         if (P_2D_C.picBtnContainer)
             P_2D_C.picBtnContainer.setParent(P_2D_C.pixiTempApp.stage);
