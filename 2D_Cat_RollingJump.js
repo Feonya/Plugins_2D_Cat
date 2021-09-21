@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.0 让角色或事件进行翻滚跳跃，并且跳的更高。
+ * @plugindesc v1.1 让角色或事件进行翻滚跳跃，并且跳的更高。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -12,6 +12,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20210921 v1.1
+ *     修复了翻滚弹跳时调出菜单返回报错的Bug。
  * -- 20210918 v1.0
  *     实现插件基本功能。
  *
@@ -77,7 +79,7 @@ var P_2D_C = P_2D_C || {};
         let sprites = SceneManager._scene._spriteset._characterSprites;
         if (this instanceof Game_Player && !(this instanceof Game_Follower)) {
             for (let i = 0; i < sprites.length; i++) {
-                if (sprites[i]._character instanceof Game_Player)      return sprites[i];
+                if (sprites[i]._character instanceof Game_Player) return sprites[i];
             }
         } else {
             for (let i = 0; i < sprites.length; i++) {
@@ -116,6 +118,7 @@ var P_2D_C = P_2D_C || {};
         _Game_CharacterBase_prototype_updateJump.call(this);
 
         if (isPreCalled && this.sprite) {
+            if (!this.sprite.anchor) this.sprite = this.getSprite();
             this.fixRollingAnchor(this.sprite);
 
             this.rolling();
