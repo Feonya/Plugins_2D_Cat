@@ -17,7 +17,7 @@
 > * 2D_Cat_OldFilmFilter v1.0 为游戏画面添加老电影式的滤镜效果。
 > * 2D_Cat_WeirdFilter v1.0 为游戏画面添加几种怪异的滤镜效果，包括ASCII化、圆点化、交叉影线化和浮雕化。
 > * 2D_Cat_RetroDisplayerFilter v1.0 为游戏画面添加老式阴极管监视器滤镜效果。
-> * 2D_Cat_PixelGameFilter v1.0 为游戏添加像素化滤镜，并为游戏角色添加轮廓线。
+> * 2D_Cat_PixelGameFilter v1.1 为游戏添加像素化滤镜，并为游戏角色添加轮廓线。
 > * 2D_Cat_BeautifulSunshineFilter v1.0 为游戏添加绮丽的日光效果滤镜。
 > * 2D_Cat_RollingJump v1.1 让角色或事件进行翻滚跳跃，并且跳的更高。
 > * 2D_Cat_SkipMovieInTheGame v1.0 随时跳出正在播放的影像，并可显示影像播放倒计时。
