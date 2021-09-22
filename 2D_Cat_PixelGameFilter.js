@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.0 为游戏添加像素化滤镜，并为游戏角色添加轮廓线。
+ * @plugindesc v1.1 为游戏添加像素化滤镜，并为游戏角色添加轮廓线。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -10,12 +10,14 @@
  * 2、可在任意事件中调用“更改（激活）像素游戏滤镜”插件指令来更改滤镜数据，若滤镜
  * 效果已禁用，则激活。
  * 3、可在任意事件中调用“禁用像素游戏滤镜”，以禁用滤镜效果。
- * 4、在事件备注里输入"[2D_Cat ignoreOutline]"可以对该事件禁用轮廓线。
+ * 4、在事件备注里输入"[PixelGameFilter ignoreOutline]"可以对该事件禁用轮廓线。
  *
  * * 使用条款：免费用于任何商业或非商业目的；允许在保留原作者信息的前提下修改代
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20210922 v1.1
+ *     禁用轮廓线标签[2D_Cat ignoreOutline]改为[PixelGameFilter ignoreOutline]
  * -- 20210915 v1.0
  *     实现插件基本功能。
  *
@@ -165,7 +167,7 @@ var P_2D_C = P_2D_C || {};
         let comment  = $gameMap.event(eventId).event().note.trim();
         if (!comment) return [];
 
-        comment = comment.split('[2D_Cat ')[1];
+        comment = comment.split('[PixelGameFilter ')[1];
         if (!comment) return [];
 
         comment = comment.split(']')[0];
