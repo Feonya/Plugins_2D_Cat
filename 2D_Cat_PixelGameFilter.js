@@ -167,19 +167,19 @@ var P_2D_C = P_2D_C || {};
         let comment  = $gameMap.event(eventId).event().note.trim();
         if (!comment) return [];
 
-        comment = comment.split('[PixelGameFilter ')[1];
+        comment = comment.split('[PixelGameFilter')[1];
         if (!comment) return [];
 
         comment = comment.split(']')[0];
         if (!comment) return [];
 
-        return comment.split(' ');
+        return comment.trim().split(' ');
     }
 
     function isSetToIgnoreOutline(eventId) {
         let result   = false;
         let settings = getCommentSettings(eventId);
-        if (settings.length === 0) return;
+        if (settings.length === 0 || settings[0] === '') return;
         // TODO: 将forEach改为一般for循环，及时使用return跳出循环
         settings.forEach(e => {
             if (e.trim().toLowerCase() === 'ignoreoutline') {
@@ -235,7 +235,7 @@ var P_2D_C = P_2D_C || {};
 
     function disableFilters() {
         let pixelateFilterIdx = SceneManager._scene.filters.indexOf(P_2D_C.pixelateFilter);
-        if (pixelateFilterIdx >=0) SceneManager._scene.filters.splice(pixelateFilterIdx, 1);
+        if (pixelateFilterIdx >= 0) SceneManager._scene.filters.splice(pixelateFilterIdx, 1);
 
         SceneManager._scene._spriteset._characterSprites.forEach(se => {
             if (se.filters) {
