@@ -12,22 +12,22 @@
  * 更加繁琐的事件指令设置。
  * 1、创建一个事件，确保勾选“选项”中的“穿透”，“踏步动画”可选。
  * 2、确保这个事件的“优先级”为“在人物下方”。
- * 3、确保这个事件的“触发条件”为“玩家接触”。
+ * 3、确保这个事件的“触发条件”不设置为“自动执行”，可按需选择其他“触发条件”。
  * 4、将这个事件的“图像”设为某个角色3x4块大小范围内“面朝上方”或“面朝下方”的图像，
  * 这个方向将作为陷阱未启动时的图像；相应的，与这个方向相反的方向，将作为陷阱启
  * 动时的图像。
  * 5、在这个事件备注或注释内写下设置标签。如果写在备注内，则对所有事件页生效；
  * 如果卸载注释内，则仅当本事件页激活时生效。
  * 6、设置标签示例如下。
- * 带完整属性的设置标签（无论换行与否，请确保各属性之间预至少留一个空格）：
+ *     带完整属性的设置标签（无论换行与否，各属性间至少留一个空格）：
  *     [EventAutoWarningTrap
  *      deactivatedDuration:180 warningDuration:180 activatedDuration:180
  *      warningBlinkColor:#ff0000 warningBlinkBrightness:510 warningBlinkSpeed:15
  *      commonEventId:0 processCommonEventSpeed:15 soundName:Flash1
  *      randomStartState:true inverseDirection:false]
- * 省略属性，使用默认值的设置标签：
- *    [EventAutoWarningTrap]
- * 7、设置标签属性解释：
+ *     省略属性，使用默认值的设置标签：
+ *     [EventAutoWarningTrap]
+ * 7、设置标签属性解释如下。
  *     deactivatedDuration用于设置陷阱未启动未预警的持续帧数。
  *     warningDuration用于设置陷阱未启动开始预警的持续帧数。
  *     activatedDuration用于设置陷阱启动后的持续帧数。
