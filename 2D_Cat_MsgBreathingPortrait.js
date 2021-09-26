@@ -23,8 +23,15 @@
  * -- 20210926 v1.1
  *     修正了调用“切换正在说的立绘”指令后，可能导致立绘在下一次对话中无法调出的
  * Bug。
+ *     去掉了“设置立绘”指令中可能导致错误的“是否正在说话”参数，当同时调出多个立
+ * 绘时，默认最后一个设置的立绘为正在说话状态，可以在在对话框弹出前调用“切换正
+ * 在说话的立绘”指令来修改正在说话的立绘。
  * -- 20210925 v1.0
  *     实现插件基本功能。
+ * 
+ * * 致谢说明：
+ * 1、感谢B站用户 mic0 提供关于“设置立绘”指令中“是否正在说话”参数会导致错误发生
+ * 的Bug反馈。
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -95,16 +102,6 @@
  * @text    ------------------------
  * @default
  *
- * @arg     isTalking
- * @text    是否正在说话
- * @type    boolean
- * @default true
- * @desc    同一刻只有一个立绘处于说话状态，后设置为正在说话的立绘将会使之前的立绘自动变成未说话状态。
- *
- * @arg     _cutLine5
- * @text    ------------------------
- * @default
- *
  * @arg      breathSpeed
  * @text    呼吸速度
  * @type    string
@@ -123,7 +120,7 @@
  * @default 0.01
  * @desc    0.001~0.02之间的实数，越大呼吸幅度越大，反之越小。
  *
- * @arg     _cutLine6
+ * @arg     _cutLine5
  * @text    ------------------------
  * @default
  *
@@ -139,7 +136,7 @@
  * @default 1
  * @desc    -2~2之间的实数，1为原始比例，若要上下翻转，请设为负值。
  *
- * @arg     _cutLine7
+ * @arg     _cutLine6
  * @text    ------------------------
  * @default
  *
@@ -155,7 +152,7 @@
  * @default 0.8
  * @desc    -2~2之间的实数，1为原始比例，若要上下翻转，请设为负值。
  *
- * @arg     _cutLine8
+ * @arg     _cutLine7
  * @text    ------------------------
  * @default
  *
@@ -243,7 +240,8 @@ var P_2D_C = P_2D_C || {};
         let anchorY                  = Number(args.anchorY);
         let posX                     = Number(args.posX);
         let posY                     = Number(args.posY);
-        let isTalking                = String(args.isTalking) === 'true';
+        // let isTalking                = String(args.isTalking) === 'true';
+        let isTalking                = true;
         let breathSpeed              = Number(args.breathSpeed);
         let breathAmpX               = Number(args.breathAmpX);
         let breathAmpY               = Number(args.breathAmpY);
@@ -301,6 +299,7 @@ var P_2D_C = P_2D_C || {};
             }
         }
 
+        console.log(newPortraitSprite)
         if (!newPortraitSprite) {
             newPortraitSprite = new Portrait_Sprite();
             newPortraitSprite.textureBackup = PIXI.Texture.from('img/pictures/' + pictureName + '.png');
@@ -387,7 +386,8 @@ var P_2D_C = P_2D_C || {};
 
             e.texture = e.textureBackup;
         });
-        P_2D_C.portraitContainer.setChildIndex(onTalkPortrait, P_2D_C.portraitContainer.children.length - 1);
+        if (!onTalkPortrait)
+            P_2D_C.portraitContainer.setChildIndex(onTalkPortrait, P_2D_C.portraitContainer.children.length - 1);
     }
 
     function hidePortraits() {
