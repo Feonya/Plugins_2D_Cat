@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.0 在对话时添加带呼吸效果的多人立绘。
+ * @plugindesc v1.1 在对话时添加带呼吸效果的多人立绘。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -20,6 +20,9 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20210926 v1.1
+ *     修正了调用“切换正在说的立绘”指令后，可能导致立绘在下一次对话中无法调出的
+ * Bug。
  * -- 20210925 v1.0
  *     实现插件基本功能。
  *
@@ -363,6 +366,7 @@ var P_2D_C = P_2D_C || {};
     });
 
     function showPortraits() {
+        let onTalkPortrait = null;
         P_2D_C.portraitContainer.children.forEach(e => {
             if (!e.filters) e.filters           = [];
             if (!e._colorFilter) e._colorFilter = new ColorFilter();
@@ -372,7 +376,7 @@ var P_2D_C = P_2D_C || {};
             e.position.set(e.posX   , e.posY);
 
             if (e.isTalking) {
-                P_2D_C.portraitContainer.setChildIndex(e, P_2D_C.portraitContainer.children.length - 1);
+                onTalkPortrait = e;
                 e._colorFilter.setBrightness(e.onTalkBrightness);
                 e.scale.set(e.onTalkScaleX, e.onTalkScaleY);
             }
@@ -383,6 +387,7 @@ var P_2D_C = P_2D_C || {};
 
             e.texture = e.textureBackup;
         });
+        P_2D_C.portraitContainer.setChildIndex(onTalkPortrait, P_2D_C.portraitContainer.children.length - 1);
     }
 
     function hidePortraits() {
