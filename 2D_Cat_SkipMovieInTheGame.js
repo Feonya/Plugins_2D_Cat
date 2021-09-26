@@ -34,6 +34,11 @@
  * @type    boolean
  * @default true
  *
+ * @param   isOnTouchSkip
+ * @text    是否触摸屏幕跳过（移动设备）
+ * @type    boolean
+ * @default true
+ *
  * @param   isShowCountdownText
  * @text    是否显示视频倒计时
  * @type    boolean
@@ -47,6 +52,7 @@ var P_2D_C = P_2D_C || {};
 
     P_2D_C.isClickScreenSkip   = String(params.isClickScreenSkip)   === 'true';
     P_2D_C.isPressEscSkip      = String(params.isPressEscSkip)      === 'true';
+    P_2D_C.isOnTouchSkip       = String(params.isOnTouchSkip)       === 'true';
     P_2D_C.isShowCountdownText = String(params.isShowCountdownText) === 'true';
 
     let countdownText = null;
@@ -92,6 +98,10 @@ var P_2D_C = P_2D_C || {};
         if (e && e.keyCode == 27) Video.finishPlaying();
     };
 
+    Video.onTouchSkipPlaying = function() {
+        if (TouchInput.isRepeated()) Video.finishPlaying();
+    }
+
     var _Video_onLoad = Video._onLoad;
     Video._onLoad = function() {
         _Video_onLoad.call(this);
@@ -101,6 +111,7 @@ var P_2D_C = P_2D_C || {};
         if (thisIsNotAGameStartMovie || gameStartMoivePluginIsNotLoaded) {
             if (P_2D_C.isClickScreenSkip)   document.onmousedown = this.clickScreenSkipPlaying;
             if (P_2D_C.isPressEscSkip)      document.onkeydown   = this.pressEscSkipPlaying;
+            if (P_2D_C.isOnTouchSkip)       Graphics.app.ticker.add(this.onTouchSkipPlaying);
             if (P_2D_C.isShowCountdownText) {
                 createCountdownText();
                 registerCountdownProgressEvent();
@@ -117,6 +128,7 @@ var P_2D_C = P_2D_C || {};
         if (thisIsNotAGameStartMovie || gameStartMoivePluginIsNotLoaded) {
             document.onmousedown = {};
             document.onkeydown   = {};
+            Graphics.app.ticker.remove(this.onTouchSkipPlaying);
             destroyCountdownText();
         }
     };
