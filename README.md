@@ -20,7 +20,7 @@
 > * 2D_Cat_PixelGameFilter v1.1 为游戏添加像素化滤镜，并为游戏角色添加轮廓线。
 > * 2D_Cat_BeautifulSunshineFilter v1.0 为游戏添加绮丽的日光效果滤镜。
 > * 2D_Cat_RollingJump v1.1 让角色或事件进行翻滚跳跃，并且跳的更高。
-> * 2D_Cat_SkipMovieInTheGame v1.0 随时跳出正在播放的影像，并可显示影像播放倒计时。
+> * 2D_Cat_SkipMovieInTheGame v1.1 随时跳出正在播放的影像，并可显示影像播放倒计时。
 > * 2D_Cat_BodyShakeMove v1.0 角色移动时添加晃动身体的效果。
 > * 2D_Cat_2D_Cat_EventFeatureModify v1.0 更改事件或主角的色调、灰度、亮度、色相、缩放比例以及斜切弧度。
 > * 2D_Cat_RegionWall v1.0 基于区域编号自定义空气墙。
