@@ -10,7 +10,7 @@
 > * 2D_Cat_DanmuSimulation v1.2 在游戏画面模拟弹幕效果。
 > * 2D_Cat_GlobalFontChange v1.0 在游戏中实时更换全局字体。
 > * 2D_Cat_FreestyleMsgText v1.0 自由设定对话框文字式样，包括颜色、渐变色、加粗、倾斜、轮廓、阴影、辉光等效果。
-> * 2D_Cat_MsgTextPrintAnim v1.0 在对话框文字打印时，添加动画以及声音效果。
+> * 2D_Cat_MsgTextPrintAnim v1.1 在对话框文字打印时，添加动画以及声音效果。
 > * 2D_Cat_SwayingTreeTile v1.0 为地图中的树（等）图块添加随风摆动效果。
 > * 2D_Cat_GlisteningWaterTile v1.1 为地图中的水（等）图块添加波光粼粼效果。
 > * 2D_Cat_CommEventPicBtn v1.4 调出一个或多个自定义图片按钮，点击触发共通事件。
@@ -21,7 +21,7 @@
 > * 2D_Cat_BeautifulSunshineFilter v1.0 为游戏添加绮丽的日光效果滤镜。
 > * 2D_Cat_RollingJump v1.1 让角色或事件进行翻滚跳跃，并且跳的更高。
 > * 2D_Cat_SkipMovieInTheGame v1.0 随时跳出正在播放的影像，并可显示影像播放倒计时。
-> * 2D_Cat_BodyShakeMove v1.0 角色移动时添加晃动身体的效果。> * 2D_Cat_BodyShakeMove v1.0 角色移动时添加晃动身体的效果。
+> * 2D_Cat_BodyShakeMove v1.0 角色移动时添加晃动身体的效果。
 > * 2D_Cat_2D_Cat_EventFeatureModify v1.0 更改事件或主角的色调、灰度、亮度、色相、缩放比例以及斜切弧度。
 > * 2D_Cat_RegionWall v1.0 基于区域编号自定义空气墙。
 > * 2D_Cat_EventAutoWarningTrap v1.0 更方便的将事件变成带预警功能的自动陷阱。

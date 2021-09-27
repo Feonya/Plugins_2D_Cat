@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.0 在对话框文字打印时，添加动画以及声音效果。
+ * @plugindesc v1.1 在对话框文字打印时，添加动画以及声音效果。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -16,6 +16,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20210927 v1.1
+ *     修正了进入战斗时发生错误的Bug。
  * -- 20210901 v1.0
  *     实现插件基本功能。
  *
@@ -111,7 +113,8 @@
     Game_Temp.prototype.requestAnimation = function(targets, animationId, mirror = false) {
         if (targets[0] === null) {
             isNullTarget = true;
-            msgWinPos    = Graphics.app.stage._messageWindow.getGlobalPosition();
+            // msgWinPos    = Graphics.app.stage._messageWindow.getGlobalPosition();
+            msgWinPos    = SceneManager._scene._messageWindow.getGlobalPosition();
             _Game_Temp_prototype_requestAnimation.call(this, [$gamePlayer], animationId, mirror);
         } else {
             isNullTarget = false;
