@@ -72,6 +72,10 @@ var P_2D_C = P_2D_C || {};
         document.body.appendChild(countdownText);
     }
 
+    function hideVideoPlayArrow() {
+        if (Video._element.poster !== '') Video._element.poster = '';
+    }
+
     function registerCountdownProgressEvent() {
         Video._element.addEventListener('timeupdate', updateCountdownText);
     }
@@ -82,7 +86,7 @@ var P_2D_C = P_2D_C || {};
 
     function destroyCountdownText() {
         if (!countdownText) return;
-        document.body.removeChild(countdownText);
+        if (document.body.contains(countdownText)) document.body.removeChild(countdownText);
     }
 
     Video.finishPlaying = function() {
@@ -100,11 +104,13 @@ var P_2D_C = P_2D_C || {};
 
     Video.onTouchSkipPlaying = function() {
         if (TouchInput.isRepeated()) Video.finishPlaying();
-    }
+    };
 
     var _Video_onLoad = Video._onLoad;
     Video._onLoad = function() {
         _Video_onLoad.call(this);
+
+        hideVideoPlayArrow();
 
         let thisIsNotAGameStartMovie        = P_2D_C.isGameStartMoviePluginLoaded && P_2D_C.isGameStartMovieFinished;
         let gameStartMoivePluginIsNotLoaded = !P_2D_C.isGameStartMoviePluginLoaded;
