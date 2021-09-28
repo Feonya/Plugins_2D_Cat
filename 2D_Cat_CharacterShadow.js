@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.1 为游戏角色添加自定义的阴影。
+ * @plugindesc v1.0 为游戏角色添加自定义的阴影。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
