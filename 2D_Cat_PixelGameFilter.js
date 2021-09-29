@@ -167,7 +167,7 @@ var P_2D_C = P_2D_C || {};
         let comment  = $gameMap.event(eventId).event().note.trim();
         if (!comment) return [];
 
-        comment = comment.split('[PixelGameFilter')[1];
+        comment = comment.toLowerCase().split('[pixelgamefilter')[1];
         if (!comment) return [];
 
         comment = comment.split(']')[0];

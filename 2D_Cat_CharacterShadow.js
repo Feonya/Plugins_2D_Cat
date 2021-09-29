@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.0 为游戏角色添加自定义的阴影。
+ * @plugindesc v1.1 为游戏角色添加自定义的阴影。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -16,6 +16,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20210930 v1.1
+ *     现在事件备注中的插件标签可以忽略大小写差异。
  * -- 20210928 v1.0
  *     实现插件基本功能。
  *
@@ -67,13 +69,20 @@
         let comment  = $gameMap.event(this.eventId()).event().note.trim();
         if (!comment) return [];
 
-        comment = comment.split('[CharacterShadow')[1];
+        comment = comment.toLowerCase().split('[charactershadow')[1];
         if (!comment) return [];
 
         comment = comment.split(']')[0];
         if (!comment) return [];
 
-        return comment.trim().split(' ');
+        let rst = comment.trim().split(' ');
+        if (rst.length === 0 || rst[0] === '') return [];
+
+        rst.forEach(e => {
+            e.trim().toLowerCase();
+        });
+
+        return rst;
     };
 
     Game_Character.prototype.createShadow = function(tilemap) {
@@ -84,16 +93,16 @@
             let sName = shadowFileName;
             if (this._characterName && this._characterName[0] !== '!') {
                 let settings = this.getCommentSettings();
-                if (settings.indexOf('hideShadow') > -1) {
+                if (settings.indexOf('hideshadow') > -1) {
                     // Do nothing
                 } else {
                     for (let i = 0; i < settings.length; i++) {
                         let e = settings[i].split(':');
-                        if (e[0].trim() === 'shadowName') {
+                        if (e[0].trim() === 'shadowname') {
                             sName = e[1].trim();
-                        } else if (e[0].trim() === 'offsetX') {
+                        } else if (e[0].trim() === 'offsetx') {
                             this.shadowOffsetX = Number(e[1].trim());
-                        } else if (e[0].trim() === 'offsetY') {
+                        } else if (e[0].trim() === 'offsety') {
                             this.shadowOffsetY = Number(e[1].trim());
                         }
                     }
