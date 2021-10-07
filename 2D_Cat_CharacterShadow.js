@@ -13,8 +13,8 @@
  * 5、在事件备注中写入[CharacterShadow shadowName:Shadow2 offsetX:0 offsetY:10]
  * 可以自定义本事件的阴影文件，以及x、y轴的偏移量。
  * 6、可在任意事件调用“禁用阴影”来暂时禁用主角、跟随者或指定事件的阴影。
- * 7、可在任意事件调用“激活阴影”来重新激活主角、跟随者或指定事件的阴影（注意
- * 本指令无法激活拥有[CharacterShadow hideShadow]标签事件的阴影）。
+ * 7、可在任意事件调用“激活阴影”来重新激活主角、跟随者或指定事件的阴影（注意本
+ * 指令无法激活拥有[CharacterShadow hideShadow]标签事件的阴影）。
  *
  * * 使用条款：免费用于任何商业或非商业目的；允许在保留原作者信息的前提下修改代
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
@@ -104,7 +104,7 @@
         } else {
             let event = $gameMap.event(eId);
             if (!event._shadowSprite) return;
-            event._shadowTextureBackup = event._shadowSprite.texture;
+            event._shadowTextureBackup  = event._shadowSprite.texture;
             event._shadowSprite.texture = null;
         }
     });

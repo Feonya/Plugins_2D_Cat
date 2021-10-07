@@ -430,6 +430,14 @@ var P_2D_C = P_2D_C || {};
         if (P_2D_C.picBtnContainer)
             P_2D_C.picBtnContainer.setParent(P_2D_C.pixiTempApp.stage);
     };
+    
+    var _Scene_Battle_prototype_create = Scene_Battle.prototype.create;
+    Scene_Battle.prototype.create = function() {
+        _Scene_Battle_prototype_create.call(this);
+        
+        if (P_2D_C.picBtnContainer)
+            P_2D_C.picBtnContainer.setParent(P_2D_C.pixiTempApp.stage);
+    };
 
     var _Scene_Map_prototype_onMapLoaded = Scene_Map.prototype.onMapLoaded;
     Scene_Map.prototype.onMapLoaded = function() {

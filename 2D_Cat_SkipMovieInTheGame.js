@@ -86,7 +86,7 @@ var P_2D_C = P_2D_C || {};
     }
 
     function updateCountdownText() {
-            countdownText.textContent = Math.floor(Video._element.duration - Video._element.currentTime);
+        countdownText.textContent = Math.floor(Video._element.duration - Video._element.currentTime);
     }
 
     function destroyCountdownText() {

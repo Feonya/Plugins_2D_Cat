@@ -177,7 +177,7 @@
     Bitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {
         _Bitmap_prototype_drawText.call(this, text, x, y, maxWidth, lineHeight, align);
 
-        if (isDisabled || text.length > 1) return;
+        if (isDisabled || !text || text.length > 1) return;
 
         if ($gameMessage.isBusy()) {
             if (currChCountForAnim <= 0 && text != '') {
