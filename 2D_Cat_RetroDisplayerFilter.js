@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.0 为游戏画面添加老式阴极管监视器滤镜效果。
+ * @plugindesc v1.1 为游戏画面添加老式阴极管监视器滤镜效果。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -16,11 +16,14 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20211008 v1.1
+ *     增加了“消息窗口是否被滤镜影响”参数。
  * -- 20210914 v1.0
  *     实现插件基本功能。
  *
  * * 致谢说明：
- * 本插件使用了FixiJS Filters库代码，非常感谢原作者！
+ * 1、本插件使用了FixiJS Filters库代码，非常感谢原作者！
+ * 2、感谢B站用户 蛤狮 关于考虑消息窗口是否受影响的建议。
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -198,6 +201,15 @@
  * @type    string
  * @default 4
  * @desc    -50~50之间的实数，绝对值越大在y轴偏移越多，反之越少。
+ *
+ * @param   _cutLine6
+ * @text    ------------------------
+ * @default
+ *
+ * @param   isEffectOnMsgWin
+ * @text    消息窗口是否被滤镜影响
+ * @type    boolean
+ * @default false
  *
  * @command enableRetroDisplayer
  * @text    激活老式监视器滤镜
@@ -385,8 +397,8 @@ var P_2D_C = P_2D_C || {};
 
     var params = PluginManager.parameters('2D_Cat_RetroDisplayerFilter');
 
-    P_2D_C.retroDisplayerEnabled = String(params.retroDisplayerEnabled) === 'true';
-
+    P_2D_C.retroDisplayerEnabled          = String(params.retroDisplayerEnabled) === 'true';
+    P_2D_C.retroDisplayerIsEffectOnMsgWin = String(params.isEffectOnMsgWin) === 'true';
 
     function setupRetroDisplayer() {
         setupCrtFilter();
@@ -568,10 +580,17 @@ var P_2D_C = P_2D_C || {};
 
     function startCrtFilter() {
         let hasThisFilter = false;
-        SceneManager._scene.filters.forEach(e => {
-            if (e === P_2D_C.retroDisplayerCrtFilter) hasThisFilter = true;
-        });
-        if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.retroDisplayerCrtFilter);
+        if (P_2D_C.retroDisplayerIsEffectOnMsgWin) {
+            SceneManager._scene.filters.forEach(e => {
+                if (e === P_2D_C.retroDisplayerCrtFilter) hasThisFilter = true;
+            });
+            if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.retroDisplayerCrtFilter);
+        } else {
+            SceneManager._scene._spriteset.filters.forEach(e => {
+                if (e === P_2D_C.retroDisplayerCrtFilter) hasThisFilter = true;
+            });
+            if (!hasThisFilter) SceneManager._scene._spriteset.filters.push(P_2D_C.retroDisplayerCrtFilter);
+        }
     }
 
     function updateCrtFilter() {
@@ -580,8 +599,13 @@ var P_2D_C = P_2D_C || {};
     }
 
     function diasbleCrtFilter() {
-        let idx = SceneManager._scene.filters.indexOf(P_2D_C.retroDisplayerCrtFilter);
-        if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+        if (P_2D_C.retroDisplayerIsEffectOnMsgWin) {
+            let idx = SceneManager._scene.filters.indexOf(P_2D_C.retroDisplayerCrtFilter);
+            if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+        } else {
+            let idx = SceneManager._scene._spriteset.filters.indexOf(P_2D_C.retroDisplayerCrtFilter);
+            if (idx >= 0) SceneManager._scene._spriteset.filters.splice(idx, 1);
+        }
     }
 
     /*******************************************************************
@@ -609,15 +633,27 @@ var P_2D_C = P_2D_C || {};
 
     function startBloomFilter() {
         let hasThisFilter = false;
-        SceneManager._scene.filters.forEach(e => {
-            if (e === P_2D_C.retroDisplayerBloomFilter) hasThisFilter = true;
-        });
-        if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.retroDisplayerBloomFilter);
+        if (P_2D_C.retroDisplayerIsEffectOnMsgWin) {
+            SceneManager._scene.filters.forEach(e => {
+                if (e === P_2D_C.retroDisplayerBloomFilter) hasThisFilter = true;
+            });
+            if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.retroDisplayerBloomFilter);
+        } else {
+            SceneManager._scene._spriteset.filters.forEach(e => {
+                if (e === P_2D_C.retroDisplayerBloomFilter) hasThisFilter = true;
+            });
+            if (!hasThisFilter) SceneManager._scene._spriteset.filters.push(P_2D_C.retroDisplayerBloomFilter);
+        }
     }
 
     function disableBloomFilter() {
-        let idx = SceneManager._scene.filters.indexOf(P_2D_C.retroDisplayerBloomFilter);
-        if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+        if (P_2D_C.retroDisplayerIsEffectOnMsgWin) {
+            let idx = SceneManager._scene.filters.indexOf(P_2D_C.retroDisplayerBloomFilter);
+            if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+        } else {
+            let idx = SceneManager._scene._spriteset.filters.indexOf(P_2D_C.retroDisplayerBloomFilter);
+            if (idx >= 0) SceneManager._scene._spriteset.filters.splice(idx, 1);
+        }
     }
 
     /*******************************************************************
@@ -707,10 +743,17 @@ var P_2D_C = P_2D_C || {};
 
     function startGlitchFilter() {
         let hasThisFilter = false;
-        SceneManager._scene.filters.forEach(e => {
-            if (e === P_2D_C.retroDisplayerGlitchFilter) hasThisFilter = true;
-        });
-        if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.retroDisplayerGlitchFilter);
+        if (P_2D_C.retroDisplayerIsEffectOnMsgWin) {
+            SceneManager._scene.filters.forEach(e => {
+                if (e === P_2D_C.retroDisplayerGlitchFilter) hasThisFilter = true;
+            });
+            if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.retroDisplayerGlitchFilter);
+        } else {
+            SceneManager._scene._spriteset.filters.forEach(e => {
+                if (e === P_2D_C.retroDisplayerGlitchFilter) hasThisFilter = true;
+            });
+            if (!hasThisFilter) SceneManager._scene._spriteset.filters.push(P_2D_C.retroDisplayerGlitchFilter);
+        }
         // startGlitchProcessing();
         stopGlitchProcessing();
     }
@@ -722,8 +765,13 @@ var P_2D_C = P_2D_C || {};
     }
 
     function disableGlitchFilter() {
-        let idx = SceneManager._scene.filters.indexOf(P_2D_C.retroDisplayerGlitchFilter);
-        if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+        if (P_2D_C.retroDisplayerIsEffectOnMsgWin) {
+            let idx = SceneManager._scene.filters.indexOf(P_2D_C.retroDisplayerGlitchFilter);
+            if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+        } else {
+            let idx = SceneManager._scene._spriteset.filters.indexOf(P_2D_C.retroDisplayerGlitchFilter);
+            if (idx >= 0) SceneManager._scene._spriteset.filters.splice(idx, 1);
+        }
     }
 
     function startGlitchProcessing() {

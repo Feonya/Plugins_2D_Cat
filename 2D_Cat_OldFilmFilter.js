@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.0 为游戏画面添加老电影式的滤镜效果。
+ * @plugindesc v1.1 为游戏画面添加老电影式的滤镜效果。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -15,11 +15,14 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20211008 v1.1
+ *     增加了“消息窗口是否被滤镜影响”参数。
  * -- 20210912 v1.0
  *     实现插件基本功能。
  *
  * * 致谢说明：
- * 本插件使用了FixiJS Filters库代码，非常感谢原作者！
+ * 1、本插件使用了FixiJS Filters库代码，非常感谢原作者！
+ * 2、感谢B站用户 蛤狮 关于考虑消息窗口是否受影响的建议。
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -89,6 +92,11 @@
  * @type    string
  * @default 0.3
  * @desc    0~1之间的实数，越大越模糊，反之越清晰。
+ *
+ * @param   isEffectOnMsgWin
+ * @text    消息窗口是否被滤镜影响
+ * @type    boolean
+ * @default false
  *
  * @command changeOldFilmFilter
  * @text    更改（激活）老电影滤镜
@@ -174,16 +182,17 @@ var P_2D_C = P_2D_C || {};
 
     P_2D_C.oldFilmFilter = null;
 
-    P_2D_C.isOldFilmEnabled       = String(params.isOldFilmEnabled) === 'true';
-    P_2D_C.oldFilmSepia           = Number(params.oldFilmSepia);
-    P_2D_C.oldFilmNoise           = Number(params.oldFilmNoise);
-    P_2D_C.oldFilmNoiseSize       = Number(params.oldFilmNoiseSize);
-    P_2D_C.oldFilmScratch         = Number(params.oldFilmScratch);
-    P_2D_C.oldFilmScratchDensity  = Number(params.oldFilmScratchDensity);
-    P_2D_C.oldFilmScratchWidth    = Number(params.oldFilmScratchWidth);
-    P_2D_C.oldFilmVignetting      = Number(params.oldFilmVignetting);
-    P_2D_C.oldFilmVignettingAlpha = Number(params.oldFilmVignettingAlpha);
-    P_2D_C.oldFilmVignettingBlur  = Number(params.oldFilmVignettingBlur);
+    P_2D_C.isOldFilmEnabled        = String(params.isOldFilmEnabled) === 'true';
+    P_2D_C.oldFilmSepia            = Number(params.oldFilmSepia);
+    P_2D_C.oldFilmNoise            = Number(params.oldFilmNoise);
+    P_2D_C.oldFilmNoiseSize        = Number(params.oldFilmNoiseSize);
+    P_2D_C.oldFilmScratch          = Number(params.oldFilmScratch);
+    P_2D_C.oldFilmScratchDensity   = Number(params.oldFilmScratchDensity);
+    P_2D_C.oldFilmScratchWidth     = Number(params.oldFilmScratchWidth);
+    P_2D_C.oldFilmVignetting       = Number(params.oldFilmVignetting);
+    P_2D_C.oldFilmVignettingAlpha  = Number(params.oldFilmVignettingAlpha);
+    P_2D_C.oldFilmVignettingBlur   = Number(params.oldFilmVignettingBlur);
+    P_2D_C.oldFilmIsEffectOnMsgWin = String(params.isEffectOnMsgWin) === 'true';
 
     PluginManager.registerCommand('2D_Cat_OldFilmFilter', 'changeOldFilmFilter', args => {
         P_2D_C.oldFilmSepia           = Number(args.newOldFilmSepia);
@@ -279,10 +288,17 @@ var P_2D_C = P_2D_C || {};
     function startOldFilmFilter() {
         if (P_2D_C.isOldFilmEnabled) {
             let hasThisFilter = false;
-            SceneManager._scene.filters.forEach(e => {
-                if (e === P_2D_C.oldFilmFilter) hasThisFilter = true;
-            });
-            if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.oldFilmFilter);
+            if (P_2D_C.oldFilmIsEffectOnMsgWin) {
+                SceneManager._scene.filters.forEach(e => {
+                    if (e === P_2D_C.oldFilmFilter) hasThisFilter = true;
+                });
+                if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.oldFilmFilter);
+            } else {
+                SceneManager._scene._spriteset.filters.forEach(e => {
+                    if (e === P_2D_C.oldFilmFilter) hasThisFilter = true;
+                });
+                if (!hasThisFilter) SceneManager._scene._spriteset.filters.push(P_2D_C.oldFilmFilter);
+            }
         }
     }
 
@@ -291,8 +307,13 @@ var P_2D_C = P_2D_C || {};
     }
 
     function disableOldFilmFilter() {
-        let idx = SceneManager._scene.filters.indexOf(P_2D_C.oldFilmFilter);
-        if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+        if (P_2D_C.oldFilmIsEffectOnMsgWin) {
+            let idx = SceneManager._scene.filters.indexOf(P_2D_C.oldFilmFilter);
+            if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
+        } else {
+            let idx = SceneManager._scene._spriteset.filters.indexOf(P_2D_C.oldFilmFilter);
+            if (idx >= 0) SceneManager._scene._spriteset.filters.splice(idx, 1);
+        }
     }
 
     setupOldFilmFilter();

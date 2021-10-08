@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.1 为游戏添加像素化滤镜，并为游戏角色添加轮廓线。
+ * @plugindesc v1.2 为游戏添加像素化滤镜，并为游戏角色添加轮廓线。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -16,13 +16,16 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20211008 v1.2
+ *     增加了“消息窗口是否被滤镜影响”参数。
  * -- 20210922 v1.1
  *     禁用轮廓线标签[2D_Cat ignoreOutline]改为[PixelGameFilter ignoreOutline]
  * -- 20210915 v1.0
  *     实现插件基本功能。
  *
  * * 致谢说明：
- * 本插件使用了FixiJS Filters库代码，非常感谢原作者！
+ * 1、本插件使用了FixiJS Filters库代码，非常感谢原作者！
+ * 2、感谢B站用户 蛤狮 关于考虑消息窗口是否受影响的建议。
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -62,6 +65,11 @@
  * @type    boolean
  * @default true
  * @desc    激活后开启主角和跟随者轮廓线。
+ *
+ * @param   isEffectOnMsgWin
+ * @text    消息窗口是否被滤镜影响
+ * @type    boolean
+ * @default false
  *
  * @command changePixelGameFilter
  * @text    更改（激活）像素游戏滤镜
@@ -123,6 +131,7 @@ var P_2D_C = P_2D_C || {};
     P_2D_C.pixelGameOutlineColor         = getColorValue(String(params.outlineColor));
     P_2D_C.pixelGameOutlineThickness     = Number(params.outlineThickness);
     P_2D_C.pixelGameOutlinePlayerEnabled = String(params.outlinePlayerEnabled) === 'true';
+    P_2D_C.pixelGameIsEffectOnMsgWin     = String(params.isEffectOnMsgWin) === 'true';
 
     PluginManager.registerCommand('2D_Cat_PixelGameFilter', 'changePixelGameFilter', args => {
         P_2D_C.pixelGamePixelateSize         = Number(args.newPixelateSize);
@@ -215,10 +224,17 @@ var P_2D_C = P_2D_C || {};
 
     function startPixelateFilter() {
         let hasPixelateFilter = false;
-        SceneManager._scene.filters.forEach(e => {
-            if (e === P_2D_C.pixelateFilter) hasPixelateFilter = true;
-        });
-        if (!hasPixelateFilter) SceneManager._scene.filters.push(P_2D_C.pixelateFilter);
+        if (P_2D_C.pixelGameIsEffectOnMsgWin) {
+            SceneManager._scene.filters.forEach(e => {
+                if (e === P_2D_C.pixelateFilter) hasPixelateFilter = true;
+            });
+            if (!hasPixelateFilter) SceneManager._scene.filters.push(P_2D_C.pixelateFilter);
+        } else {
+            SceneManager._scene._spriteset.filters.forEach(e => {
+                if (e === P_2D_C.pixelateFilter) hasPixelateFilter = true;
+            });
+            if (!hasPixelateFilter) SceneManager._scene._spriteset.filters.push(P_2D_C.pixelateFilter);
+        }
     }
 
     function startOutlineFilter(se) {
@@ -234,8 +250,13 @@ var P_2D_C = P_2D_C || {};
     }
 
     function disableFilters() {
-        let pixelateFilterIdx = SceneManager._scene.filters.indexOf(P_2D_C.pixelateFilter);
-        if (pixelateFilterIdx >= 0) SceneManager._scene.filters.splice(pixelateFilterIdx, 1);
+        if (P_2D_C.pixelGameIsEffectOnMsgWin) {
+            let pixelateFilterIdx = SceneManager._scene.filters.indexOf(P_2D_C.pixelateFilter);
+            if (pixelateFilterIdx >= 0) SceneManager._scene.filters.splice(pixelateFilterIdx, 1);
+        } else {
+            let pixelateFilterIdx = SceneManager._scene._spriteset.filters.indexOf(P_2D_C.pixelateFilter);
+            if (pixelateFilterIdx >= 0) SceneManager._scene._spriteset.filters.splice(pixelateFilterIdx, 1);
+        }
 
         SceneManager._scene._spriteset._characterSprites.forEach(se => {
             if (se.filters) {

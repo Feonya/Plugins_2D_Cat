@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.0 为游戏添加绮丽的日光效果滤镜。
+ * @plugindesc v1.1 为游戏添加绮丽的日光效果滤镜。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -15,11 +15,14 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20211008 v1.1
+ *     增加了“消息窗口是否被滤镜影响”参数。
  * -- 20210916 v1.0
  *     实现插件基本功能。
  *
  * * 致谢说明：
- * 本插件使用了FixiJS Filters库代码，非常感谢原作者！
+ * 1、本插件使用了FixiJS Filters库代码，非常感谢原作者！
+ * 2、感谢B站用户 蛤狮 关于考虑消息窗口是否受影响的建议。
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -95,6 +98,11 @@
  * @type    string
  * @default 8
  * @desc    0~20之间的实数，越大质量越高，反之越低。
+ *
+ * @param   isEffectOnMsgWin
+ * @text    消息窗口是否被滤镜影响
+ * @type    boolean
+ * @default false
  *
  * @command changeBeautifulSunshineFilter
  * @text    更改（激活）绮丽日光滤镜
@@ -198,6 +206,7 @@ var P_2D_C = P_2D_C || {};
     P_2D_C.beautifulSunshineAdvancedBloomBrightness = Number(params.advancedBloomBrightness);
     P_2D_C.beautifulSunshineAdvancedBloomBlur       = Number(params.advancedBloomBlur);
     P_2D_C.beautifulSunshineAdvancedBloomQuality    = Number(params.advancedBloomQuality);
+    P_2D_C.beautifulSunshineIsEffectOnMsgWin        = String(params.isEffectOnMsgWin) === 'true';
 
     PluginManager.registerCommand('2D_Cat_BeautifulSunshineFilter', 'changeBeautifulSunshineFilter', args => {
         P_2D_C.beautifulSunshineGodrayGain              = Number(args.newGodrayGain);
@@ -304,8 +313,13 @@ var P_2D_C = P_2D_C || {};
             if (e === P_2D_C.godrayFilter)        hasGodrayFilter        = true;
             if (e === P_2D_C.advancedBloomFilter) hasAdvancedBloomFilter = true;
         });
-        if (!hasGodrayFilter)        SceneManager._scene.filters.push(P_2D_C.godrayFilter);
-        if (!hasAdvancedBloomFilter) SceneManager._scene.filters.push(P_2D_C.advancedBloomFilter);
+        if (P_2D_C.beautifulSunshineIsEffectOnMsgWin) {
+            if (!hasGodrayFilter)        SceneManager._scene.filters.push(P_2D_C.godrayFilter);
+            if (!hasAdvancedBloomFilter) SceneManager._scene.filters.push(P_2D_C.advancedBloomFilter);
+        } else {
+            if (!hasGodrayFilter)        SceneManager._scene._spriteset.filters.push(P_2D_C.godrayFilter);
+            if (!hasAdvancedBloomFilter) SceneManager._scene._spriteset.filters.push(P_2D_C.advancedBloomFilter);
+        }
     }
 
     function updateFilters() {
@@ -315,10 +329,17 @@ var P_2D_C = P_2D_C || {};
     }
 
     function disableFilters() {
-        let godrayFilterIdx = SceneManager._scene.filters.indexOf(P_2D_C.godrayFilter);
-        if (godrayFilterIdx >=0) SceneManager._scene.filters.splice(godrayFilterIdx, 1);
-        let advancedBloomFilterIdx = SceneManager._scene.filters.indexOf(P_2D_C.advancedBloomFilter);
-        if (advancedBloomFilterIdx >=0) SceneManager._scene.filters.splice(advancedBloomFilterIdx, 1);
+        if (P_2D_C.beautifulSunshineIsEffectOnMsgWin) {
+            let godrayFilterIdx        = SceneManager._scene.filters.indexOf(P_2D_C.godrayFilter);
+            if (godrayFilterIdx >=0)        SceneManager._scene.filters.splice(godrayFilterIdx, 1);
+            let advancedBloomFilterIdx = SceneManager._scene.filters.indexOf(P_2D_C.advancedBloomFilter);
+            if (advancedBloomFilterIdx >=0) SceneManager._scene.filters.splice(advancedBloomFilterIdx, 1);
+        } else {
+            let godrayFilterIdx        = SceneManager._scene._spriteset.filters.indexOf(P_2D_C.godrayFilter);
+            if (godrayFilterIdx >=0)        SceneManager._scene._spriteset.filters.splice(godrayFilterIdx, 1);
+            let advancedBloomFilterIdx = SceneManager._scene._spriteset.filters.indexOf(P_2D_C.advancedBloomFilter);
+            if (advancedBloomFilterIdx >=0) SceneManager._scene._spriteset.filters.splice(advancedBloomFilterIdx, 1);
+        }
     }
 
     setupFilters();
