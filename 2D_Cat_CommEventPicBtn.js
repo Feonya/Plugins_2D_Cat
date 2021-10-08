@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.4 调出一个或多个自定义图片按钮，点击触发共通事件。
+ * @plugindesc v1.5 调出一个或多个自定义图片按钮，点击触发共通事件。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -17,6 +17,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20211008 v1.5
+ *     修复了结束战斗或从Debug窗口返回地图时发生错误的Bug。
  * -- 20210919 v1.4
  *     图片按钮不会再遮挡图片以及对话框等窗口。
  *     对话框弹出时，图片按钮不可点击。
@@ -41,6 +43,8 @@
  * 4、感谢B站用户 靓点迷人 提供关于图片按钮坐标值不能设为负值的问题反馈！
  * 5、感谢B站用户 靓点迷人 提供关于图片按钮与对话框、图片以及菜单之间存在冲突
  * 的反馈意见！
+ * 6、感谢B站用户 坏女人辉夜姐姐 提供关于战斗结束或从Debug窗口返回地图时发生错
+ * 误的Bug反馈！
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -437,6 +441,17 @@ var P_2D_C = P_2D_C || {};
         
         if (P_2D_C.picBtnContainer)
             P_2D_C.picBtnContainer.setParent(P_2D_C.pixiTempApp.stage);
+    };
+    
+    Scene_Map.prototype.updateCallDebug = function() {
+        if (this.isDebugCalled()) {
+            if (P_2D_C.picBtnContainer)
+                P_2D_C.picBtnContainer.setParent(P_2D_C.pixiTempApp.stage);
+            if (P_2D_C.portraitContainer)
+                P_2D_C.portraitContainer.setParent(P_2D_C.pixiTempApp.stage);
+            
+            SceneManager.push(Scene_Debug);
+        }
     };
 
     var _Scene_Map_prototype_onMapLoaded = Scene_Map.prototype.onMapLoaded;

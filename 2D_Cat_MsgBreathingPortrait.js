@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.1 在对话时添加带呼吸效果的多人立绘。
+ * @plugindesc v1.2 在对话时添加带呼吸效果的多人立绘。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -20,6 +20,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20211008 v1.2
+ *     修复了结束战斗或从Debug窗口返回地图时发生错误的Bug。
  * -- 20210926 v1.1
  *     修正了调用“切换正在说的立绘”指令后，可能导致立绘在下一次对话中无法调出的
  * Bug。
@@ -32,6 +34,8 @@
  * * 致谢说明：
  * 1、感谢B站用户 mic0 提供关于“设置立绘”指令中“是否正在说话”参数会导致错误发生
  * 的Bug反馈。
+ * 2、感谢B站用户 坏女人辉夜姐姐 提供关于战斗结束或从Debug窗口返回地图时发生错
+ * 误的Bug反馈！
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -429,6 +433,17 @@ var P_2D_C = P_2D_C || {};
         
         if (P_2D_C.portraitContainer)
             P_2D_C.portraitContainer.setParent(P_2D_C.pixiTempApp.stage);
+    };
+    
+    Scene_Map.prototype.updateCallDebug = function() {
+        if (this.isDebugCalled()) {
+            if (P_2D_C.portraitContainer)
+                P_2D_C.portraitContainer.setParent(P_2D_C.pixiTempApp.stage);
+            if (P_2D_C.picBtnContainer)
+                P_2D_C.picBtnContainer.setParent(P_2D_C.pixiTempApp.stage);
+            
+            SceneManager.push(Scene_Debug);
+        }
     };
 
     var _Scene_Map_prototype_onMapLoaded = Scene_Map.prototype.onMapLoaded;
