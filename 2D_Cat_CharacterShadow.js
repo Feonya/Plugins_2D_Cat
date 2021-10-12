@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.2 为游戏角色添加自定义的阴影。
+ * @plugindesc v1.3 为游戏角色添加自定义的阴影。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -20,6 +20,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20211012 v1.3
+ *     修复了插件导致无法存档的Bug。
  * -- 20211005 v1.2
  *     增加了“禁用阴影”和“激活阴影”插件指令。
  * -- 20210930 v1.1
@@ -29,6 +31,7 @@
  *
  * * 致谢说明：
  * 1、感谢B站用户 C某人这次亿定 关于禁用主角阴影的建议。
+ * 2、感谢Q友 云上的瘦子 反馈无法存档的Bug。
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -231,5 +234,23 @@
         $gameMap.events().forEach(e => {
             e.createShadow(this._tilemap);
         });
+    };
+
+    JsonEx._encode = function(value, depth) {
+        if (depth >= this.maxDepth) {
+            throw new Error("Object too deep");
+        }
+        const type = Object.prototype.toString.call(value);
+        if (type === "[object Object]" || type === "[object Array]") {
+            if (value instanceof Sprite) return; // 存档时，数据中不能含有Sprite等图像信息
+            const constructorName = value.constructor.name;
+            if (constructorName !== "Object" && constructorName !== "Array") {
+                value["@"] = constructorName;
+            }
+            for (const key of Object.keys(value)) {
+                value[key] = this._encode(value[key], depth + 1);
+            }
+        }
+        return value;
     };
 })();
