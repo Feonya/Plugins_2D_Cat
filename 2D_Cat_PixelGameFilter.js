@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.2 为游戏添加像素化滤镜，并为游戏角色添加轮廓线。
+ * @plugindesc v1.3 为游戏添加像素化滤镜，并为游戏角色添加轮廓线。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -26,6 +26,7 @@
  * * 致谢说明：
  * 1、本插件使用了FixiJS Filters库代码，非常感谢原作者！
  * 2、感谢B站用户 蛤狮 关于考虑消息窗口是否受影响的建议。
+ * 3、感谢Gitee用户 秋橙 提供用some简化foreach循环的修改。
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -186,16 +187,9 @@ var P_2D_C = P_2D_C || {};
     }
 
     function isSetToIgnoreOutline(eventId) {
-        let result   = false;
         let settings = getCommentSettings(eventId);
         if (settings.length === 0 || settings[0] === '') return;
-        // TODO: 将forEach改为一般for循环，及时使用return跳出循环
-        settings.forEach(e => {
-            if (e.trim().toLowerCase() === 'ignoreoutline') {
-                result = true;
-            }
-        });
-        return result;
+        return settings.some(e => e.trim().toLowerCase() === 'ignoreoutline'); // using 'some' instead of 'forEach'
     }
 
     function setupFilters() {
