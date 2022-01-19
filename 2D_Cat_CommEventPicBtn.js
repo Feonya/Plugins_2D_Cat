@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.5 调出一个或多个自定义图片按钮，点击触发共通事件。
+ * @plugindesc v1.6 调出一个或多个自定义图片按钮，点击触发共通事件。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -17,6 +17,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20220119 v1.6
+ *     修复了进行名字输入处理后发生错误的Bug。
  * -- 20211008 v1.5
  *     修复了结束战斗或从Debug窗口返回地图时发生错误的Bug。
  * -- 20210919 v1.4
@@ -45,6 +47,7 @@
  * 的反馈意见！
  * 6、感谢B站用户 坏女人辉夜姐姐 提供关于战斗结束或从Debug窗口返回地图时发生错
  * 误的Bug反馈！
+ * 7、感谢B站用户 TheHQ98 提供关于进行名字输入处理后发生错误的Bug反馈！
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -225,7 +228,7 @@ var P_2D_C = P_2D_C || {};
         }
 
         onBtnDown() {
-            // console.log('down')
+			// console.log('down')
             if ($gameMessage.isBusy()) return;
             if (this.downTex  !== null) this.spr.texture = this.downTex;
             if (this.downTint !== null) this.spr.tint    = this.downTint;
@@ -442,6 +445,14 @@ var P_2D_C = P_2D_C || {};
         if (P_2D_C.picBtnContainer)
             P_2D_C.picBtnContainer.setParent(P_2D_C.pixiTempApp.stage);
     };
+    
+    var _Scene_Name_prototype_create = Scene_Name.prototype.create;
+    Scene_Name.prototype.create = function() {
+		_Scene_Name_prototype_create.call(this);
+		
+		if (P_2D_C.picBtnContainer)
+            P_2D_C.picBtnContainer.setParent(P_2D_C.pixiTempApp.stage);
+    }
     
     Scene_Map.prototype.updateCallDebug = function() {
         if (this.isDebugCalled()) {
