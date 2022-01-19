@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.3 在对话时添加带呼吸效果的多人立绘。
+ * @plugindesc v1.4 在对话时添加带呼吸效果的多人立绘。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -20,6 +20,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20220119 v1.4
+ *     修复了进行名字输入处理后发生错误的Bug。
  * -- 20211125 v1.3
  *     修复了从商店窗口返回地图时发生错误的Bug。
  * -- 20211008 v1.2
@@ -39,6 +41,7 @@
  * 2、感谢B站用户 坏女人辉夜姐姐 提供关于战斗结束或从Debug窗口返回地图时发生错
  * 误的Bug反馈！
  * 3、感谢QQ用户 这是否 提供关于从商店返回地图时发生错误的Bug反馈！
+ * 4、感谢B站用户 TheHQ98 提供关于进行名字输入处理后发生错误的Bug反馈！
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -437,6 +440,14 @@ var P_2D_C = P_2D_C || {};
         if (P_2D_C.portraitContainer)
             P_2D_C.portraitContainer.setParent(P_2D_C.pixiTempApp.stage);
     };
+    
+    var _Scene_Name_prototype_create = Scene_Name.prototype.create;
+    Scene_Name.prototype.create = function() {
+		_Scene_Name_prototype_create.call(this);
+		
+		if (P_2D_C.portraitContainer)
+            P_2D_C.portraitContainer.setParent(P_2D_C.pixiTempApp.stage);
+    }
     
     var _Scene_Shop_prototype_create = Scene_Shop.prototype.create;
     Scene_Shop.prototype.create = function() {
