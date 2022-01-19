@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.2 在对话框文字打印时，添加动画以及声音效果。
+ * @plugindesc v1.3 在对话框文字打印时，添加动画以及声音效果。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -16,6 +16,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20220119 v1.3
+ *     修正了进入战斗后无菜单选项的Bug。
  * -- 20211125 v1.2
  *     修正了进入商店时发生错误的Bug。
  * -- 20210927 v1.1
@@ -25,6 +27,7 @@
  *
  * * 致谢说明：
  * 1、感谢QQ用户 这是否 提供关于进入商店时发生错误的Bug反馈！
+ * 2、感谢B站用户 硕明云书 提供关于进入战斗后无菜单选项的Bug反馈！
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -99,6 +102,7 @@
     var readyToPlaySnd     = false;
     var msgWinPos          = new Point();
 
+	var isTempDisabled = false;
     var isDisabled;
     if (String(params.defaultDisable) === 'true') isDisabled = true;
     else                                          isDisabled = false;
@@ -182,7 +186,7 @@
     Bitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {
         _Bitmap_prototype_drawText.call(this, text, x, y, maxWidth, lineHeight, align);
 
-        if (isDisabled || !text || text.length > 1) return;
+        if (isTempDisabled || isDisabled || !text || text.length > 1) return;
 
         if ($gameMessage.isBusy()) {
             if (currChCountForAnim <= 0 && text != '') {
@@ -256,5 +260,21 @@
             }
         }
         sprite.destroy();
+    };
+    
+    var _Scene_Battle_prototype_create = Scene_Battle.prototype.create;
+    Scene_Battle.prototype.create = function() {
+        _Scene_Battle_prototype_create.call(this);
+        
+        if (!isDisabled)
+            isTempDisabled = true;
+    };
+    
+    var _Scene_Map_prototype_onMapLoaded = Scene_Map.prototype.onMapLoaded;
+    Scene_Map.prototype.onMapLoaded = function() {
+        _Scene_Map_prototype_onMapLoaded.call(this);
+
+        if (!isDisabled && isTempDisabled)
+			isTempDisabled = false;
     };
 })();
