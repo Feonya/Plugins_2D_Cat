@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.6 调出一个或多个自定义图片按钮，点击触发共通事件。
+ * @plugindesc v1.7 调出一个或多个自定义图片按钮，点击触发共通事件。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -17,6 +17,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20220206 v1.7
+ *     修复了共通事件调出菜单后返回发生错误的Bug。
  * -- 20220119 v1.6
  *     修复了进行名字输入处理后发生错误的Bug。
  * -- 20211008 v1.5
@@ -48,6 +50,7 @@
  * 6、感谢B站用户 坏女人辉夜姐姐 提供关于战斗结束或从Debug窗口返回地图时发生错
  * 误的Bug反馈！
  * 7、感谢B站用户 TheHQ98 提供关于进行名字输入处理后发生错误的Bug反馈！
+ * 8、感谢B站用户 三皮今天咕了吗 提供关于共通事件调出菜单后返回发生错误的Bug反馈！
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -430,13 +433,20 @@ var P_2D_C = P_2D_C || {};
         restorePlayerMove();
     }
 
-    var _Scene_Map_prototype_callMenu = Scene_Map.prototype.callMenu;
-    Scene_Map.prototype.callMenu = function() {
-        _Scene_Map_prototype_callMenu.call(this);
+    //var _Scene_Map_prototype_callMenu = Scene_Map.prototype.callMenu;
+    //Scene_Map.prototype.callMenu = function() {
+        //_Scene_Map_prototype_callMenu.call(this);
 
-        if (P_2D_C.picBtnContainer)
+        //if (P_2D_C.picBtnContainer)
+            //P_2D_C.picBtnContainer.setParent(P_2D_C.pixiTempApp.stage);
+    //};
+    var _SceneManager_push = SceneManager.push;
+    SceneManager.push = function(sceneClass) {
+		_SceneManager_push.call(this, sceneClass);
+
+		if (P_2D_C.picBtnContainer)
             P_2D_C.picBtnContainer.setParent(P_2D_C.pixiTempApp.stage);
-    };
+    }
     
     var _Scene_Battle_prototype_create = Scene_Battle.prototype.create;
     Scene_Battle.prototype.create = function() {

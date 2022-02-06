@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.4 在对话时添加带呼吸效果的多人立绘。
+ * @plugindesc v1.5 在对话时添加带呼吸效果的多人立绘。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -20,6 +20,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20220206 v1.5
+ *     修复了某些与其他插件的兼容性错误的Bug。
  * -- 20220119 v1.4
  *     修复了进行名字输入处理后发生错误的Bug。
  * -- 20211125 v1.3
@@ -425,13 +427,20 @@ var P_2D_C = P_2D_C || {};
         });
     }
 
-    var _Scene_Map_prototype_callMenu = Scene_Map.prototype.callMenu;
-    Scene_Map.prototype.callMenu = function() {
-        _Scene_Map_prototype_callMenu.call(this);
+    //var _Scene_Map_prototype_callMenu = Scene_Map.prototype.callMenu;
+    //Scene_Map.prototype.callMenu = function() {
+        //_Scene_Map_prototype_callMenu.call(this);
 
-        if (P_2D_C.portraitContainer)
+        //if (P_2D_C.portraitContainer)
+            //P_2D_C.portraitContainer.setParent(P_2D_C.pixiTempApp.stage);
+    //};
+    var _SceneManager_push = SceneManager.push;
+    SceneManager.push = function(sceneClass) {
+		_SceneManager_push.call(this, sceneClass);
+
+		if (P_2D_C.portraitContainer)
             P_2D_C.portraitContainer.setParent(P_2D_C.pixiTempApp.stage);
-    };
+    }
     
     var _Scene_Battle_prototype_create = Scene_Battle.prototype.create;
     Scene_Battle.prototype.create = function() {
