@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.0 实现主界面背景视差效果。
+ * @plugindesc v1.1 实现主界面背景视差效果。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -16,6 +16,13 @@
  *
  * * 使用条款：免费用于任何商业或非商业目的；允许在保留原作者信息的前提下修改代
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
+ * 
+ * * 更新日志：
+ * -- 20220620 v1.1
+ *     修复了启动后黑屏Bug。
+ * 
+ * * 致谢说明：
+ * 1、感谢B站用户 偽受睏吿 提供关于启动后产生黑屏的Bug反馈！
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -47,6 +54,8 @@
  */
 
 var P_2D_C = P_2D_C || {};
+P_2D_C.offsetTitlePicX = 0;
+P_2D_C.offsetTitlePicY = 0;
 
 (() => {
     var params = PluginManager.parameters('2D_Cat_ParallaxTitleBackSprite');
