@@ -12,8 +12,8 @@
 > * 2D_Cat_FreestyleMsgText v1.0 自由设定对话框文字式样，包括颜色、渐变色、加粗、倾斜、轮廓、阴影、辉光等效果。
 > * 2D_Cat_MsgTextPrintAnim v1.3 在对话框文字打印时，添加动画以及声音效果。
 > * 2D_Cat_SwayingTreeTile v1.0 为地图中的树（等）图块添加随风摆动效果。
-> * 2D_Cat_GlisteningWaterTile v1.1 为地图中的水（等）图块添加波光粼粼效果。
-> * 2D_Cat_CommEventPicBtn v1.7 调出一个或多个自定义图片按钮，点击触发共通事件。
+> * 2D_Cat_GlisteningWaterTile v1.3 为地图中的水（等）图块添加波光粼粼效果。
+> * 2D_Cat_CommEventPicBtn v1.8 调出一个或多个自定义图片按钮，点击触发共通事件。
 > * 2D_Cat_OldFilmFilter v1.1 为游戏画面添加老电影式的滤镜效果。
 > * 2D_Cat_WeirdFilter v1.1 为游戏画面添加几种怪异的滤镜效果，包括ASCII化、圆点化、交叉影线化和浮雕化。
 > * 2D_Cat_RetroDisplayerFilter v1.1 为游戏画面添加老式阴极管监视器滤镜效果。
@@ -25,7 +25,7 @@
 > * 2D_Cat_EventFeatureModify v1.0 更改事件或主角的色调、灰度、亮度、色相、缩放比例以及斜切弧度。
 > * 2D_Cat_RegionWall v1.0 基于区域编号自定义空气墙。
 > * 2D_Cat_EventAutoWarningTrap v1.0 更方便的将事件变成带预警功能的自动陷阱。
-> * 2D_Cat_MsgBreathingPortrait v1.5 在对话时添加带呼吸效果的多人立绘。
+> * 2D_Cat_MsgBreathingPortrait v1.6 在对话时添加带呼吸效果的多人立绘。
 > * 2D_Cat_CharacterShadow v1.3 为游戏角色添加自定义的阴影。
 > * 2D_Cat_ItemsReorder v1.0 对物品顺序进行重新排列。
 > * 2D_Cat_ParallaxTitleBackSprite v1.1 实现主界面背景视差效果。

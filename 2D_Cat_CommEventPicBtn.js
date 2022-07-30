@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.7 调出一个或多个自定义图片按钮，点击触发共通事件。
+ * @plugindesc v1.8 调出一个或多个自定义图片按钮，点击触发共通事件。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -17,6 +17,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20220730 v1.8
+ *     修复了角色死亡后读取进度发生错误的Bug。
  * -- 20220206 v1.7
  *     修复了共通事件调出菜单后返回发生错误的Bug。
  * -- 20220119 v1.6
@@ -51,6 +53,7 @@
  * 误的Bug反馈！
  * 7、感谢B站用户 TheHQ98 提供关于进行名字输入处理后发生错误的Bug反馈！
  * 8、感谢B站用户 三皮今天咕了吗 提供关于共通事件调出菜单后返回发生错误的Bug反馈！
+ * 9、感谢B站用户 爱走位的KN_sword 提供关于角色死亡后读取进度发生错误的Bug反馈！
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -463,6 +466,14 @@ var P_2D_C = P_2D_C || {};
 		if (P_2D_C.picBtnContainer)
             P_2D_C.picBtnContainer.setParent(P_2D_C.pixiTempApp.stage);
     }
+    
+    var _Scene_Gameover_prototype_create = Scene_Gameover.prototype.create;
+    Scene_Gameover.prototype.create = function() {
+        _Scene_Gameover_prototype_create.call(this);
+        
+        if (P_2D_C.picBtnContainer)
+            P_2D_C.picBtnContainer.setParent(P_2D_C.pixiTempApp.stage);
+    };
     
     Scene_Map.prototype.updateCallDebug = function() {
         if (this.isDebugCalled()) {

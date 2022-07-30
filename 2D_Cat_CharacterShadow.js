@@ -80,6 +80,8 @@
  * @desc    待激活阴影的事件编号，0表示主角和所有跟随者。
  */
 
+var P_2D_C = P_2D_C || {};
+
 (() => {
     var params = PluginManager.parameters('2D_Cat_CharacterShadow');
 
@@ -195,6 +197,7 @@
         this._shadowSprite.z        = 0;
 
         tilemap.addChild(this._shadowSprite);
+
         if (this._shadowTextureBackup) {
             this._shadowSprite.texture = null;
         }
@@ -227,12 +230,14 @@
     Spriteset_Map.prototype.createShadow = function() {
         _Spriteset_Map_prototype_createShadow.call(this);
 
-        $gamePlayer.createShadow(this._tilemap);
+        P_2D_C.tilemap = this._tilemap;
+
+        $gamePlayer.createShadow(P_2D_C.tilemap);
         $gamePlayer._followers._data.forEach(e => {
-            e.createShadow(this._tilemap);
+            e.createShadow(P_2D_C.tilemap);
         });
         $gameMap.events().forEach(e => {
-            e.createShadow(this._tilemap);
+            e.createShadow(P_2D_C.tilemap);
         });
     };
 

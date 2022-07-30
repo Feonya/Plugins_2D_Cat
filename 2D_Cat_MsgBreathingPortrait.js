@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.5 在对话时添加带呼吸效果的多人立绘。
+ * @plugindesc v1.6 在对话时添加带呼吸效果的多人立绘。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -20,6 +20,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20220730 v1.6
+ *     修复了角色死亡后读取进度发生错误的Bug。
  * -- 20220206 v1.5
  *     修复了某些与其他插件的兼容性错误的Bug。
  * -- 20220119 v1.4
@@ -44,6 +46,7 @@
  * 误的Bug反馈！
  * 3、感谢QQ用户 这是否 提供关于从商店返回地图时发生错误的Bug反馈！
  * 4、感谢B站用户 TheHQ98 提供关于进行名字输入处理后发生错误的Bug反馈！
+ * 5、感谢B站用户 爱走位的KN_sword 提供关于角色死亡后读取进度发生错误的Bug反馈！
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -461,6 +464,14 @@ var P_2D_C = P_2D_C || {};
     var _Scene_Shop_prototype_create = Scene_Shop.prototype.create;
     Scene_Shop.prototype.create = function() {
         _Scene_Shop_prototype_create.call(this);
+        
+        if (P_2D_C.portraitContainer)
+            P_2D_C.portraitContainer.setParent(P_2D_C.pixiTempApp.stage);
+    };
+    
+    var _Scene_Gameover_prototype_create = Scene_Gameover.prototype.create;
+    Scene_Gameover.prototype.create = function() {
+        _Scene_Gameover_prototype_create.call(this);
         
         if (P_2D_C.portraitContainer)
             P_2D_C.portraitContainer.setParent(P_2D_C.pixiTempApp.stage);
