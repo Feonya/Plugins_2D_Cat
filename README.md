@@ -25,7 +25,7 @@
 > * 2D_Cat_EventFeatureModify v1.0 更改事件或主角的色调、灰度、亮度、色相、缩放比例以及斜切弧度。
 > * 2D_Cat_RegionWall v1.0 基于区域编号自定义空气墙。
 > * 2D_Cat_EventAutoWarningTrap v1.0 更方便的将事件变成带预警功能的自动陷阱。
-> * 2D_Cat_MsgBreathingPortrait v1.6 在对话时添加带呼吸效果的多人立绘。
+> * 2D_Cat_MsgBreathingPortrait v1.7 在对话时添加带呼吸效果的多人立绘。
 > * 2D_Cat_CharacterShadow v1.3 为游戏角色添加自定义的阴影。
 > * 2D_Cat_ItemsReorder v1.0 对物品顺序进行重新排列。
 > * 2D_Cat_ParallaxTitleBackSprite v1.1 实现主界面背景视差效果。
