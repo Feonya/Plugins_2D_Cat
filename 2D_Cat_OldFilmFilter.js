@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.1 为游戏画面添加老电影式的滤镜效果。
+ * @plugindesc v1.2 为游戏画面添加老电影式的滤镜效果。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -15,6 +15,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20230221 v1.2
+ *     现在“消息窗口是否被滤镜影响”参数也会影响“显示图片”等元素。
  * -- 20211008 v1.1
  *     增加了“消息窗口是否被滤镜影响”参数。
  * -- 20210912 v1.0
@@ -23,6 +25,7 @@
  * * 致谢说明：
  * 1、本插件使用了FixiJS Filters库代码，非常感谢原作者！
  * 2、感谢B站用户 蛤狮 关于考虑消息窗口是否受影响的建议。
+ * 3、感谢B站用户 身上有大小姐在趴 提供增加“显示图片”是否受影响功能的建议。
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -94,7 +97,7 @@
  * @desc    0~1之间的实数，越大越模糊，反之越清晰。
  *
  * @param   isEffectOnMsgWin
- * @text    消息窗口是否被滤镜影响
+ * @text    消息窗口是否被滤镜影响（显示图片也受影响）
  * @type    boolean
  * @default false
  *
@@ -294,10 +297,11 @@ var P_2D_C = P_2D_C || {};
                 });
                 if (!hasThisFilter) SceneManager._scene.filters.push(P_2D_C.oldFilmFilter);
             } else {
-                SceneManager._scene._spriteset.filters.forEach(e => {
+                SceneManager._scene._spriteset.children[0].filters.forEach(e => {
                     if (e === P_2D_C.oldFilmFilter) hasThisFilter = true;
                 });
-                if (!hasThisFilter) SceneManager._scene._spriteset.filters.push(P_2D_C.oldFilmFilter);
+                if (!hasThisFilter) SceneManager._scene._spriteset.children[0].filters.push(P_2D_C.oldFilmFilter);
+
             }
         }
     }
@@ -311,8 +315,9 @@ var P_2D_C = P_2D_C || {};
             let idx = SceneManager._scene.filters.indexOf(P_2D_C.oldFilmFilter);
             if (idx >= 0) SceneManager._scene.filters.splice(idx, 1);
         } else {
-            let idx = SceneManager._scene._spriteset.filters.indexOf(P_2D_C.oldFilmFilter);
-            if (idx >= 0) SceneManager._scene._spriteset.filters.splice(idx, 1);
+            let idx = SceneManager._scene._spriteset.children[0].filters.indexOf(P_2D_C.oldFilmFilter);
+            if (idx >= 0) SceneManager._scene._spriteset.children[0].filters.splice(idx, 1);
+
         }
     }
 

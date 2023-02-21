@@ -14,7 +14,7 @@
 > * 2D_Cat_SwayingTreeTile v1.0 为地图中的树（等）图块添加随风摆动效果。
 > * 2D_Cat_GlisteningWaterTile v1.3 为地图中的水（等）图块添加波光粼粼效果。
 > * 2D_Cat_CommEventPicBtn v1.8 调出一个或多个自定义图片按钮，点击触发共通事件。
-> * 2D_Cat_OldFilmFilter v1.1 为游戏画面添加老电影式的滤镜效果。
+> * 2D_Cat_OldFilmFilter v1.2 为游戏画面添加老电影式的滤镜效果。
 > * 2D_Cat_WeirdFilter v1.1 为游戏画面添加几种怪异的滤镜效果，包括ASCII化、圆点化、交叉影线化和浮雕化。
 > * 2D_Cat_RetroDisplayerFilter v1.1 为游戏画面添加老式阴极管监视器滤镜效果。
 > * 2D_Cat_PixelGameFilter v1.3 为游戏添加像素化滤镜，并为游戏角色添加轮廓线。
