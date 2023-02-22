@@ -1,5 +1,7 @@
 # Plugins_2D_Cat
 
+#### 重要提示：2D_Cat_CharacterShadow插件存在难以解决的Bug！
+
 #### 插件介绍
 2D_猫系列插件，适用于RPG Maker MZ。
 > * 2D_Cat_SetSelfSwitchAnywhere v1.0 在任意地图的任意处更改事件独立开关。
@@ -16,7 +18,7 @@
 > * 2D_Cat_CommEventPicBtn v1.8 调出一个或多个自定义图片按钮，点击触发共通事件。
 > * 2D_Cat_OldFilmFilter v1.2 为游戏画面添加老电影式的滤镜效果。
 > * 2D_Cat_WeirdFilter v1.1 为游戏画面添加几种怪异的滤镜效果，包括ASCII化、圆点化、交叉影线化和浮雕化。
-> * 2D_Cat_RetroDisplayerFilter v1.1 为游戏画面添加老式阴极管监视器滤镜效果。
+> * 2D_Cat_RetroDisplayerFilter v1.2 为游戏画面添加老式阴极管监视器滤镜效果。
 > * 2D_Cat_PixelGameFilter v1.3 为游戏添加像素化滤镜，并为游戏角色添加轮廓线。
 > * 2D_Cat_BeautifulSunshineFilter v1.1 为游戏添加绮丽的日光效果滤镜。
 > * 2D_Cat_RollingJump v1.1 让角色或事件进行翻滚跳跃，并且跳的更高。
@@ -25,7 +27,7 @@
 > * 2D_Cat_EventFeatureModify v1.0 更改事件或主角的色调、灰度、亮度、色相、缩放比例以及斜切弧度。
 > * 2D_Cat_RegionWall v1.0 基于区域编号自定义空气墙。
 > * 2D_Cat_EventAutoWarningTrap v1.0 更方便的将事件变成带预警功能的自动陷阱。
-> * 2D_Cat_MsgBreathingPortrait v1.7 在对话时添加带呼吸效果的多人立绘。
+> * 2D_Cat_MsgBreathingPortrait v1.8 在对话时添加带呼吸效果的多人立绘。
 > * 2D_Cat_CharacterShadow v1.3 为游戏角色添加自定义的阴影。
 > * 2D_Cat_ItemsReorder v1.0 对物品顺序进行重新排列。
 > * 2D_Cat_ParallaxTitleBackSprite v1.1 实现主界面背景视差效果。

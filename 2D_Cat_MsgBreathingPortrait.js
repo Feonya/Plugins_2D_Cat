@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.7 在对话时添加带呼吸效果的多人立绘。
+ * @plugindesc v1.8 在对话时添加带呼吸效果的多人立绘。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -15,11 +15,14 @@
  * 将不再出现。
  * 4、可在任意事件中调用“销毁所有立绘”，以销毁所有立绘，下次对话框弹出时，将不再
  * 出现任何立绘。
+ * 5、若部署时需要加密图片，请在插件设置参数中开启“显示图片是否被加密”。
  *
  * * 使用条款：免费用于任何商业或非商业目的；允许在保留原作者信息的前提下修改代
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20230222 v1.8
+ *     现在可以加载加密图片了。（需要在插件设置参数中手动选择图片是否被加密）
  * -- 20221224 v1.7
  *     修复了返回标题画面读取进度发生错误的Bug。
  * -- 20220730 v1.6
@@ -50,6 +53,7 @@
  * 4、感谢B站用户 TheHQ98 提供关于进行名字输入处理后发生错误的Bug反馈！
  * 5、感谢B站用户 爱走位的KN_sword 提供关于角色死亡后读取进度发生错误的Bug反馈！
  * 6、感谢QQ用户 我妻何汐 提供关于返回标题画面读取进度发生错误的Bug反馈！
+ * 7、感谢B站用户 吓你一跳的小伞酱 提供关于无法加载加密图片问题的反馈！
  *
  * |\      /|          _
  * |-\____/-|         //
@@ -60,6 +64,12 @@
  *    / __  ______   \
  *   / /  \ \    / /\ \
  *  /_/    \_\  /_/  \_\
+ *
+ *
+ * @param   isEncryped
+ * @text    显示图片是否被加密（部署加密图片时开启）
+ * @type    boolean
+ * @default false
  *
  * @command setPortrait
  * @text    设置立绘
@@ -214,6 +224,110 @@
 
 var P_2D_C = P_2D_C || {};
 
+//P_2D_C.textToArrayBuffer = function(s) {
+//	var i = s.length;
+//	var n = 0;
+//	var ba = new Array()
+//	for (var j = 0; j < i;) {
+//		var c = s.codePointAt(j);
+//		if (c < 128) {
+//			ba[n++] = c;
+//			j++;
+//		}
+//		else if ((c > 127) && (c < 2048)) {
+//			ba[n++] = (c >> 6) | 192;
+//			ba[n++] = (c & 63) | 128;
+//			j++;
+//		}
+//		else if ((c > 2047) && (c < 65536)) {
+//			ba[n++] = (c >> 12) | 224;
+//			ba[n++] = ((c >> 6) & 63) | 128;
+//			ba[n++] = (c & 63) | 128;
+//			j++;
+//		}
+//		else {
+//			ba[n++] = (c >> 18) | 240;
+//			ba[n++] = ((c >> 12) & 63) | 128;
+//			ba[n++] = ((c >> 6) & 63) | 128;
+//			ba[n++] = (c & 63) | 128;
+//			j+=2;
+//		}
+//	}
+//	return new Uint8Array(ba).buffer;
+//}
+
+P_2D_C._onXhrLoad = function(xhr, ps) {
+    if (xhr.status < 400) {
+		console.log("Text Response: " + xhr.response);
+        const arrayBuffer = Utils.decryptArrayBuffer(xhr.response);
+        console.log("Decrypted ArrayBuffer: " + arrayBuffer);
+        const blob = new Blob([arrayBuffer]);
+        console.log("Blob: " + blob);
+        const src = URL.createObjectURL(blob);
+        console.log("Decrypted src: " + src);
+        ps.textureBackup = PIXI.Texture.from(src);
+        P_2D_C.portraitContainer.addChild(ps);
+        console.log("图片解密成功 src: " + src);
+
+		showPortraits();
+    } else {
+        console.log("图片解密失败！");
+    }
+};
+
+function showPortraits() {
+	//let onTalkPortrait = null;
+	P_2D_C.portraitContainer.children.forEach(e => {
+		if (!e.filters) e.filters           = [];
+		if (!e._colorFilter) e._colorFilter = new ColorFilter();
+		if (e.filters.indexOf(e._colorFilter) < 0) e.filters.push(e._colorFilter);
+
+		e.anchor  .set(e.anchorX, e.anchorY);
+		e.position.set(e.posX   , e.posY);
+
+		if (e.isTalking) {
+			//onTalkPortrait = e;
+			e._colorFilter.setBrightness(e.onTalkBrightness);
+			e.scale.set(e.onTalkScaleX, e.onTalkScaleY);
+			P_2D_C.portraitContainer.setChildIndex(e, P_2D_C.portraitContainer.children.length - 1);
+		}
+		else {
+			e._colorFilter.setBrightness(e.onTalkStoppedBrightness);
+			e.scale.set(e.onTalkStoppedScaleX, e.onTalkStoppedScaleY);
+		}
+
+		e.texture = e.textureBackup;
+	});
+	//if (!onTalkPortrait) {
+	//	P_2D_C.portraitContainer.setChildIndex(onTalkPortrait, P_2D_C.portraitContainer.children.length - 1);
+	//}
+}
+
+function hidePortraits() {
+	P_2D_C.portraitContainer.children.forEach(e => {
+		e.texture = null;
+	});
+}
+
+function updatePortraits() {
+	P_2D_C.portraitContainer.children.forEach(e => {
+		if (e.breathAmpX !== 0 && e.breathAmpY !== 0 && e.breathSpeed !== 0) {
+			e.time += Graphics.app.ticker.deltaTime * e.breathSpeed;
+			let ampX = e.breathAmpX * Math.sin(e.time);
+			let ampY = e.breathAmpY * Math.cos(e.time);
+			if (e.isTalking) {
+				e.scale.set(e.onTalkScaleX + ampX, e.onTalkScaleY + ampY);
+				if (e._colorFilter.brightness !== e.onTalkBrightness)
+					e._colorFilter.setBrightness(e.onTalkBrightness);
+			} else {
+				e.scale.set(e.onTalkStoppedScaleX + ampX, e.onTalkStoppedScaleY + ampY);
+				if (e._colorFilter.brightness !== e.onTalkStoppedBrightness)
+					e._colorFilter.setBrightness(e.onTalkStoppedBrightness);
+			}
+		}
+	});
+}
+
 (() => {
     class Portrait_Container extends PIXI.Container {
         constructor() {
@@ -250,6 +364,9 @@ var P_2D_C = P_2D_C || {};
 
     P_2D_C.pixiTempApp       = P_2D_C.pixiTempApp || new PIXI.Application();
     P_2D_C.portraitContainer = null;
+
+    var params = PluginManager.parameters('2D_Cat_MsgBreathingPortrait');
+    P_2D_C.isEncryped = String(params.isEncryped) === 'true';
 
     PluginManager.registerCommand('2D_Cat_MsgBreathingPortrait', 'setPortrait', args => {
         let id                       = Number(args.id);
@@ -309,7 +426,17 @@ var P_2D_C = P_2D_C || {};
             if (ps.id === id) {
                 newPortraitSprite = ps;
                 if (ps.pictureName !== pictureName) {
-                    ps.textureBackup = PIXI.Texture.from('img/pictures/' + pictureName + '.png');
+                    if (P_2D_C.isEncryped) {
+                        P_2D_C.xhr = new XMLHttpRequest();
+                        P_2D_C.xhr.open("GET", 'img/pictures/' + pictureName + '.png_');
+                        P_2D_C.xhr.responseType = "arraybuffer";
+                        P_2D_C.xhr.onload = () => P_2D_C._onXhrLoad(P_2D_C.xhr, ps);
+                        //P_2D_C.xhr.onerror = P_2D_C._onError.bind(this);
+                        P_2D_C.xhr.send();
+                        //ps.textureBackup = PIXI.Texture.from('img/pictures/' + pictureName + '.png_');
+                    }
+                    else
+                        ps.textureBackup = PIXI.Texture.from('img/pictures/' + pictureName + '.png');
                 }
                 // break;
             } else if (isTalking && ps.isTalking) {
@@ -317,32 +444,42 @@ var P_2D_C = P_2D_C || {};
             }
         }
 
-        console.log(newPortraitSprite)
+        //console.log(newPortraitSprite)
         if (!newPortraitSprite) {
             newPortraitSprite = new Portrait_Sprite();
-            newPortraitSprite.textureBackup = PIXI.Texture.from('img/pictures/' + pictureName + '.png');
-            P_2D_C.portraitContainer.addChild(newPortraitSprite);
+            newPortraitSprite.id                       = id;
+			newPortraitSprite.pictureName              = pictureName;
+			newPortraitSprite.anchorX                  = anchorX;
+			newPortraitSprite.anchorY                  = anchorY;
+			newPortraitSprite.posX                     = posX;
+			newPortraitSprite.posY                     = posY;
+			newPortraitSprite.isTalking                = isTalking;
+			newPortraitSprite.breathSpeed              = breathSpeed;
+			newPortraitSprite.breathAmpX               = breathAmpX;
+			newPortraitSprite.breathAmpY               = breathAmpY;
+			newPortraitSprite.onTalkScaleX             = onTalkScaleX;
+			newPortraitSprite.onTalkScaleY             = onTalkScaleY;
+			newPortraitSprite.onTalkStoppedScaleX      = onTalkStoppedScaleX;
+			newPortraitSprite.onTalkStoppedScaleY      = onTalkStoppedScaleY;
+			newPortraitSprite.onTalkBrightness         = onTalkBrightness;
+			newPortraitSprite.onTalkStoppedBrightness  = onTalkStoppedBrightness;
+			
+            if (P_2D_C.isEncryped) {
+                P_2D_C.xhr = new XMLHttpRequest();
+                P_2D_C.xhr.open("GET", 'img/pictures/' + pictureName + '.png_');
+                P_2D_C.xhr.responseType = "arraybuffer";
+                P_2D_C.xhr.onload = () => P_2D_C._onXhrLoad(P_2D_C.xhr, newPortraitSprite);
+                //P_2D_C.xhr.onerror = P_2D_C._onError.bind(this);
+                P_2D_C.xhr.send();
+                //newPortraitSprite.textureBackup = PIXI.Texture.from('img/pictures/' + pictureName + '.png_');
+            }
+            else {
+                newPortraitSprite.textureBackup = PIXI.Texture.from('img/pictures/' + pictureName + '.png');
+                P_2D_C.portraitContainer.addChild(newPortraitSprite);
+                
+				showPortraits();
+            }
         }
-
-        newPortraitSprite.id                       = id;
-        newPortraitSprite.pictureName              = pictureName;
-        newPortraitSprite.anchorX                  = anchorX;
-        newPortraitSprite.anchorY                  = anchorY;
-        newPortraitSprite.posX                     = posX;
-        newPortraitSprite.posY                     = posY;
-        newPortraitSprite.isTalking                = isTalking;
-        newPortraitSprite.breathSpeed              = breathSpeed;
-        newPortraitSprite.breathAmpX               = breathAmpX;
-        newPortraitSprite.breathAmpY               = breathAmpY;
-        newPortraitSprite.onTalkScaleX             = onTalkScaleX;
-        newPortraitSprite.onTalkScaleY             = onTalkScaleY;
-        newPortraitSprite.onTalkStoppedScaleX      = onTalkStoppedScaleX;
-        newPortraitSprite.onTalkStoppedScaleY      = onTalkStoppedScaleY;
-        newPortraitSprite.onTalkBrightness         = onTalkBrightness;
-        newPortraitSprite.onTalkStoppedBrightness  = onTalkStoppedBrightness;
-
-        // P_2D_C.portraitContainer.setChildIndex(newPortraitSprite, P_2D_C.portraitContainer.children.length - 1);
-        showPortraits();
     });
 
     PluginManager.registerCommand('2D_Cat_MsgBreathingPortrait', 'setTalkPortrait', args => {
@@ -356,6 +493,7 @@ var P_2D_C = P_2D_C || {};
                 e.isTalking = false;
             }
         });
+
         showPortraits();
     });
 
@@ -381,57 +519,6 @@ var P_2D_C = P_2D_C || {};
     PluginManager.registerCommand('2D_Cat_MsgBreathingPortrait', 'removeAllPortraits', () => {
         P_2D_C.portraitContainer.removeChildren();
     });
-
-    function showPortraits() {
-        let onTalkPortrait = null;
-        P_2D_C.portraitContainer.children.forEach(e => {
-            if (!e.filters) e.filters           = [];
-            if (!e._colorFilter) e._colorFilter = new ColorFilter();
-            if (e.filters.indexOf(e._colorFilter) < 0) e.filters.push(e._colorFilter);
-
-            e.anchor  .set(e.anchorX, e.anchorY);
-            e.position.set(e.posX   , e.posY);
-
-            if (e.isTalking) {
-                onTalkPortrait = e;
-                e._colorFilter.setBrightness(e.onTalkBrightness);
-                e.scale.set(e.onTalkScaleX, e.onTalkScaleY);
-            }
-            else {
-                e._colorFilter.setBrightness(e.onTalkStoppedBrightness);
-                e.scale.set(e.onTalkStoppedScaleX, e.onTalkStoppedScaleY);
-            }
-
-            e.texture = e.textureBackup;
-        });
-        if (!onTalkPortrait)
-            P_2D_C.portraitContainer.setChildIndex(onTalkPortrait, P_2D_C.portraitContainer.children.length - 1);
-    }
-
-    function hidePortraits() {
-        P_2D_C.portraitContainer.children.forEach(e => {
-            e.texture = null;
-        });
-    }
-
-    function updatePortraits() {
-        P_2D_C.portraitContainer.children.forEach(e => {
-            if (e.breathAmpX !== 0 && e.breathAmpY !== 0 && e.breathSpeed !== 0) {
-                e.time += Graphics.app.ticker.deltaTime * e.breathSpeed;
-                let ampX = e.breathAmpX * Math.sin(e.time);
-                let ampY = e.breathAmpY * Math.cos(e.time);
-                if (e.isTalking) {
-                    e.scale.set(e.onTalkScaleX + ampX, e.onTalkScaleY + ampY);
-                    if (e._colorFilter.brightness !== e.onTalkBrightness)
-                        e._colorFilter.setBrightness(e.onTalkBrightness);
-                } else {
-                    e.scale.set(e.onTalkStoppedScaleX + ampX, e.onTalkStoppedScaleY + ampY);
-                    if (e._colorFilter.brightness !== e.onTalkStoppedBrightness)
-                        e._colorFilter.setBrightness(e.onTalkStoppedBrightness);
-                }
-            }
-        });
-    }
 
     //var _Scene_Map_prototype_callMenu = Scene_Map.prototype.callMenu;
     //Scene_Map.prototype.callMenu = function() {
