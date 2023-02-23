@@ -441,6 +441,9 @@ function updatePortraits() {
                     }
                     else
                         ps.textureBackup = PIXI.Texture.from('img/pictures/' + pictureName + '.png');
+                        P_2D_C.portraitContainer.addChild(newPortraitSprite);
+                
+						showPortraits();
                 }
                 // break;
             } else if (isTalking && ps.isTalking) {
