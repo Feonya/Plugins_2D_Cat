@@ -312,6 +312,10 @@ function hidePortraits() {
 function updatePortraits() {
 	P_2D_C.portraitContainer.children.forEach(e => {
 		if (e.breathAmpX !== 0 && e.breathAmpY !== 0 && e.breathSpeed !== 0) {
+			if (!e.filters) e.filters           = [];
+			if (!e._colorFilter) e._colorFilter = new ColorFilter();
+			if (e.filters.indexOf(e._colorFilter) < 0) e.filters.push(e._colorFilter);
+		
 			e.time += Graphics.app.ticker.deltaTime * e.breathSpeed;
 			let ampX = e.breathAmpX * Math.sin(e.time);
 			let ampY = e.breathAmpY * Math.cos(e.time);
