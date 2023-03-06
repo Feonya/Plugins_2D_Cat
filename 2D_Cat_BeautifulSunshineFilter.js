@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.1 为游戏添加绮丽的日光效果滤镜。
+ * @plugindesc v1.2 为游戏添加绮丽的日光效果滤镜。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -15,6 +15,8 @@
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+ * -- 20230306 v1.2
+ *     现在“消息窗口是否被滤镜影响”参数也会影响“显示图片”等元素。
  * -- 20211008 v1.1
  *     增加了“消息窗口是否被滤镜影响”参数。
  * -- 20210916 v1.0
@@ -100,7 +102,7 @@
  * @desc    0~20之间的实数，越大质量越高，反之越低。
  *
  * @param   isEffectOnMsgWin
- * @text    消息窗口是否被滤镜影响
+ * @text    消息窗口是否被滤镜影响（显示图片也受影响）
  * @type    boolean
  * @default false
  *
@@ -309,16 +311,21 @@ var P_2D_C = P_2D_C || {};
 
         let hasGodrayFilter        = false;
         let hasAdvancedBloomFilter = false;
-        SceneManager._scene.filters.forEach(e => {
-            if (e === P_2D_C.godrayFilter)        hasGodrayFilter        = true;
-            if (e === P_2D_C.advancedBloomFilter) hasAdvancedBloomFilter = true;
-        });
+        
         if (P_2D_C.beautifulSunshineIsEffectOnMsgWin) {
+			SceneManager._scene.filters.forEach(e => {
+				if (e === P_2D_C.godrayFilter)        hasGodrayFilter        = true;
+				if (e === P_2D_C.advancedBloomFilter) hasAdvancedBloomFilter = true;
+			});
             if (!hasGodrayFilter)        SceneManager._scene.filters.push(P_2D_C.godrayFilter);
             if (!hasAdvancedBloomFilter) SceneManager._scene.filters.push(P_2D_C.advancedBloomFilter);
         } else {
-            if (!hasGodrayFilter)        SceneManager._scene._spriteset.filters.push(P_2D_C.godrayFilter);
-            if (!hasAdvancedBloomFilter) SceneManager._scene._spriteset.filters.push(P_2D_C.advancedBloomFilter);
+			SceneManager._scene._spriteset.children[0].filters.forEach(e => {
+				if (e === P_2D_C.godrayFilter)        hasGodrayFilter        = true;
+				if (e === P_2D_C.advancedBloomFilter) hasAdvancedBloomFilter = true;
+			});
+            if (!hasGodrayFilter)        SceneManager._scene._spriteset.children[0].filters.push(P_2D_C.godrayFilter);
+            if (!hasAdvancedBloomFilter) SceneManager._scene._spriteset.children[0].filters.push(P_2D_C.advancedBloomFilter);
         }
     }
 
@@ -335,10 +342,10 @@ var P_2D_C = P_2D_C || {};
             let advancedBloomFilterIdx = SceneManager._scene.filters.indexOf(P_2D_C.advancedBloomFilter);
             if (advancedBloomFilterIdx >=0) SceneManager._scene.filters.splice(advancedBloomFilterIdx, 1);
         } else {
-            let godrayFilterIdx        = SceneManager._scene._spriteset.filters.indexOf(P_2D_C.godrayFilter);
-            if (godrayFilterIdx >=0)        SceneManager._scene._spriteset.filters.splice(godrayFilterIdx, 1);
-            let advancedBloomFilterIdx = SceneManager._scene._spriteset.filters.indexOf(P_2D_C.advancedBloomFilter);
-            if (advancedBloomFilterIdx >=0) SceneManager._scene._spriteset.filters.splice(advancedBloomFilterIdx, 1);
+            let godrayFilterIdx        = SceneManager._scene._spriteset.children[0].filters.indexOf(P_2D_C.godrayFilter);
+            if (godrayFilterIdx >=0)        SceneManager._scene._spriteset.children[0].filters.splice(godrayFilterIdx, 1);
+            let advancedBloomFilterIdx = SceneManager._scene._spriteset.children[0].filters.indexOf(P_2D_C.advancedBloomFilter);
+            if (advancedBloomFilterIdx >=0) SceneManager._scene._spriteset.children[0].filters.splice(advancedBloomFilterIdx, 1);
         }
     }
 
