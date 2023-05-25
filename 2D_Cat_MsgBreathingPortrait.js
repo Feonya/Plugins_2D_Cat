@@ -1,6 +1,6 @@
 /*:
  * @target     MZ
- * @plugindesc v1.8 在对话时添加带呼吸效果的多人立绘。
+ * @plugindesc v1.9 在对话时添加带呼吸效果的多人立绘。
  * @author     2D_猫
  * @url        https://space.bilibili.com/137028995
  *
@@ -16,13 +16,13 @@
  * 4、可在任意事件中调用“销毁所有立绘”，以销毁所有立绘，下次对话框弹出时，将不再
  * 出现任何立绘。
  * 5、若部署时需要加密图片，请在插件设置参数中开启“显示图片是否被加密”。
- * 6、解码加密图片的过程是异步的，因此，如果你的事件存在紧挨着的多个“设置立绘”指
- * 令，请在它们之间等待1帧或多帧。
  *
  * * 使用条款：免费用于任何商业或非商业目的；允许在保留原作者信息的前提下修改代
  * 码；请在你的项目中致谢“2D_猫”，谢谢！:)
  *
  * * 更新日志：
+  * -- 20230523 v1.9
+ *     修复了同时加载多张加密图片时可能失效的Bug。
  * -- 20230222 v1.8
  *     现在可以加载加密图片了。（需要在插件设置参数中手动选择图片是否被加密）
  * -- 20221224 v1.7
@@ -82,6 +82,7 @@
  * @default 1
  * @min     1
  * @desc    立绘ID是唯一的，若有重复则覆盖之前的设置，若不重复则添加多个立绘。
+ *
  *
  * @arg     _cutLine1
  * @text    ------------------------
@@ -258,7 +259,7 @@ var P_2D_C = P_2D_C || {};
 //	return new Uint8Array(ba).buffer;
 //}
 
-P_2D_C._onXhrLoad = function(xhr, ps) {
+P_2D_C._onXhrLoad = function(xhr, ps, thisFunc) {
     if (xhr.status < 400) {
 		console.log("Text Response: " + xhr.response);
         const arrayBuffer = Utils.decryptArrayBuffer(xhr.response);
@@ -272,6 +273,8 @@ P_2D_C._onXhrLoad = function(xhr, ps) {
         console.log("图片解密成功 src: " + src);
 
 		showPortraits();
+		thisFunc._waitCount = 0;
+		
     } else {
         console.log("图片解密失败！");
     }
@@ -374,7 +377,7 @@ function updatePortraits() {
     var params = PluginManager.parameters('2D_Cat_MsgBreathingPortrait');
     P_2D_C.isEncryped = String(params.isEncryped) === 'true';
 
-    PluginManager.registerCommand('2D_Cat_MsgBreathingPortrait', 'setPortrait', args => {
+    PluginManager.registerCommand('2D_Cat_MsgBreathingPortrait', 'setPortrait', function(args) {
         let id                       = Number(args.id);
         let pictureName              = String(args.pictureName);
         let anchorX                  = Number(args.anchorX);
@@ -436,10 +439,11 @@ function updatePortraits() {
                         P_2D_C.xhr = new XMLHttpRequest();
                         P_2D_C.xhr.open("GET", 'img/pictures/' + pictureName + '.png_');
                         P_2D_C.xhr.responseType = "arraybuffer";
-                        P_2D_C.xhr.onload = () => P_2D_C._onXhrLoad(P_2D_C.xhr, ps);
+                        P_2D_C.xhr.onload = () => P_2D_C._onXhrLoad(P_2D_C.xhr, ps, this);
                         //P_2D_C.xhr.onerror = P_2D_C._onError.bind(this);
                         P_2D_C.xhr.send();
                         //ps.textureBackup = PIXI.Texture.from('img/pictures/' + pictureName + '.png_');
+                        this.wait(Number.MAX_VALUE);
                     }
                     else
                         ps.textureBackup = PIXI.Texture.from('img/pictures/' + pictureName + '.png');
@@ -477,10 +481,11 @@ function updatePortraits() {
                 P_2D_C.xhr = new XMLHttpRequest();
                 P_2D_C.xhr.open("GET", 'img/pictures/' + pictureName + '.png_');
                 P_2D_C.xhr.responseType = "arraybuffer";
-                P_2D_C.xhr.onload = () => P_2D_C._onXhrLoad(P_2D_C.xhr, newPortraitSprite);
+                P_2D_C.xhr.onload = () => P_2D_C._onXhrLoad(P_2D_C.xhr, newPortraitSprite, this);
                 //P_2D_C.xhr.onerror = P_2D_C._onError.bind(this);
                 P_2D_C.xhr.send();
                 //newPortraitSprite.textureBackup = PIXI.Texture.from('img/pictures/' + pictureName + '.png_');
+                this.wait(Number.MAX_VALUE);
             }
             else {
                 newPortraitSprite.textureBackup = PIXI.Texture.from('img/pictures/' + pictureName + '.png');
